@@ -7,10 +7,12 @@ public class CommonUser implements User {
 
     private final String name;
     private final String password;
+    private final Integer ID;
 
     public CommonUser(String name, String password) {
         this.name = name;
         this.password = password;
+        ID = 100;
     }
 
     @Override
