@@ -1,7 +1,7 @@
 Team Members:
 
 Daniel Tsukinovsky: Daniel-Tsukinovsky
-
+Brady Li: donuting
 
 A new messaging app developed with the latest technologies.
 Allows any user to message other people across the internet, and connect with
