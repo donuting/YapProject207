@@ -1,20 +1,37 @@
 package entity;
 
+
 /**
- * The representation of a user in our program.
+ * The representation of a chat in our program.
  */
 public interface Chat {
 
     /**
-     * Returns the username of the user.
-     * @return the username of the user.
+     * Adds a user to the chat.
+     * @param user The user to be added.
+     * @return true if successful otherwise false
      */
-    Integer getuser1id();
+    boolean AddMember(User user);
 
     /**
-     * Returns the password of the user.
-     * @return the password of the user.
+     * Adds a message to the chat.
+     * @param message The message to be added.
+     * @return true if successful otherwise false
      */
-    Integer getuser2id();
+    boolean AddMessage(Message message);
+
+    /**
+     * deletes a message from the chat.
+     * @param message The message to be deleted.
+     * @return true if successful otherwise false
+     */
+    boolean DeleteMessage(Message message);
+
+    /**
+     * checks if a user is in the chat.
+     * @param user The user to be searched.
+     * @return true if successful otherwise false
+     */
+    boolean HasMember(User user);
 
 }

@@ -1,14 +1,17 @@
 package entity;
 
+import java.util.List;
+
 /**
- * Factory for creating users.
+ * Factory for creating chats.
  */
 public interface ChatFactory {
     /**
-     * Creates a new User.
-     * @param user1id the id of user1
-     * @param user2id the id of user2
-     * @return the new chat
+     * Creates a new Chat.
+     *
+     * @param chatName the name of the new chat
+     * @param members  the list of the members of the new chat
+     * @return the new user
      */
-    Chat create(Integer user1id, Integer user2id);
+    Chat create(String chatName, List<User> members);
 }

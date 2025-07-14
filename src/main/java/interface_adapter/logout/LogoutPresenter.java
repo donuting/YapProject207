@@ -42,6 +42,8 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         loginState.setPassword("");
         loginViewModel.setState(loginState);
         loginViewModel.firePropertyChanged();
+        this.viewManagerModel.setState(loginViewModel.getViewName());
+        this.viewManagerModel.firePropertyChanged();
     }
 
     @Override
