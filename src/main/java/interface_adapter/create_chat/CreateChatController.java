@@ -18,8 +18,8 @@ public class CreateChatController {
      * Executes the Create Chat Case.
      * @param user the User creating the chat
      */
-    public void execute(User user) {
-        final CreateChatInputData createChatInputData = new CreateChatInputData(user);
+    public void execute(User user, String chatName) {
+        final CreateChatInputData createChatInputData = new CreateChatInputData(user, chatName);
 
         createChatUseCaseInteractor.execute(createChatInputData);
     }

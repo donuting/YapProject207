@@ -17,7 +17,7 @@ public class CommonUser implements User {
     private Integer DateOfBirth;
     private List<User> friends;
     private List<User> blocked;
-    private List<GroupChat> personalChats;
+    private List<GroupChat> groupChats;
 
 
     public CommonUser(String name, String password) {
@@ -28,8 +28,10 @@ public class CommonUser implements User {
         this.DateOfBirth = null;
         this.friends = new ArrayList<User>();
         this.blocked = new ArrayList<User>();
-        this.personalChats = new ArrayList<GroupChat>();
+        this.groupChats = new ArrayList<GroupChat>();
     }
+
+    // Necessary methods
 
     @Override
     public String getName() {
@@ -47,6 +49,11 @@ public class CommonUser implements User {
         return "success";
     }
 
+    @Override
+    public Integer getID() {
+        return ID;
+    }
+
     /**
      * generates an ID for the User.
      * @return generated ID.
@@ -55,6 +62,23 @@ public class CommonUser implements User {
         //TODO: need to add randomiser and makes ure the ID is unique
         return 100;
     }
+
+    /**
+     * fetchs a personal chat of the user.
+     * @param CID The CID of the chat needed.
+     * @return the chat with the CID provided, null if the chat does not exist
+     */
+    public Chat getChat(Integer CID) {
+        //TODO: need to take care of the case when chat not in list
+        for (GroupChat chat : groupChats) {
+            if (chat.getCID()==CID){
+                return chat;
+            }
+        }
+        return null;
+    }
+
+    // These methods will likely be replaced by use cases in the future:
 
     /**
      * Adds a bio to the user.
@@ -96,14 +120,14 @@ public class CommonUser implements User {
      * @param user The friend with whom we have to create a chat.
      * @return true if successful otherwise false
      */
-    public boolean CreateChat(User user) {
+    public boolean CreateGroupChat(User user) {
         if (!friends.contains(user)) {
             return false;
         }
         else{
             List<User> members = Arrays.asList(this, user);
             GroupChat chat = new GroupChat(members);
-            personalChats.add(chat);
+            groupChats.add(chat);
             return true;
         }
 
@@ -118,28 +142,13 @@ public class CommonUser implements User {
     public boolean RemoveFriend(User user) {
         if (friends.contains(user)) {
             friends.remove(user);
-            for (GroupChat chat : personalChats) {
+            for (GroupChat chat : groupChats) {
                 if (chat.HasMember(user)){
-                    personalChats.remove(chat);
+                    groupChats.remove(chat);
                 }
             }
         }
         return true;
-    }
-
-    /**
-     * fetchs a personal chat of the user.
-     * @param CID The CID of the chat needed.
-     * @return the chat with the CID provided, null if the chat does not exist
-     */
-    public Chat getChat(Integer CID) {
-        //TODO: need to take care of the case when chat not in list
-        for (GroupChat chat : personalChats) {
-            if (chat.getCID()==CID){
-                return chat;
-            }
-        }
-        return null;
     }
 
     /**
@@ -172,8 +181,4 @@ public class CommonUser implements User {
     public boolean RemoveMessage(GroupChat chat, Message message) {
         return chat.DeleteMessage(message);
     }
-
-
-    
-
 }

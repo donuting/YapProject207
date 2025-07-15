@@ -3,6 +3,8 @@ package entity;
 
 import org.openapitools.client.model.SendBirdGroupChannel;
 
+import java.util.List;
+
 /**
  * The representation of a chat in our program.
  */
@@ -41,4 +43,10 @@ public interface Chat {
      * @param sendBirdGroupChannel The channel to be used.
      */
     void setChannel(SendBirdGroupChannel sendBirdGroupChannel);
+
+    /**
+     * Returns a list of the members in the chat.
+     * @returns the list of members.
+     */
+    List<User> getMembers();
 }
