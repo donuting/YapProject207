@@ -1,15 +1,18 @@
 package entity;
 
+import org.openapitools.client.model.SendBirdGroupChannel;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonalChat implements Chat {
+public class GroupChat implements Chat {
     private final Integer CID;
     private List<User> members;
     public String chatName;
     private List<Message> messageHistory;
+    private SendBirdGroupChannel sendBirdGroupChannel = null; // placeholder
 
-    public PersonalChat(List<User> members) {
+    public GroupChat(List<User> members) {
         this.CID = GenerateCID();
         this.members = members;
         this.chatName = members.get(0).getName()+"-"+members.get(1).getName();
@@ -78,5 +81,9 @@ public class PersonalChat implements Chat {
     public boolean EditMessage(Message oldMessage, Message newMessage) {
         //TODO: create execution
         return false;
+    }
+
+    public void setChannel(SendBirdGroupChannel sendBirdGroupChannel) {
+        this.sendBirdGroupChannel = sendBirdGroupChannel;
     }
 }

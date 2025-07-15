@@ -17,7 +17,7 @@ public class CommonUser implements User {
     private Integer DateOfBirth;
     private List<User> friends;
     private List<User> blocked;
-    private List<PersonalChat> personalChats;
+    private List<GroupChat> personalChats;
 
 
     public CommonUser(String name, String password) {
@@ -28,7 +28,7 @@ public class CommonUser implements User {
         this.DateOfBirth = null;
         this.friends = new ArrayList<User>();
         this.blocked = new ArrayList<User>();
-        this.personalChats = new ArrayList<PersonalChat>();
+        this.personalChats = new ArrayList<GroupChat>();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class CommonUser implements User {
         }
         else{
             List<User> members = Arrays.asList(this, user);
-            PersonalChat chat = new PersonalChat(members);
+            GroupChat chat = new GroupChat(members);
             personalChats.add(chat);
             return true;
         }
@@ -118,7 +118,7 @@ public class CommonUser implements User {
     public boolean RemoveFriend(User user) {
         if (friends.contains(user)) {
             friends.remove(user);
-            for (PersonalChat chat : personalChats) {
+            for (GroupChat chat : personalChats) {
                 if (chat.HasMember(user)){
                     personalChats.remove(chat);
                 }
@@ -134,7 +134,7 @@ public class CommonUser implements User {
      */
     public Chat getChat(Integer CID) {
         //TODO: need to take care of the case when chat not in list
-        for (PersonalChat chat : personalChats) {
+        for (GroupChat chat : personalChats) {
             if (chat.getCID()==CID){
                 return chat;
             }
@@ -159,7 +159,7 @@ public class CommonUser implements User {
      * @param chat The chat in which the message has to be replaced.
      * @return true if successful otherwise false
      */
-    public boolean EditMessage(PersonalChat chat, Message oldMessage, Message newMessage) {
+    public boolean EditMessage(GroupChat chat, Message oldMessage, Message newMessage) {
         return chat.EditMessage(oldMessage,newMessage);
     }
 
@@ -169,7 +169,7 @@ public class CommonUser implements User {
      * @param chat The chat in which the message has to be removed.
      * @return true if successful otherwise false
      */
-    public boolean RemoveMessage(PersonalChat chat, Message message) {
+    public boolean RemoveMessage(GroupChat chat, Message message) {
         return chat.DeleteMessage(message);
     }
 

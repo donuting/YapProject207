@@ -1,6 +1,8 @@
 package entity;
 
 
+import org.openapitools.client.model.SendBirdGroupChannel;
+
 /**
  * The representation of a chat in our program.
  */
@@ -34,4 +36,9 @@ public interface Chat {
      */
     boolean HasMember(User user);
 
+    /**
+     * Sets the channel used by the chat.
+     * @param sendBirdGroupChannel The channel to be used.
+     */
+    void setChannel(SendBirdGroupChannel sendBirdGroupChannel);
 }
