@@ -9,8 +9,8 @@ public interface ChatFactory {
     /**
      * Creates a new Chat.
      *
-     * @param members  the list of the members of the new chat
+     * @param memberIDs the list of the IDs of the members of the new chat
      * @return the new user
      */
-    Chat create(List<User> members, String chatName);
+    Chat create(List<String> memberIDs, String chatName);
 }

@@ -7,14 +7,14 @@ import java.util.List;
 
 public class GroupChat implements Chat {
     private final Integer CID;
-    private List<User> members;
+    private List<String> memberIDs;
     public String chatName;
     private List<Message> messageHistory;
     private SendBirdGroupChannel sendBirdGroupChannel = null; // placeholder
 
-    public GroupChat(List<User> members, String chatName) {
+    public GroupChat(List<String> memberIDs, String chatName) {
         this.CID = GenerateCID();
-        this.members = members;
+        this.memberIDs = memberIDs;
         this.chatName = chatName; // old implementation: members.get(0).getName()+"-"+members.get(1).getName();
         this.messageHistory = new ArrayList<Message>();
     }
@@ -88,8 +88,8 @@ public class GroupChat implements Chat {
     }
 
     @Override
-    public List<User> getMembers() {
-        return members;
+    public List<String> getMemberIDs() {
+        return memberIDs;
     }
 
     public String getChatName() {

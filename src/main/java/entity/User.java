@@ -21,7 +21,13 @@ public interface User {
      * Returns the ID of the user.
      * @return the ID of the user.
      */
-    Integer getID();
+    String getID();
+
+    /**
+     * Adds a group chat to the user's list of group chats.
+     * @param groupChat the group chat.
+     */
+    void addGroupChat(GroupChat groupChat);
 
 
 }

@@ -12,7 +12,7 @@ public class CommonUser implements User {
 
     private final String name;
     private String password;
-    private final Integer ID;
+    private final String ID;
     private String biography;
     private Integer DateOfBirth;
     private List<User> friends;
@@ -50,7 +50,7 @@ public class CommonUser implements User {
     }
 
     @Override
-    public Integer getID() {
+    public String getID() {
         return ID;
     }
 
@@ -58,9 +58,17 @@ public class CommonUser implements User {
      * generates an ID for the User.
      * @return generated ID.
      */
-    private Integer GenerateID(){
+    private String GenerateID(){
         //TODO: need to add randomiser and makes ure the ID is unique
-        return 100;
+        return "100";
+    }
+
+    /**
+     * Adds a group chat to the user's list of group chats.
+     * @param groupChat the group chat.
+     */
+    public void addGroupChat(GroupChat groupChat){
+        groupChats.add(groupChat);
     }
 
     /**

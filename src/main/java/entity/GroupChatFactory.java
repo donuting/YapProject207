@@ -5,7 +5,7 @@ import java.util.List;
 public class GroupChatFactory implements ChatFactory {
 
     @Override
-    public GroupChat create(List<User> members, String chatName){
-        return new GroupChat(members, chatName);
+    public GroupChat create(List<String> memberIDs, String chatName){
+        return new GroupChat(memberIDs, chatName);
     }
 }

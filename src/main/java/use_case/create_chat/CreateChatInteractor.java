@@ -23,10 +23,14 @@ public class CreateChatInteractor implements CreateChatInputBoundary {
 
     @Override
     public void execute(CreateChatInputData createChatInputData) {
-        List<User> members = new ArrayList<User>();
-        members.add(createChatInputData.getUser()); // only the user who created the chat is a member
-        final GroupChat newGroupChat = groupChatFactory.create(members, createChatInputData.getChatName());
+        List<String> memberIDs = new ArrayList<String>();
+        User user = createChatInputData.getUser();
+        memberIDs.add(user.getID()); // only the user who created the chat is a member
+        final GroupChat newGroupChat = groupChatFactory.create(memberIDs, createChatInputData.getChatName());
         groupChatDataAccessObject.create(newGroupChat);
+
+        // Add the group chat to the user's list of group chats
+        user.addGroupChat(newGroupChat);
 
         final CreateChatOutputData createChatOutputData = new CreateChatOutputData(); // Todo: decide what data needs to be passed to the presenter
         groupChatPresenter.prepareSuccessView(createChatOutputData);

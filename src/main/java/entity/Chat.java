@@ -48,5 +48,5 @@ public interface Chat {
      * Returns a list of the members in the chat.
      * @returns the list of members.
      */
-    List<User> getMembers();
+    List<String> getMemberIDs();
 }
