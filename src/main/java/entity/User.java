@@ -17,4 +17,10 @@ public interface User {
      */
     String getPassword();
 
+    /**
+     * Returns the ID of the user.
+     * @return the ID of the user.
+     */
+    Integer getID();
+
 }
