@@ -6,7 +6,7 @@ package interface_adapter.add_friend;
 public class AddFriendState {
     private String username = "";
     private String addFriendError;
-    private int userID;
+    private String userID;
 
     public String getUsername() {
         return username;
@@ -16,7 +16,7 @@ public class AddFriendState {
         return addFriendError;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
@@ -28,7 +28,7 @@ public class AddFriendState {
         this.addFriendError = addFriendError;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 }

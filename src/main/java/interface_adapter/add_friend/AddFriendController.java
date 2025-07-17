@@ -16,7 +16,14 @@ public class AddFriendController {
      * Switches back to MainMenu.
      */
     public void switchToMainMenu() {
-        viewManagerModel.setState("main_menu");
+        viewManagerModel.setState("main menu");
         viewManagerModel.firePropertyChanged();
+    }
+
+    /**
+     * Executes the AddFriend Use Case
+     */
+    public void addFriend(String friendName, String friendID) {
+        // TODO: logic to be implemented
     }
 }

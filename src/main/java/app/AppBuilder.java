@@ -186,13 +186,15 @@ public class AppBuilder {
         return this;
     }
 
-//    /**
-//     * Adds the AddFriend Use Case to the application.
-//     * @return this builder
-//     */
-//    public AppBuilder AddFriendUseCase() {
-//        final AddFriendOutputBoundary addFriendOutputBoundary = new AddFriendPresenter()
-//    }
+    /**
+     * Adds the AddFriend Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addAddFriendUseCase() {
+        final AddFriendController addFriendController = new AddFriendController(viewManagerModel);
+        addFriendView.setAddFriendController(addFriendController);
+        return this;
+    }
 
     /**
      * Creates the JFrame for the application and initially sets the SignupView to be displayed.
