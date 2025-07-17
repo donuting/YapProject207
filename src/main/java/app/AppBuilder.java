@@ -20,6 +20,8 @@ import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuViewModel;
+import interface_adapter.view_chats.ViewChatsController;
+import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
@@ -38,6 +40,7 @@ import use_case.signup.SignupOutputBoundary;
 import view.LoggedInView;
 import view.LoginView;
 import view.MainMenuView;
+import view.ViewChatsView;
 import view.SignupView;
 import view.ViewManager;
 
@@ -64,6 +67,8 @@ public class AppBuilder {
     private LoginView loginView;
     private MainMenuView mainMenuView;
     private MainMenuViewModel mainMenuViewModel;
+    private ViewChatsView viewChatsView;
+    private ViewChatsViewModel viewChatsViewModel;
     private LogoutController logoutController;
 
     public AppBuilder() {
@@ -111,6 +116,17 @@ public class AppBuilder {
         mainMenuViewModel = new MainMenuViewModel();
         mainMenuView = new MainMenuView(mainMenuViewModel);
         cardPanel.add(mainMenuView, mainMenuView.getViewName());
+        return this;
+    }
+
+    /**
+     * Adds the View Chats View to the application.
+     * @return this builder
+     */
+    public AppBuilder addViewChatsView() {
+        viewChatsViewModel = new ViewChatsViewModel();
+        viewChatsView = new ViewChatsView(viewChatsViewModel);
+        cardPanel.add(viewChatsView, viewChatsView.getViewName());
         return this;
     }
 
@@ -182,8 +198,18 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addMainMenuUseCase() {
-        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController);
+        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel);
         mainMenuView.setMainMenuController(mainMenuController);
+        return this;
+    }
+
+    /**
+     * Adds the View Chats Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addViewChatsUseCase() {
+        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel);
+        viewChatsView.setViewChatsController(viewChatsController);
         return this;
     }
 
