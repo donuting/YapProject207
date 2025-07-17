@@ -138,7 +138,8 @@ public class AppBuilder {
         cardPanel.add(viewChatsView, viewChatsView.getViewName());
         return this;
     }
-  
+
+    /**
      * Adds the AddFriend View to the application.
      * @return this builder
      */
@@ -146,6 +147,8 @@ public class AppBuilder {
         addFriendViewModel = new AddFriendViewModel();
         addFriendView = new AddFriendView(addFriendViewModel);
         cardPanel.add(addFriendView, addFriendView.getViewName());
+        return this;
+    }
 
     /**
      * Adds the Signup Use Case to the application.
