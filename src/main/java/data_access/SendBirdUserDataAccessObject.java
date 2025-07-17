@@ -70,16 +70,17 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                 throw new ApiException("The user could not be found");
             }
 
+            // Todo: Find data storage API
             // Get User Data
-            SendBirdUser sendBirdUser = UserResponse.getUsers().getFirst();
+            SendBirdUser sendBirdUser = UserResponse.getUsers().get(0);
             String name = sendBirdUser.getNickname();
             String userId = sendBirdUser.getUserId();
             JSONObject jsonData = ((JSONObject) sendBirdUser.getMetadata());
             String password = jsonData.getString("password");
             String biography = jsonData.getString("password");
             String dateOfBirth = jsonData.getString("dateOfBirth");
-            List<String> friendIDs= Arrays.stream(jsonData.getString("friendIDs").split(",")).toList();
-            List<String> blockedIDs= Arrays.stream(jsonData.getString("blockedIDs").split(",")).toList();
+            List<String> friendIDs = new ArrayList<String>(); // Arrays.stream(jsonData.getString("friendIDs").split(",")).toList();
+            List<String> blockedIDs = new ArrayList<String>(); // Arrays.stream(jsonData.getString("blockedIDs").split(",")).toList();
 
             // Get channel URLs
             GroupChannelApi groupApiInstance = new GroupChannelApi(defaultClient);

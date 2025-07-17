@@ -56,4 +56,9 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
         }
         return null;
     }
+
+    // Todo: implement
+    public GroupChat get(String channelURL) {
+        return null;
+    }
 }

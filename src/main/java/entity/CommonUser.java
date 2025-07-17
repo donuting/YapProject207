@@ -74,7 +74,7 @@ public class CommonUser implements User {
      */
     @Override
     public JSONObject getMetadata() {
-        JSONObject metadata = new JSONObject();
+        JSONObject metadata = new JSONObject(); // Todo: package the metadata for the data storage API
         metadata.put("password", password);
         metadata.put("biography", biography);
         metadata.put("dateOfBirth", dateOfBirth);
@@ -93,12 +93,6 @@ public class CommonUser implements User {
         //TODO: need to add randomiser and makes ure the ID is unique
         return name;
     }
-
-    @Override
-    public Integer getID(){
-        return ID;
-    }
-
 
     /**
      * Adds a group chat to the user's list of group chats.
@@ -125,105 +119,105 @@ public class CommonUser implements User {
 
     // Todo: These methods will likely be replaced by use cases in the future, and for now use an older implementation. The logic should be updated while moving these to their own use cases:
 
-    /**
-     * Adds a bio to the user.
-     * @param bio The bio to be added.
-     * @return true if successful otherwise false
-     */
-    public boolean EditBiography(String bio) {
-        this.biography = bio;
-        return true;
-    }
+//    /**
+//     * Adds a bio to the user.
+//     * @param bio The bio to be added.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean EditBiography(String bio) {
+//        this.biography = bio;
+//        return true;
+//    }
+//
+//    /**
+//     * Adds a DOB to the chat.
+//     * @param DOB The DOB to be added.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean EditDOB(Integer DOB) {
+//        //TODO: need to verify that the provided DOB is in the correct format
+//        if (Integer.toString(DOB).length() == 8) {
+//            this.dateOfBirth = DOB;
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    /**
+//     * Adds a friend to the user.
+//     * @param user The friend to be added.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean AddFriend(User user) {
+//        friendIDs.add(user);
+//        return CreateChat(user);
+//    }
+//
+//    /**
+//     * Creates a personal chat between two people.
+//     * The person with whom the personal chat is created must be a friend
+//     * @param user The friend with whom we have to create a chat.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean CreateGroupChat(User user) {
+//        if (!friendIDs.contains(user)) {
+//            return false;
+//        }
+//        else{
+//            List<User> members = Arrays.asList(this, user);
+//            GroupChat chat = new GroupChat(members);
+//            groupChats.add(chat);
+//            return true;
+//        }
+//
+//    }
+//
+//    /**
+//     * removes a friend from the user.
+//     * also removes the personal chats with the friend
+//     * @param user The friend to be removed.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean RemoveFriend(User user) {
+//        if (friends.contains(user)) {
+//            friends.remove(user);
+//            for (GroupChat chat : groupChats) {
+//                if (chat.HasMember(user)){
+//                    groupChats.remove(chat);
+//                }
+//            }
+//        }
+//        return true;
+//    }
+//
+//    /**
+//     * Sends a message in a chat.
+//     * @param message the message that has to be sent.
+//     * @param chat The chat in which the message has to be sent.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean SendMessage(Chat chat, Message message) {
+//        return chat.AddMessage(message);
+//    }
+//
+//    /**
+//     * replaces an old message in a chat with a new message.
+//     * @param oldMessage the message that has been sent.
+//     * @param newMessage the new message that is to replace the old message.
+//     * @param chat The chat in which the message has to be replaced.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean EditMessage(GroupChat chat, Message oldMessage, Message newMessage) {
+//        return chat.EditMessage(oldMessage,newMessage);
+//    }
+//
+//    /**
+//     * removes a message in a chat.
+//     * @param message the message that has to be removed.
+//     * @param chat The chat in which the message has to be removed.
+//     * @return true if successful otherwise false
+//     */
+//    public boolean RemoveMessage(GroupChat chat, Message message) {
+//        return chat.DeleteMessage(message);
 
-    /**
-     * Adds a DOB to the chat.
-     * @param DOB The DOB to be added.
-     * @return true if successful otherwise false
-     */
-    public boolean EditDOB(Integer DOB) {
-        //TODO: need to verify that the provided DOB is in the correct format
-        if (Integer.toString(DOB).length() == 8) {
-            this.dateOfBirth = DOB;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Adds a friend to the user.
-     * @param user The friend to be added.
-     * @return true if successful otherwise false
-     */
-    public boolean AddFriend(User user) {
-        friendIDs.add(user);
-        return CreateChat(user);
-    }
-
-    /**
-     * Creates a personal chat between two people.
-     * The person with whom the personal chat is created must be a friend
-     * @param user The friend with whom we have to create a chat.
-     * @return true if successful otherwise false
-     */
-    public boolean CreateGroupChat(User user) {
-        if (!friendIDs.contains(user)) {
-            return false;
-        }
-        else{
-            List<User> members = Arrays.asList(this, user);
-            GroupChat chat = new GroupChat(members);
-            groupChats.add(chat);
-            return true;
-        }
-
-    }
-
-    /**
-     * removes a friend from the user.
-     * also removes the personal chats with the friend
-     * @param user The friend to be removed.
-     * @return true if successful otherwise false
-     */
-    public boolean RemoveFriend(User user) {
-        if (friends.contains(user)) {
-            friends.remove(user);
-            for (GroupChat chat : groupChats) {
-                if (chat.HasMember(user)){
-                    groupChats.remove(chat);
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Sends a message in a chat.
-     * @param message the message that has to be sent.
-     * @param chat The chat in which the message has to be sent.
-     * @return true if successful otherwise false
-     */
-    public boolean SendMessage(Chat chat, Message message) {
-        return chat.AddMessage(message);
-    }
-
-    /**
-     * replaces an old message in a chat with a new message.
-     * @param oldMessage the message that has been sent.
-     * @param newMessage the new message that is to replace the old message.
-     * @param chat The chat in which the message has to be replaced.
-     * @return true if successful otherwise false
-     */
-    public boolean EditMessage(GroupChat chat, Message oldMessage, Message newMessage) {
-        return chat.EditMessage(oldMessage,newMessage);
-    }
-
-    /**
-     * removes a message in a chat.
-     * @param message the message that has to be removed.
-     * @param chat The chat in which the message has to be removed.
-     * @return true if successful otherwise false
-     */
-    public boolean RemoveMessage(GroupChat chat, Message message) {
-        return chat.DeleteMessage(message);
-    }
 }

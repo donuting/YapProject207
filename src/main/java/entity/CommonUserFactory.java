@@ -1,11 +1,17 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Factory for creating CommonUser objects.
  */
 public class CommonUserFactory implements UserFactory {
+
+    @Override
+    public User create(String name, String password) {
+        return new CommonUser(name, password, "", "", "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<GroupChat>(), new ArrayList<PersonalChat>());
+    }
 
     @Override
     public User create(String name,
