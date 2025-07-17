@@ -53,4 +53,13 @@ public class MainMenuController {
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Executes the switch to View Chats use case.
+     */
+    public void switchToLogout() {
+        // Navigate to sign up screen
+        viewManagerModel.setState("sign up");
+        viewManagerModel.firePropertyChanged();
+    }
+
 }
