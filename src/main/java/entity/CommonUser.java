@@ -94,6 +94,12 @@ public class CommonUser implements User {
         return name;
     }
 
+    @Override
+    public Integer getID(){
+        return ID;
+    }
+
+
     /**
      * Adds a group chat to the user's list of group chats.
      * @param groupChat the group chat.

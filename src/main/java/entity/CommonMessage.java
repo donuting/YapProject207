@@ -15,15 +15,13 @@ public class CommonMessage implements Message {
     }
 
     @Override
-    public  User GetSender(){
-        //TODO: create execution
-        return null;
+    public User GetSender(){
+        return this.sender;
     }
 
     @Override
     public String GetText(){
-        //TODO: create execution
-        return null;
+        return this.text;
     }
 
     /**
@@ -31,8 +29,8 @@ public class CommonMessage implements Message {
      * @return generated ID.
      */
     private Integer GenerateID() {
-        //TODO: create execution
-        return -1;
+        java.util.Random rng = new java.util.Random();
+        return rng.nextInt(1000000);
     }
 
 
