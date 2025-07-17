@@ -58,9 +58,38 @@ public class CommonUser implements User {
     }
 
     public String setPassword(String password) {
-        //TODO: need to test conditions on password (is it long enough? so on)
+        //TO DO: need to test conditions on password (is it long enough? so on)
+        if (password == null || password.length() < 8) {
+            return "Password must be at least 8 characters long.";
+        }
+
+        boolean hasDigit = false;
+        boolean hasUpper = false;
+        boolean hasLower = false;
+
+        for (int i = 0; i < password.length(); i++) {
+            char c = password.charAt(i);
+            if (Character.isDigit(c)) {
+                hasDigit = true;
+            }
+            else if (Character.isUpperCase(c)) {
+                hasUpper = true;
+            }
+            else if (Character.isLowerCase(c)) {
+                hasLower = true;
+            }
+            if (hasDigit && hasUpper && hasLower) {
+                // End early if all conditions met
+                break;
+            }
+        }
+
+        if (!hasDigit || !hasUpper || !hasLower) {
+            return "Password must contain at least one digit, one uppercase letter, and one lowercase letter.";
+        }
+
         this.password = password;
-        return "success";
+        return "Successfully set password.";
     }
 
     @Override

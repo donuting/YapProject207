@@ -92,6 +92,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
                 mainMenuController.switchToProfileSettings();
             } else if (evt.getSource().equals(addFriendsButton)) {
                 mainMenuController.switchToAddFriends();
+            } else if (evt.getSource().equals(logoutButton)) {
+                mainMenuController.switchToLogout();
             }
         }
     }
