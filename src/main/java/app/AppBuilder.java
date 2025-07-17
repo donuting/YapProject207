@@ -21,6 +21,10 @@ import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
+import interface_adapter.main_menu.MainMenuController;
+import interface_adapter.main_menu.MainMenuViewModel;
+import interface_adapter.view_chats.ViewChatsController;
+import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
@@ -40,6 +44,8 @@ import use_case.signup.SignupOutputBoundary;
 import view.AddFriendView;
 import view.LoggedInView;
 import view.LoginView;
+import view.MainMenuView;
+import view.ViewChatsView;
 import view.SignupView;
 import view.ViewManager;
 
@@ -49,21 +55,13 @@ import view.ViewManager;
  * <p/>
  * This is done by adding each View and then adding related Use Cases.
  */
-// Checkstyle note: you can ignore the "Class Data Abstraction Coupling"
-//                  and the "Class Fan-Out Complexity" issues for this lab; we encourage
-//                  your team to think about ways to refactor the code to resolve these
-//                  if your team decides to work with this as your starter code
-//                  for your final project this term.
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
-    // thought question: is the hard dependency below a problem?
     private final UserFactory userFactory = new CommonUserFactory();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
-    // thought question: is the hard dependency below a problem?
-    // private final DBUserDataAccessObject userDataAccessObject = new DBUserDataAccessObject(userFactory);
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
 
     private SignupView signupView;
@@ -72,8 +70,15 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private LoggedInView loggedInView;
     private LoginView loginView;
+  
+    private MainMenuView mainMenuView;
+    private MainMenuViewModel mainMenuViewModel;
+    private ViewChatsView viewChatsView;
+    private ViewChatsViewModel viewChatsViewModel;
+    private LogoutController logoutController;
     private AddFriendView addFriendView;
     private AddFriendViewModel addFriendViewModel;
+  
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -113,6 +118,27 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the Main Menu View to the application.
+     * @return this builder
+     */
+    public AppBuilder addMainMenuView() {
+        mainMenuViewModel = new MainMenuViewModel();
+        mainMenuView = new MainMenuView(mainMenuViewModel);
+        cardPanel.add(mainMenuView, mainMenuView.getViewName());
+        return this;
+    }
+
+    /**
+     * Adds the View Chats View to the application.
+     * @return this builder
+     */
+    public AppBuilder addViewChatsView() {
+        viewChatsViewModel = new ViewChatsViewModel();
+        viewChatsView = new ViewChatsView(viewChatsViewModel);
+        cardPanel.add(viewChatsView, viewChatsView.getViewName());
+        return this;
+    }
+  
      * Adds the AddFriend View to the application.
      * @return this builder
      */
@@ -120,8 +146,6 @@ public class AppBuilder {
         addFriendViewModel = new AddFriendViewModel();
         addFriendView = new AddFriendView(addFriendViewModel);
         cardPanel.add(addFriendView, addFriendView.getViewName());
-        return this;
-    }
 
     /**
      * Adds the Signup Use Case to the application.
@@ -144,7 +168,7 @@ public class AppBuilder {
      */
     public AppBuilder addLoginUseCase() {
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
-                loggedInViewModel, loginViewModel);
+                mainMenuViewModel, loginViewModel);  // Changed to navigate to main menu
         final LoginInputBoundary loginInteractor = new LoginInteractor(
                 userDataAccessObject, loginOutputBoundary);
 
@@ -181,7 +205,7 @@ public class AppBuilder {
         final LogoutInputBoundary logoutInteractor =
                 new LogoutInteractor(userDataAccessObject, logoutOutputBoundary);
 
-        final LogoutController logoutController = new LogoutController(logoutInteractor);
+        logoutController = new LogoutController(logoutInteractor);
         loggedInView.setLogoutController(logoutController);
         return this;
     }
@@ -193,6 +217,26 @@ public class AppBuilder {
 //    public AppBuilder AddFriendUseCase() {
 //        final AddFriendOutputBoundary addFriendOutputBoundary = new AddFriendPresenter()
 //    }
+
+    /**
+     * Adds the Main Menu Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addMainMenuUseCase() {
+        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel);
+        mainMenuView.setMainMenuController(mainMenuController);
+        return this;
+    }
+
+    /**
+     * Adds the View Chats Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addViewChatsUseCase() {
+        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel);
+        viewChatsView.setViewChatsController(viewChatsController);
+        return this;
+    }
 
     /**
      * Creates the JFrame for the application and initially sets the SignupView to be displayed.
