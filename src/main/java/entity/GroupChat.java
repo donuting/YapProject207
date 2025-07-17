@@ -6,21 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupChat implements Chat {
-    private final Integer CID;
     private List<String> memberIDs;
     public String chatName;
     private List<Message> messageHistory;
     private String channelURL = null; // placeholder
 
     public GroupChat(List<String> memberIDs, String chatName) {
-        this.CID = GenerateCID();
         this.memberIDs = memberIDs;
         this.chatName = chatName; // old implementation: members.get(0).getName()+"-"+members.get(1).getName();
         this.messageHistory = new ArrayList<Message>();
     }
 
     @Override
-    public boolean AddMember(User user){
+    public boolean AddMember(String userID){
         //TODO: create execution
         return false;
     }
@@ -38,7 +36,7 @@ public class GroupChat implements Chat {
     }
 
     @Override
-    public boolean HasMember(User user){
+    public boolean HasMember(String userID){
         //TODO: create execution
         return false;
     }

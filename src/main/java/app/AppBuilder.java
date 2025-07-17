@@ -139,16 +139,16 @@ public class AppBuilder {
         return this;
     }
   
-     * Adds the AddFriend View to the application.
+     /** Adds the AddFriend View to the application.
      * @return this builder
      */
     public AppBuilder addFriendView() {
         addFriendViewModel = new AddFriendViewModel();
         addFriendView = new AddFriendView(addFriendViewModel);
         cardPanel.add(addFriendView, addFriendView.getViewName());
-
-    /**
-     * Adds the Signup Use Case to the application.
+        return this;
+    }
+    /** Adds the Signup Use Case to the application.
      * @return this builder
      */
     public AppBuilder addSignupUseCase() {
