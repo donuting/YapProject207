@@ -1,6 +1,8 @@
 package entity;
 
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,21 +16,33 @@ public class CommonUser implements User {
     private String password;
     private final String ID;
     private String biography;
-    private Integer DateOfBirth;
-    private List<User> friends;
-    private List<User> blocked;
+    private String dateOfBirth;
+    private List<String> friendIDs;
+    private List<String> blockedIDs;
     private List<GroupChat> groupChats;
+    private List<PersonalChat> personalChats;
 
-
-    public CommonUser(String name, String password) {
+    /**
+     * A constructor for the CommonUser class. This should only be used in the signup and login use cases.
+     */
+    public CommonUser(String name,
+                      String password,
+                      String ID,
+                      String biography,
+                      String dateOfBirth,
+                      List<String> friendIDs,
+                      List<String> blockedIDs,
+                      List<GroupChat> groupChats,
+                      List<PersonalChat> personalChats) {
         this.name = name;
         this.password = password;
-        this.ID = GenerateID();
-        this.biography = null;
-        this.DateOfBirth = null;
-        this.friends = new ArrayList<User>();
-        this.blocked = new ArrayList<User>();
-        this.groupChats = new ArrayList<GroupChat>();
+        this.ID = ID;
+        this.biography = biography;
+        this.dateOfBirth = dateOfBirth;
+        this.friendIDs = friendIDs;
+        this.blockedIDs = blockedIDs;
+        this.groupChats = groupChats;
+        this.personalChats = personalChats;
     }
 
     // Necessary methods
@@ -55,12 +69,29 @@ public class CommonUser implements User {
     }
 
     /**
+     * Returns a JSONObject containing user data. This object can only hold 5 items, and each item is a string of length at most 190.
+     * @return the user data of the user.
+     */
+    @Override
+    public JSONObject getMetadata() {
+        JSONObject metadata = new JSONObject();
+        metadata.put("password", password);
+        metadata.put("biography", biography);
+        metadata.put("dateOfBirth", dateOfBirth);
+        String blockedStr = blockedIDs.toString().replace("[", "").replace("]", "");
+        metadata.put("blockedIDs", blockedStr.toString());
+        String friendsStr = friendIDs.toString().replace("[", "").replace("]", "");
+        metadata.put("friendIDs", friendsStr);
+        return metadata;
+    }
+
+    /**
      * generates an ID for the User.
      * @return generated ID.
      */
     private String GenerateID(){
         //TODO: need to add randomiser and makes ure the ID is unique
-        return "100";
+        return name;
     }
 
     /**
@@ -86,7 +117,7 @@ public class CommonUser implements User {
         return null;
     }
 
-    // These methods will likely be replaced by use cases in the future:
+    // Todo: These methods will likely be replaced by use cases in the future, and for now use an older implementation. The logic should be updated while moving these to their own use cases:
 
     /**
      * Adds a bio to the user.
@@ -106,7 +137,7 @@ public class CommonUser implements User {
     public boolean EditDOB(Integer DOB) {
         //TODO: need to verify that the provided DOB is in the correct format
         if (Integer.toString(DOB).length() == 8) {
-            this.DateOfBirth = DOB;
+            this.dateOfBirth = DOB;
             return true;
         }
         return false;
@@ -118,7 +149,7 @@ public class CommonUser implements User {
      * @return true if successful otherwise false
      */
     public boolean AddFriend(User user) {
-        friends.add(user);
+        friendIDs.add(user);
         return CreateChat(user);
     }
 
@@ -129,7 +160,7 @@ public class CommonUser implements User {
      * @return true if successful otherwise false
      */
     public boolean CreateGroupChat(User user) {
-        if (!friends.contains(user)) {
+        if (!friendIDs.contains(user)) {
             return false;
         }
         else{

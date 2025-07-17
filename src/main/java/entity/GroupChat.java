@@ -10,7 +10,7 @@ public class GroupChat implements Chat {
     private List<String> memberIDs;
     public String chatName;
     private List<Message> messageHistory;
-    private SendBirdGroupChannel sendBirdGroupChannel = null; // placeholder
+    private String channelURL = null; // placeholder
 
     public GroupChat(List<String> memberIDs, String chatName) {
         this.CID = GenerateCID();
@@ -83,8 +83,8 @@ public class GroupChat implements Chat {
         return false;
     }
 
-    public void setChannel(SendBirdGroupChannel sendBirdGroupChannel) {
-        this.sendBirdGroupChannel = sendBirdGroupChannel;
+    public void setChannelURL(String channelURL) {
+        this.channelURL = channelURL;
     }
 
     @Override

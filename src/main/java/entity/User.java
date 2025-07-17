@@ -1,5 +1,7 @@
 package entity;
 
+import org.json.JSONObject;
+
 /**
  * The representation of a user in our program.
  */
@@ -22,6 +24,12 @@ public interface User {
      * @return the ID of the user.
      */
     String getID();
+
+    /**
+     * Returns a JSONObject containing user data.
+     * @return the user data of the user.
+     */
+    JSONObject getMetadata();
 
     /**
      * Adds a group chat to the user's list of group chats.

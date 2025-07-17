@@ -26,8 +26,7 @@ public class CreateChatInteractor implements CreateChatInputBoundary {
         List<String> memberIDs = new ArrayList<String>();
         User user = createChatInputData.getUser();
         memberIDs.add(user.getID()); // only the user who created the chat is a member
-        final GroupChat newGroupChat = groupChatFactory.create(memberIDs, createChatInputData.getChatName());
-        groupChatDataAccessObject.create(newGroupChat);
+        final GroupChat newGroupChat = groupChatDataAccessObject.create(memberIDs, createChatInputData.getChatName(), groupChatFactory);
 
         // Add the group chat to the user's list of group chats
         user.addGroupChat(newGroupChat);
