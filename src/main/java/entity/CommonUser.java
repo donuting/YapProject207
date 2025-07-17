@@ -56,6 +56,12 @@ public class CommonUser implements User {
         return 100;
     }
 
+    @Override
+    public Integer getID(){
+        return ID;
+    }
+
+
     /**
      * Adds a bio to the user.
      * @param bio The bio to be added.
