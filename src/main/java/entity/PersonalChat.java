@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalChat implements Chat {
+    private static final List<Integer> createdCIDs = new ArrayList<>();
     private final Integer CID;
     private List<User> members;
     public String chatName;
     private List<Message> messageHistory;
+
 
     public PersonalChat(List<User> members) {
         this.CID = GenerateCID();
@@ -18,26 +20,30 @@ public class PersonalChat implements Chat {
 
     @Override
     public boolean AddMember(User user){
-        //TODO: create execution
+        if (!members.contains(user)) {
+            members.add(user);
+            return true;
+        }
         return false;
     }
 
     @Override
     public  boolean AddMessage(Message message){
-        //TODO: create execution
+        if (message != null) {
+            messageHistory.add(message);
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean DeleteMessage(Message message){
-        //TODO: create execution
-        return false;
+        return messageHistory.remove(message);
     }
 
     @Override
     public boolean HasMember(User user){
-        //TODO: create execution
-        return false;
+        return members.contains(user);
     }
 
     /**
@@ -46,8 +52,7 @@ public class PersonalChat implements Chat {
      * @return true if successful otherwise false
      */
     public boolean removeMember(User user){
-        //TODO: create execution
-        return false;
+        return members.remove(user);
     }
 
     /**
@@ -56,7 +61,10 @@ public class PersonalChat implements Chat {
      * @return true if successful otherwise false
      */
     public boolean setChatName(String name){
-        //TODO: create execution
+        if (name != null && !name.isEmpty()) {
+            chatName = name;
+            return true;
+        }
         return false;
     }
 
@@ -65,18 +73,26 @@ public class PersonalChat implements Chat {
      * @return generated ID.
      */
     private Integer GenerateCID(){
-        //TODO: create execution
-        return -1;
+        int cid = new java.util.Random().nextInt(90000) + 10000;
+        // Check that the CID is unique
+        while (createdCIDs.contains(cid)) {
+            cid = new java.util.Random().nextInt(90000) + 10000;
+        }
+        createdCIDs.add(cid);
+        return cid;
     }
 
     public Integer getCID(){
-        //TODO: create execution
-        return -1;
+        return this.CID;
     }
 
 
     public boolean EditMessage(Message oldMessage, Message newMessage) {
-        //TODO: create execution
+        int idx = messageHistory.indexOf(oldMessage);
+        if (idx != -1 && newMessage != null) {
+            messageHistory.set(idx, newMessage);
+            return true;
+        }
         return false;
     }
 }
