@@ -152,7 +152,6 @@ public class AppBuilder {
 
     /**
      * Adds the Signup Use Case to the application.
-
      * @return this builder
      */
     public AppBuilder addSignupUseCase() {
