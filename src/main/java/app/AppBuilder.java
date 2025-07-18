@@ -228,7 +228,7 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addMainMenuUseCase() {
-        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel);
+        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel, addFriendViewModel);
         mainMenuView.setMainMenuController(mainMenuController);
         return this;
     }
