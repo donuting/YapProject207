@@ -1,6 +1,6 @@
 package view;
 
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -35,8 +35,6 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         this.addFriendViewModel  = addFriendViewModel;
         addFriendViewModel.addPropertyChangeListener(this);
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
         // Title
         final JLabel title = new JLabel("Adding Friend View");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -46,22 +44,30 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         final LabelTextPanel friendUsernameInfo = new LabelTextPanel(
                 new JLabel("Username"), friendUsernameInputField);
         final LabelTextPanel friendIDInfo = new LabelTextPanel(
-                new JLabel("ID"), friendIDInputField);
+                new JLabel("User ID"), friendIDInputField);
 
         // Buttons
         addFriendButton = new JButton("Add Friend");
+        addFriendButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         cancelButton = new JButton("Cancel");
+        cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        final JPanel buttons = new JPanel();
+        buttons.add(addFriendButton);
+        buttons.add(cancelButton);
 
         // Action Listeners
         addFriendButton.addActionListener(this);
         cancelButton.addActionListener(this);
 
+
+
         // Adding components to layout
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
         this.add(friendUsernameInfo);
         this.add(friendIDInfo);
-        this.add(addFriendButton);
-        this.add(cancelButton);
+        this.add(buttons);
+
 
     }
 
