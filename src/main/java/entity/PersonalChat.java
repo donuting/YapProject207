@@ -18,8 +18,21 @@ public class PersonalChat implements Chat {
         this.messageHistory = new ArrayList<Message>();
     }
 
+    /**
+     * Adds a user to the chat.
+     * Checks if any existing member has blocked the user before adding.
+     * @param user The user to be added.
+     * @return true if the user was added successfully, false if blocked or already a member.
+     */
     @Override
     public boolean AddMember(User user){
+        // Check if user is blocked
+        for (User member : members) {
+            if (member.getBlockedUsers().contains(user)) {
+                System.out.println("Cannot add " + user.getName() + ": blocked by " + member.getName());
+                return false;
+            }
+        }
         if (!members.contains(user)) {
             members.add(user);
             return true;
@@ -27,6 +40,11 @@ public class PersonalChat implements Chat {
         return false;
     }
 
+    /**
+     * Adds a message to the chat.
+     * @param message The message to add.
+     * @return true if message added, false if failed.
+     */
     @Override
     public  boolean AddMessage(Message message){
         if (message != null) {

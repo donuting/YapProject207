@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class CommonUser implements User {
 
+    private static final List<Integer> createdIDs = new ArrayList<>();
     private final String name;
     private String password;
     private final Integer ID;
@@ -81,12 +82,17 @@ public class CommonUser implements User {
      * @return generated ID.
      */
     private Integer GenerateID(){
-        //TODO: need to add randomiser and makes ure the ID is unique
-        return 100;
+        int id = new java.util.Random().nextInt(90000) + 10000;
+        while (createdIDs.contains(id)) {
+            id = new java.util.Random().nextInt(90000) + 10000;
+        }
+        createdIDs.add(id);
+        return id;
     }
 
     @Override
-    public Integer getID(){
+    public Integer getID()
+    {
         return ID;
     }
 
@@ -145,8 +151,8 @@ public class CommonUser implements User {
     }
 
     /**
-     * removes a friend from the user.
-     * also removes the personal chats with the friend
+     * Removes a friend from the user.
+     * Also removes the personal chats with the friend
      * @param user The friend to be removed.
      * @return true if successful otherwise false
      */
@@ -158,8 +164,48 @@ public class CommonUser implements User {
                     personalChats.remove(chat);
                 }
             }
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    /**
+     * Blocks a user.
+     * Also removes the user from the friends list if present.
+     * @param user The user to be blocked.
+     * @return true if successful otherwise false
+     */
+    public boolean blockUser(User user) {
+        if (!blocked.contains(user) && friends.contains(user)) {
+            blocked.add(user);
+            // Remove them from friends list if they are friends
+            friends.remove(user);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Unblocks a user.
+     * Gives the option to add the user to their friends list again.
+     * @param user The user to be unblocked.
+     * @return true if successful otherwise false
+     */
+    public boolean unblockUser(User user, boolean addAsFriend) {
+        boolean unblocked = blocked.remove(user);
+        if (unblocked && addAsFriend) {
+            AddFriend(user);
+        }
+        return unblocked;
+    }
+
+    /**
+     * Returns a list of blocked users.
+     * @return List of blocked users.
+     */
+    @Override
+    public List<User> getBlockedUsers() {
+        return blocked;
     }
 
     /**
@@ -179,6 +225,7 @@ public class CommonUser implements User {
 
     /**
      * Sends a message in a chat.
+     * Checks if the recipient has blocked the sender before sending the message.
      * @param message the message that has to be sent.
      * @param chat The chat in which the message has to be sent.
      * @return true if successful otherwise false
@@ -199,7 +246,7 @@ public class CommonUser implements User {
     }
 
     /**
-     * removes a message in a chat.
+     * Removes a message in a chat.
      * @param message the message that has to be removed.
      * @param chat The chat in which the message has to be removed.
      * @return true if successful otherwise false
