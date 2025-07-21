@@ -11,11 +11,13 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
+/**
+ * The View for the Profile and Settings after clicking the "Profile and settings" button from Main menu.
+ */
 public class ProfileandSettingView extends JPanel implements PropertyChangeListener, ActionListener {
     private final PandSViewModel pandSViewModel;
     private final String viewName = "Profile And Settings";
-    private final JButton viewProfileButton;
+    private final JLabel username;
     private final JButton changePasswordButton;
     private final JButton addBioButton;
     private final JButton addDOBButton;
@@ -42,7 +44,6 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         this.add(title);
 
         //Create buttons
-        viewProfileButton = new JButton("View Profile");
         changePasswordButton = new JButton("Change Password");
         addBioButton = new JButton("Add Bio");
         addDOBButton = new JButton("Add DOB");
@@ -51,9 +52,9 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
 
         //Create Other components
         UID = new JLabel("UID =" + pandSViewModel.getState().getUID());
+        username = new JLabel("Username =" + pandSViewModel.getState().getUsername());
 
         //Add action listeners
-        viewProfileButton.addActionListener(this);
         changePasswordButton.addActionListener(this);
         addBioButton.addActionListener(this);
         addDOBButton.addActionListener(this);
@@ -64,7 +65,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         setProperties();
 
         //Creating and adding rows
-        CreateAndAddRow(List.of(viewProfileButton, UID));
+        CreateAndAddRow(List.of(username, UID));
         CreateAndAddRow(List.of(changePasswordButton, changePassword));
         CreateAndAddRow(List.of(addBioButton, addBio));
         CreateAndAddRow(List.of(addDOBButton, addDOB));
@@ -72,8 +73,11 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
 
     }
 
+    /**
+     * Helper method to set properties for all the JComponents.
+     */
     private void setProperties() {
-        setComponentProperties(viewProfileButton);
+        setComponentProperties(username);
         setComponentProperties(changePasswordButton);
         setComponentProperties(addBioButton);
         setComponentProperties(addDOBButton);
@@ -85,6 +89,9 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         setComponentProperties(addDOB);
     }
 
+    /**
+     * Helper to set the property of a given component.
+     */
     private void setComponentProperties(Component component) {
         component.setPreferredSize(new Dimension(200, 40));
         component.setMaximumSize(new Dimension(200, 40));
@@ -101,21 +108,23 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        PandSState pandSState = pandSViewModel.getState();
-        UID.setText("UID =" + pandSViewModel.getState().getUID());
-        changePassword.setText("");
-        addBio.setText("");
-        addDOB.setText("");
-        this.revalidate();
-        this.repaint();
+        if (evt.getPropertyName().equals("Profile And Settings")) {
+            PandSState pandSState = pandSViewModel.getState();
+            UID.setText("UID =" + pandSViewModel.getState().getUID());
+            username.setText("Username =" + pandSViewModel.getState().getUsername());
+            changePassword.setText(pandSState.getChangePasswordText());
+            addBio.setText(pandSState.getAddBioText());
+            addDOB.setText(pandSState.getAddDOBText());
+            this.revalidate();
+            this.repaint();
+        }
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (pandSController != null) {
-            if (e.getSource() == viewProfileButton) {
-                pandSController.switchToProfile();
-            } else if (e.getSource() == changePasswordButton) {
+             if (e.getSource() == changePasswordButton) {
                 pandSController.changePassword(changePassword.getText());
             } else if (e.getSource() == addBioButton) {
                 pandSController.addBio(addBio.getText());
@@ -128,6 +137,11 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
             }
         }
     }
+
+    /**
+     * A setter for the PandSController
+     * @param pandSController is the controller to be set.
+     */
 
     public void setPandSController(PandSController pandSController) {
         this.pandSController = pandSController;

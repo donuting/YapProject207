@@ -15,7 +15,7 @@ public class ChangePasswordPresenter implements ChangePasswordOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(ChangePasswordOutputData outputData) {
+    public void prepareSuccessChangePasswordView(ChangePasswordOutputData outputData) {
         // currently there isn't anything to change based on the output data,
         // since the output data only contains the username, which remains the same.
         // We still fire the property changed event, but just to let the view know that
@@ -25,7 +25,7 @@ public class ChangePasswordPresenter implements ChangePasswordOutputBoundary {
     }
 
     @Override
-    public void prepareFailView(String error) {
+    public void prepareFailChangePasswordView(String error) {
         // note: this use case currently can't fail
     }
 }

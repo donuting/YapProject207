@@ -21,6 +21,23 @@ public interface User {
      * Returns the ID of the user.
      * @return the ID of the user.
      */
-    Integer getID();
+    String getID();
 
+    /**
+     * Adds a bio to the user.
+     * @param bio The bio to be added.
+     * @return true if successful otherwise false
+     */
+    boolean EditBiography(String bio);
+
+    /**
+     * Adds a DOB to the chat.
+     * @param DOB The DOB to be added.
+     * @return true if successful otherwise false
+     */
+    boolean EditDOB(String DOB);
+
+    String getDOB();
+
+    String getBio();
 }

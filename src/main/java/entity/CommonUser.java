@@ -57,33 +57,36 @@ public class CommonUser implements User {
     }
 
     @Override
-    public Integer getID(){
-        return ID;
+    public String getID(){
+        return Integer.toString(ID);
     }
 
 
-    /**
-     * Adds a bio to the user.
-     * @param bio The bio to be added.
-     * @return true if successful otherwise false
-     */
+
+    @Override
     public boolean EditBiography(String bio) {
         this.biography = bio;
         return true;
     }
 
-    /**
-     * Adds a DOB to the chat.
-     * @param DOB The DOB to be added.
-     * @return true if successful otherwise false
-     */
-    public boolean EditDOB(Integer DOB) {
+    @Override
+    public boolean EditDOB(String DOB) {
         //TODO: need to verify that the provided DOB is in the correct format
-        if (Integer.toString(DOB).length() == 8) {
-            this.DateOfBirth = DOB;
+        if (DOB.length() == 8) {
+            this.DateOfBirth = Integer.valueOf(DOB);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getDOB() {
+        return this.DateOfBirth.toString();
+    }
+
+    @Override
+    public String getBio() {
+        return this.biography;
     }
 
     /**

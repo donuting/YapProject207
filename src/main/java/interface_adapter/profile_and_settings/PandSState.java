@@ -1,15 +1,24 @@
 package interface_adapter.profile_and_settings;
 
-/*
-* The state for the Profile and setting View Model.
+/**
+ * The state for the Main Menu View Model.
  */
 public class PandSState {
     private String UID = "";
     private String ChangePasswordText = "";
-    private String ChangeBioText = "";
-    private Integer ChangeDOBText = 0;
+    private String AddBioText = "";
+    private String AddDOBText = "";
+    private String username = "";
 
     public PandSState(){
+    }
+
+    public PandSState(PandSState pandSState){
+        UID = pandSState.UID;
+        ChangePasswordText = pandSState.ChangePasswordText;
+        AddBioText = pandSState.AddBioText;
+        AddDOBText = pandSState.AddDOBText;
+        username = pandSState.username;
     }
 
 
@@ -29,19 +38,27 @@ public class PandSState {
         ChangePasswordText = changePasswordText;
     }
 
-    public String getChangeBioText() {
-        return ChangeBioText;
+    public String getAddBioText() {
+        return AddBioText;
     }
 
-    public void setChangeBioText(String changeBioText) {
-        ChangeBioText = changeBioText;
+    public void setAddBioText(String addBioText) {
+        AddBioText = addBioText;
     }
 
-    public Integer getChangeDOBText() {
-        return ChangeDOBText;
+    public String getAddDOBText() {
+        return AddDOBText;
     }
 
-    public void setChangeDOBText(Integer changeDOBText) {
-        ChangeDOBText = changeDOBText;
+    public void setAddDOBText(String addDOBText) {
+        AddDOBText = addDOBText;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
