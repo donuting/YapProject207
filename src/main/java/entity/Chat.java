@@ -1,6 +1,10 @@
 package entity;
 
 
+import org.openapitools.client.model.SendBirdGroupChannel;
+
+import java.util.List;
+
 /**
  * The representation of a chat in our program.
  */
@@ -9,10 +13,10 @@ public interface Chat {
     /**
      * Adds a user to the chat.
      * If the user is blocked, they will not be added.
-     * @param user The user to be added.
+     * @param userID The ID of the user to be added.
      * @return true if successful otherwise false
      */
-    boolean AddMember(User user);
+    boolean AddMember(String userID);
 
     /**
      * Adds a message to the chat.
@@ -31,9 +35,20 @@ public interface Chat {
 
     /**
      * checks if a user is in the chat.
-     * @param user The user to be searched.
+     * @param userID The user to be searched.
      * @return true if successful otherwise false
      */
-    boolean HasMember(User user);
+    boolean HasMember(String userID);
 
+    /**
+     * Sets the channel used by the chat.
+     * @param channelURL The URL of the channel to be used.
+     */
+    void setChannelURL(String channelURL);
+
+    /**
+     * Returns a list of the members in the chat.
+     * @returns the list of members.
+     */
+    List<String> getMemberIDs();
 }
