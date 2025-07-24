@@ -8,6 +8,13 @@
     <artifactId>homework-5</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>sendbird</id>
+            <url>https://repo.sendbird.com/public/maven</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <dependency>
@@ -32,6 +39,11 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.8.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sendbird</groupId>
+            <artifactId>sendbird-platform-sdk</artifactId>
+            <version>1.0.23</version>
         </dependency>
 
     </dependencies>

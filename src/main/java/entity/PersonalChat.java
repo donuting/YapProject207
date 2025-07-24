@@ -4,50 +4,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalChat implements Chat {
-    private final Integer CID;
-    private List<User> members;
+    private List<String> memberIDs;
     public String chatName;
     private List<Message> messageHistory;
+    private String channelURL = null; // placeholder
 
-    public PersonalChat(List<User> members) {
-        this.CID = GenerateCID();
-        this.members = members;
-        this.chatName = members.get(0).getName()+"-"+members.get(1).getName();
+
+    public PersonalChat(List<String> memberIDs, String chatName) {
+        this.memberIDs = memberIDs;
+        this.chatName = chatName; // chatName will be specified when the group chat is created - we will access user data from the database, then pass that into the data access object to create a chat.
         this.messageHistory = new ArrayList<Message>();
     }
 
     @Override
-    public boolean AddMember(User user){
-        //TODO: create execution
+    public boolean AddMember(String userID){
+        if (!memberIDs.contains(userID)) {
+            memberIDs.add(userID);
+            return true;
+        }
         return false;
     }
 
     @Override
     public  boolean AddMessage(Message message){
-        //TODO: create execution
+        if (message != null) {
+            messageHistory.add(message);
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean DeleteMessage(Message message){
-        //TODO: create execution
-        return false;
+        return messageHistory.remove(message);
     }
 
     @Override
-    public boolean HasMember(User user){
-        //TODO: create execution
-        return false;
+    public boolean HasMember(String userID){
+        return memberIDs.contains(userID);
     }
 
     /**
      * Removes a user from the chat.
-     * @param user The user to be removed.
+     * @param userID The user to be removed.
      * @return true if successful otherwise false
      */
-    public boolean removeMember(User user){
-        //TODO: create execution
-        return false;
+    public boolean removeMember(String userID){
+        return memberIDs.remove(userID);
     }
 
     /**
@@ -56,27 +59,34 @@ public class PersonalChat implements Chat {
      * @return true if successful otherwise false
      */
     public boolean setChatName(String name){
-        //TODO: create execution
+        if (name != null && !name.isEmpty()) {
+            chatName = name;
+            return true;
+        }
         return false;
     }
 
-    /**
-     * generates an ID for the Chat.
-     * @return generated ID.
-     */
-    private Integer GenerateCID(){
-        //TODO: create execution
-        return -1;
+    public String getChannelURL() {
+        return this.channelURL;
     }
-
-    public Integer getCID(){
-        //TODO: create execution
-        return -1;
-    }
-
 
     public boolean EditMessage(Message oldMessage, Message newMessage) {
-        //TODO: create execution
+        int idx = messageHistory.indexOf(oldMessage);
+        if (idx != -1 && newMessage != null) {
+            messageHistory.set(idx, newMessage);
+            return true;
+        }
         return false;
     }
+
+    @Override
+    public List<String> getMemberIDs(){
+        return this.memberIDs;
+    }
+
+    @Override
+    public void setChannelURL(String channelURL) {
+        this.channelURL = channelURL;
+    }
+
 }

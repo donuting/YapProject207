@@ -17,6 +17,7 @@ public class Main {
                                             .addLoginView()
                                             .addSignupView()
                                             .addLoggedInView()
+                                            .addFriendView()
                                             .addMainMenuView()
                                             .addViewChatsView()
                                             .addSignupUseCase()
@@ -25,6 +26,7 @@ public class Main {
                                             .addLogoutUseCase()
                                             .addMainMenuUseCase()
                                             .addViewChatsUseCase()
+                                            .addAddFriendUseCase()
                                             .build();
 
         application.pack();

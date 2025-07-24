@@ -9,6 +9,9 @@ import javax.swing.WindowConstants;
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.UserFactory;
+import interface_adapter.add_friend.AddFriendController;
+import interface_adapter.add_friend.AddFriendPresenter;
+import interface_adapter.add_friend.AddFriendViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.change_password.ChangePasswordController;
 import interface_adapter.change_password.ChangePasswordPresenter;
@@ -25,6 +28,7 @@ import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import use_case.add_friend.AddFriendOutputBoundary;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
@@ -37,6 +41,7 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
+import view.AddFriendView;
 import view.LoggedInView;
 import view.LoginView;
 import view.MainMenuView;
@@ -65,11 +70,15 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private LoggedInView loggedInView;
     private LoginView loginView;
+  
     private MainMenuView mainMenuView;
     private MainMenuViewModel mainMenuViewModel;
     private ViewChatsView viewChatsView;
     private ViewChatsViewModel viewChatsViewModel;
     private LogoutController logoutController;
+    private AddFriendView addFriendView;
+    private AddFriendViewModel addFriendViewModel;
+  
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -127,6 +136,17 @@ public class AppBuilder {
         viewChatsViewModel = new ViewChatsViewModel();
         viewChatsView = new ViewChatsView(viewChatsViewModel);
         cardPanel.add(viewChatsView, viewChatsView.getViewName());
+        return this;
+    }
+
+    /**
+     * Adds the AddFriend View to the application.
+     * @return this builder
+     */
+    public AppBuilder addFriendView() {
+        addFriendViewModel = new AddFriendViewModel();
+        addFriendView = new AddFriendView(addFriendViewModel);
+        cardPanel.add(addFriendView, addFriendView.getViewName());
         return this;
     }
 
@@ -194,11 +214,21 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the AddFriend Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addAddFriendUseCase() {
+        final AddFriendController addFriendController = new AddFriendController(viewManagerModel);
+        addFriendView.setAddFriendController(addFriendController);
+        return this;
+    }
+
+    /**
      * Adds the Main Menu Use Case to the application.
      * @return this builder
      */
     public AppBuilder addMainMenuUseCase() {
-        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel);
+        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel, addFriendViewModel);
         mainMenuView.setMainMenuController(mainMenuController);
         return this;
     }
@@ -218,7 +248,7 @@ public class AppBuilder {
      * @return the application
      */
     public JFrame build() {
-        final JFrame application = new JFrame("Login Example");
+        final JFrame application = new JFrame("Yap App");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         application.add(cardPanel);

@@ -1,6 +1,8 @@
 package interface_adapter.main_menu;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.add_friend.AddFriendController;
+import interface_adapter.add_friend.AddFriendViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.view_chats.ViewChatsViewModel;
 
@@ -12,13 +14,16 @@ public class MainMenuController {
     private final LogoutController logoutController;
     private final ViewChatsViewModel viewChatsViewModel;
     private final MainMenuViewModel mainMenuViewModel;
+    private final AddFriendViewModel addFriendViewModel;
 
     public MainMenuController(ViewManagerModel viewManagerModel, LogoutController logoutController,
-                              ViewChatsViewModel viewChatsViewModel, MainMenuViewModel mainMenuViewModel) {
+                              ViewChatsViewModel viewChatsViewModel, MainMenuViewModel mainMenuViewModel,
+                              AddFriendViewModel addFriendViewModel) {
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.viewChatsViewModel = viewChatsViewModel;
         this.mainMenuViewModel = mainMenuViewModel;
+        this.addFriendViewModel = addFriendViewModel;
     }
 
     /**
@@ -47,7 +52,16 @@ public class MainMenuController {
      */
     public void switchToAddFriends() {
         // Navigate to add friends screen
-        viewManagerModel.setState("add friends");
+        viewManagerModel.setState("add friend");
+        viewManagerModel.firePropertyChanged();
+    }
+
+    /**
+     * Executes the switch to View Chats use case.
+     */
+    public void switchToLogout() {
+        // Navigate to sign up screen
+        viewManagerModel.setState("sign up");
         viewManagerModel.firePropertyChanged();
     }
 
