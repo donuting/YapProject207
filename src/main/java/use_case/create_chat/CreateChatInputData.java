@@ -7,19 +7,19 @@ import entity.User;
  */
 public class CreateChatInputData {
 
-    private final User user;
     private final String chatName;
+    private final String ID;
 
-    public CreateChatInputData(User user, String chatName) {
-        this.user = user;
+    public CreateChatInputData(String chatName, String ID) {
         this.chatName = chatName;
-    }
-
-    User getUser() {
-        return user;
+        this.ID = ID;
     }
 
     String getChatName() {
         return chatName;
+    }
+
+    String getID() {
+        return ID;
     }
 }
