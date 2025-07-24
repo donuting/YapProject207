@@ -83,11 +83,11 @@ public class ViewChatsView extends JPanel implements ActionListener, PropertyCha
     public void actionPerformed(ActionEvent evt) {
         if (viewChatsController != null) {
             if (evt.getSource().equals(selfChatButton)) {
-                viewChatsController.switchToSelfChat();
+                viewChatsController.openSelfChat();
             } else if (evt.getSource().equals(addChatButton)) {
-                viewChatsController.switchToAddChat();
+                viewChatsController.openAddChat();
             } else if (evt.getSource().equals(backToMenuButton)) {
-                viewChatsController.switchToBackToMenu();
+                viewChatsController.backToMenu();
             }
         }
     }
