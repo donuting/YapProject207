@@ -46,13 +46,25 @@ public class PersonalChat implements Chat {
      * @return true if message added, false if failed.
      */
     @Override
-    public  boolean AddMessage(Message message){
-        if (message != null) {
-            messageHistory.add(message);
-            return true;
+    public boolean AddMessage(Message message) {
+        if (message == null) {
+            return false;
         }
-        return false;
+        User sender = message.GetSender();
+        for (User member : members) {
+            if (member.equals(sender)) {
+                continue;
+            }
+            if (member.getBlockedUsers().contains(sender)) {
+                System.out.println("Sender is blocked.");
+                return false;
+            }
+        }
+        messageHistory.add(message);
+        return true;
     }
+
+
 
     @Override
     public boolean DeleteMessage(Message message){
