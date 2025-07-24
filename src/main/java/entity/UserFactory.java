@@ -14,6 +14,6 @@ public interface UserFactory {
      */
     User create (String name, String password);
 
-    User create(String name, String password, String ID, String biography, String dateOfBirth, List<String> friendIDs, List<String> blockedIDs, List<GroupChat> groupChats, List<PersonalChat> personalChats);
+    User create(String name, String password, String ID, String biography, String dateOfBirth, List<String> friendIDs, List<String> blockedIDs, List<GroupChat> groupChats, List<GroupChat> personalChats);
 
 }
