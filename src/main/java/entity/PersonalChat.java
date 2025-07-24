@@ -66,8 +66,14 @@ public class PersonalChat implements Chat {
         return false;
     }
 
+    @Override
     public String getChannelURL() {
         return this.channelURL;
+    }
+
+    @Override
+    public void setChannelURL(String channelURL) {
+        this.channelURL = channelURL;
     }
 
     public boolean EditMessage(Message oldMessage, Message newMessage) {
@@ -84,9 +90,6 @@ public class PersonalChat implements Chat {
         return this.memberIDs;
     }
 
-    @Override
-    public void setChannelURL(String channelURL) {
-        this.channelURL = channelURL;
-    }
+
 
 }

@@ -49,4 +49,6 @@ public interface Chat {
      * @returns the list of members.
      */
     List<String> getMemberIDs();
+
+    String getChannelURL();
 }

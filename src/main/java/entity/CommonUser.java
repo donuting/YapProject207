@@ -1,10 +1,8 @@
 package entity;
 
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.util.List;
 
 /**
@@ -98,20 +96,35 @@ public class CommonUser implements User {
     }
 
     /**
-     * Returns a JSONObject containing user data. This object can only hold 5 items, and each item is a string of length at most 190.
+     * Returns a JSONObject containing all user data.
      * @return the user data of the user.
      */
     @Override
-    public JSONObject getMetadata() {
-        JSONObject metadata = new JSONObject(); // Todo: package the metadata for the data storage API
-        metadata.put("password", password);
-        metadata.put("biography", biography);
-        metadata.put("dateOfBirth", dateOfBirth);
-        String blockedStr = blockedIDs.toString().replace("[", "").replace("]", "");
-        metadata.put("blockedIDs", blockedStr.toString());
-        String friendsStr = friendIDs.toString().replace("[", "").replace("]", "");
-        metadata.put("friendIDs", friendsStr);
-        return metadata;
+    public JsonObject getUserData() {
+        JsonObject userData = new JsonObject();
+        userData.addProperty("username", name);
+        userData.addProperty("password", password);
+        userData.addProperty("biography", biography);
+        userData.addProperty("dateOfBirth", dateOfBirth);
+
+        JsonArray friendIDsJson = new JsonArray();
+        JsonArray blockedIDsJson = new JsonArray();
+        JsonArray groupChannelURLsJson = new JsonArray();
+        JsonArray personalChannelURLsJson = new JsonArray();
+        friendIDs.forEach(friendIDsJson::add);
+        blockedIDs.forEach(blockedIDsJson::add);
+        for (GroupChat groupChat : groupChats) {
+            groupChannelURLsJson.add(groupChat.getChannelURL());
+        }
+        for (PersonalChat personalChat : personalChats) {
+            personalChannelURLsJson.add(personalChat.getChannelURL());
+        }
+        userData.add("friendIDs", friendIDsJson);
+        userData.add ("blockedIDs", blockedIDsJson);
+        userData.add("groupChannelURLs", groupChannelURLsJson);
+        userData.add("personalChannelURLs", personalChannelURLsJson);
+
+        return userData;
     }
 
     /**

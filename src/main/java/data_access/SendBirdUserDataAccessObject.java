@@ -1,13 +1,14 @@
 package data_access;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import entity.*;
-import org.json.JSONObject;
 import org.openapitools.client.model.*;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.Configuration;
 import org.sendbird.client.api.GroupChannelApi;
-import org.sendbird.client.api.MetadataApi;
 import org.sendbird.client.api.UserApi;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -15,7 +16,6 @@ import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,10 +30,13 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     static String APPLICATION_ID = "https://api-APP_ID.sendbird.com"; // Todo: figure out the application ID
     private final UserFactory userFactory;
     private final GroupChatDataAccessObject groupChatDataAccessObject;
+    private String currentUsername;
+    private PantryUserDataAccessObject pantryUserDataAccessObject = new PantryUserDataAccessObject();
 
     public SendBirdUserDataAccessObject(UserFactory userFactory, GroupChatDataAccessObject groupChatDataAccessObject) {
         this.userFactory = userFactory;
         this.groupChatDataAccessObject = groupChatDataAccessObject;
+        this.currentUsername = null; // default
     }
 
     /**
@@ -43,7 +46,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      */
     @Override
     public void changePassword(User user) {
-
+        pantryUserDataAccessObject.changePassword(user.getID(), user.getPassword()); // The user object already contains the new password
     }
 
     /**
@@ -70,31 +73,42 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                 throw new ApiException("The user could not be found");
             }
 
-            // Todo: Find data storage API
-            // Get User Data
+            // Get User Data from SendBird
             SendBirdUser sendBirdUser = UserResponse.getUsers().get(0);
             String name = sendBirdUser.getNickname();
             String userId = sendBirdUser.getUserId();
-            JSONObject jsonData = ((JSONObject) sendBirdUser.getMetadata());
-            String password = jsonData.getString("password");
-            String biography = jsonData.getString("password");
-            String dateOfBirth = jsonData.getString("dateOfBirth");
-            List<String> friendIDs = new ArrayList<String>(); // Arrays.stream(jsonData.getString("friendIDs").split(",")).toList();
-            List<String> blockedIDs = new ArrayList<String>(); // Arrays.stream(jsonData.getString("blockedIDs").split(",")).toList();
+
+            // Get User Data from Pantry
+            JsonObject jsonData = pantryUserDataAccessObject.getUserData(userId);
+            String password = jsonData.get("password").getAsString();
+            String biography = jsonData.get("biography").getAsString();
+            String dateOfBirth = jsonData.get("dateOfBirth").getAsString();
+            List<String> friendIDs = convertJsonArrayToList(jsonData.getAsJsonArray("friendIDs"));
+            List<String> blockedIDs = convertJsonArrayToList(jsonData.getAsJsonArray("blockedIDs"));
+            List<String> groupChannelURLs = convertJsonArrayToList(jsonData.getAsJsonArray("groupChannelURLs"));
+            List<String> personalChannelURls = convertJsonArrayToList(jsonData.getAsJsonArray("personalChannelURls"));
 
             // Get channel URLs
             GroupChannelApi groupApiInstance = new GroupChannelApi(defaultClient);
             try {
-                GcListChannelsResponse GcResponse = groupApiInstance.gcListChannels()
+                GcListChannelsResponse gcResponse = groupApiInstance.gcListChannels()
                         .apiToken(apiToken)
                         .userId(userId)
                         .execute();
 
-                List<GroupChat> groupChats = new ArrayList<GroupChat>();
-                List<PersonalChat> personalChats = new ArrayList<PersonalChat>(); // Todo: Separate PersonalChat objects from GroupChat objects
-                for (SendBirdGroupChannel sendBirdGroupChannel : GcResponse.getChannels()) {
-                    String channelURL = sendBirdGroupChannel.getChannelUrl();
-                    groupChats.add(groupChatDataAccessObject.get(channelURL)); // Todo: implement this method
+                // Create GroupChat and PersonalChat objects
+                List<GroupChat> groupChats = new ArrayList<>();
+                List<PersonalChat> personalChats = new ArrayList<>();
+                List<SendBirdGroupChannel> channels = gcResponse.getChannels();
+                if (channels != null) {
+                    for (SendBirdGroupChannel sendBirdGroupChannel : channels) {
+                        String channelURL = sendBirdGroupChannel.getChannelUrl();
+                        if (groupChannelURLs.contains(channelURL)) {
+                            groupChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel)); // Todo: implement this method
+                        } else if (personalChannelURls.contains(channelURL)) {
+                            personalChats.add(groupChatDataAccessObject.getPersonalChat(sendBirdGroupChannel)); // Todo: implement this method
+                        }
+                    }
                 }
 
                 // Initialize the user
@@ -117,6 +131,14 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         return null;
     }
 
+    private List<String> convertJsonArrayToList(JsonArray jsonArray) {
+        List<String> newList = new ArrayList<>();
+        for (JsonElement element : jsonArray) {
+            newList.add(element.getAsString());
+        }
+        return newList;
+    }
+
     /**
      * Returns the username of the curren user of the application.
      *
@@ -124,7 +146,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      */
     @Override
     public String getCurrentUsername() {
-        return "";
+        return currentUsername;
     }
 
     /**
@@ -134,7 +156,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      */
     @Override
     public void setCurrentUsername(String username) {
-
+        this.currentUsername = username;
     }
 
     /**
@@ -156,8 +178,10 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                     .apiToken(apiToken)
                     .nickname(username)
                     .execute();
-
-            return !result.getUsers().isEmpty();
+            if (result.getUsers() == null) {
+                return false;
+            }
+            return !(result.getUsers().isEmpty());
 
         } catch (ApiException e) {
             System.err.println("Exception when calling UserApi#listUsers");
@@ -169,7 +193,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         return true;
     }
 
-    public boolean existsByID(String ID) {
+    public boolean existsByID(String userID) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath(APPLICATION_ID);
 
@@ -179,9 +203,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         try {
             ListUsersResponse result = apiInstance.listUsers()
                     .apiToken(apiToken)
-                    .userIds(ID)
+                    .userIds(userID)
                     .execute();
 
+            if (result.getUsers() == null) {
+                return false;
+            }
             return !result.getUsers().isEmpty();
 
         } catch (ApiException e) {
@@ -201,31 +228,30 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      */
     @Override
     public void save(User user) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        UserApi userApiInstance = new UserApi(defaultClient);
+
+        String userId = user.getID(); // String |
+        String apiToken = API_TOKEN; // String |
+        JsonObject userData = user.getUserData();
+
         // If the user is already in the database
         if (existsByID(user.getID())) {
-            ApiClient defaultClient = Configuration.getDefaultApiClient();
-            defaultClient.setBasePath(APPLICATION_ID);
-
-            UserApi userApiInstance = new UserApi(defaultClient);
-            MetadataApi metadataApiInstance = new MetadataApi(defaultClient);
-
-            String userId = user.getID(); // String |
-            String apiToken = API_TOKEN; // String |
-            JSONObject metadata = user.getMetadata();
 
             UpdateUserByIdData updateUserByIdData = new UpdateUserByIdData()
                     .nickname(user.getName());
-            UpdateUserMetadataData updateUserMetadataData = new UpdateUserMetadataData()
-                    .metadata(metadata);
+
             try {
+                // Update username on SendBird
                 SendBirdUser result = userApiInstance.updateUserById(userId)
                         .apiToken(apiToken)
                         .updateUserByIdData(updateUserByIdData)
                         .execute();
-                UpdateUserMetadataResponse response = metadataApiInstance.updateUserMetadata(userId)
-                        .apiToken(apiToken)
-                        .updateUserMetadataData(updateUserMetadataData)
-                        .execute();
+
+                // Update other user data on Pantry
+                pantryUserDataAccessObject.save(userData);
 
             } catch (ApiException e) {
                 System.err.println("Exception when calling UserApi#updateUserById");
@@ -237,21 +263,19 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         }
         // If the user still needs to be added to the database
         else {
-            ApiClient defaultClient = Configuration.getDefaultApiClient();
-            defaultClient.setBasePath(APPLICATION_ID);
-
-            UserApi apiInstance = new UserApi(defaultClient);
-            String apiToken = API_TOKEN; // String |
 
             CreateUserData createUserData = new CreateUserData()
                     .userId(user.getID())
-                    .nickname(user.getName())
-                    .metadata(user.getMetadata()); // CreateUserData |
+                    .nickname(user.getName()); // CreateUserData |
             try {
-                SendBirdUser result = apiInstance.createUser()
+                // Update username on SendBird
+                SendBirdUser result = userApiInstance.createUser()
                         .apiToken(apiToken)
                         .createUserData(createUserData)
                         .execute();
+
+                // Update other user data on Pantry
+                pantryUserDataAccessObject.save(userData);
 
             } catch (ApiException e) {
                 System.err.println("Exception when calling UserApi#createUser");
