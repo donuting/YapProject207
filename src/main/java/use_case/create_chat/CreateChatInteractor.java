@@ -5,6 +5,7 @@ import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
 
+import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +25,12 @@ public class CreateChatInteractor implements CreateChatInputBoundary {
     @Override
     public void execute(CreateChatInputData createChatInputData) {
         List<String> memberIDs = new ArrayList<String>();
-        User user = createChatInputData.getUser();
-        memberIDs.add(user.getID()); // only the user who created the chat is a member
+        String ID = createChatInputData.getID();
+        memberIDs.add(ID); // only the user who created the chat is a member
         final GroupChat newGroupChat = groupChatDataAccessObject.create(memberIDs, createChatInputData.getChatName(), groupChatFactory);
 
         // Add the group chat to the user's list of group chats
-        user.addGroupChat(newGroupChat);
+        // user.addGroupChat(newGroupChat);
 
         final CreateChatOutputData createChatOutputData = new CreateChatOutputData(); // Todo: decide what data needs to be passed to the presenter
         groupChatPresenter.prepareSuccessView(createChatOutputData);

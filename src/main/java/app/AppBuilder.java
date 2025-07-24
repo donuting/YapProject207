@@ -9,6 +9,9 @@ import javax.swing.WindowConstants;
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.UserFactory;
+import interface_adapter.add_chat.AddChatController;
+import interface_adapter.add_chat.AddChatPresenter;
+import interface_adapter.add_chat.AddChatViewModel;
 import interface_adapter.add_friend.AddFriendController;
 import interface_adapter.add_friend.AddFriendPresenter;
 import interface_adapter.add_friend.AddFriendViewModel;
@@ -28,6 +31,9 @@ import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import use_case.create_chat.CreateChatInputBoundary;
+import use_case.create_chat.CreateChatInteractor;
+import use_case.create_chat.CreateChatOutputBoundary;
 import use_case.add_friend.AddFriendOutputBoundary;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
@@ -41,6 +47,7 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
+import view.AddChatView;
 import view.AddFriendView;
 import view.LoggedInView;
 import view.LoginView;
@@ -76,6 +83,9 @@ public class AppBuilder {
     private ViewChatsView viewChatsView;
     private ViewChatsViewModel viewChatsViewModel;
     private LogoutController logoutController;
+
+    private AddChatView addChatView;
+    private AddChatViewModel addChatViewModel;
     private AddFriendView addFriendView;
     private AddFriendViewModel addFriendViewModel;
   
@@ -136,6 +146,13 @@ public class AppBuilder {
         viewChatsViewModel = new ViewChatsViewModel();
         viewChatsView = new ViewChatsView(viewChatsViewModel);
         cardPanel.add(viewChatsView, viewChatsView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addAddChatView() {
+        addChatViewModel = new AddChatViewModel();
+        addChatView = new AddChatView(addChatViewModel);
+        cardPanel.add(addChatView, addChatView.getViewName());
         return this;
     }
 
@@ -238,7 +255,7 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addViewChatsUseCase() {
-        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel);
+        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel, addChatViewModel, viewChatsViewModel);
         viewChatsView.setViewChatsController(viewChatsController);
         return this;
     }
