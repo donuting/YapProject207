@@ -18,7 +18,7 @@ public class CommonUser implements User {
     private List<String> friendIDs;
     private List<String> blockedIDs;
     private List<GroupChat> groupChats;
-    private List<PersonalChat> personalChats;
+    private List<GroupChat> personalChats;
 
     /**
      * A constructor for the CommonUser class. This should only be used in the signup and login use cases.
@@ -31,7 +31,7 @@ public class CommonUser implements User {
                       List<String> friendIDs,
                       List<String> blockedIDs,
                       List<GroupChat> groupChats,
-                      List<PersonalChat> personalChats) {
+                      List<GroupChat> personalChats) {
         this.name = name;
         this.password = password;
         this.ID = ID;
@@ -116,7 +116,7 @@ public class CommonUser implements User {
         for (GroupChat groupChat : groupChats) {
             groupChannelURLsJson.add(groupChat.getChannelURL());
         }
-        for (PersonalChat personalChat : personalChats) {
+        for (GroupChat personalChat : personalChats) {
             personalChannelURLsJson.add(personalChat.getChannelURL());
         }
         userData.add("friendIDs", friendIDsJson);

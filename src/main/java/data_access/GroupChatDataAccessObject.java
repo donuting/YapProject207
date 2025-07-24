@@ -2,7 +2,6 @@ package data_access;
 
 import entity.GroupChat;
 import entity.GroupChatFactory;
-import entity.PersonalChat;
 import org.openapitools.client.model.GcCreateChannelData;
 import org.openapitools.client.model.SendBirdGroupChannel;
 import org.sendbird.client.ApiClient;
@@ -63,7 +62,7 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
         return null;
     }
 
-    public PersonalChat getPersonalChat(SendBirdGroupChannel sendBirdGroupChannel) {
+    public GroupChat getPersonalChat(SendBirdGroupChannel sendBirdGroupChannel) {
         return null;
     }
 }

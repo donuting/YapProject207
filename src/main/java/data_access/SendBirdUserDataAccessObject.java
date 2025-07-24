@@ -98,7 +98,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
 
                 // Create GroupChat and PersonalChat objects
                 List<GroupChat> groupChats = new ArrayList<>();
-                List<PersonalChat> personalChats = new ArrayList<>();
+                List<GroupChat> personalChats = new ArrayList<>();
                 List<SendBirdGroupChannel> channels = gcResponse.getChannels();
                 if (channels != null) {
                     for (SendBirdGroupChannel sendBirdGroupChannel : channels) {
