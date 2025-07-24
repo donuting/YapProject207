@@ -8,10 +8,12 @@ public class ChangePasswordOutputData {
     private final String username;
 
     private final boolean useCaseFailed;
+    private final String password;
 
-    public ChangePasswordOutputData(String username, boolean useCaseFailed) {
+    public ChangePasswordOutputData(String username, boolean useCaseFailed, String password) {
         this.username = username;
         this.useCaseFailed = useCaseFailed;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -20,5 +22,9 @@ public class ChangePasswordOutputData {
 
     public boolean isUseCaseFailed() {
         return useCaseFailed;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

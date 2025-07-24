@@ -136,6 +136,44 @@ public class CommonUser implements User {
         return name;
     }
 
+
+
+    @Override
+    public boolean EditBiography(String bio) {
+        this.biography = bio;
+        return true;
+    }
+
+    @Override
+    public boolean EditDOB(String DOB) {
+        //TODO: need to verify that the provided DOB is in the correct format
+        if (DOB.length() == 8) {
+            this.dateOfBirth = DOB;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String getDOB() {
+        return this.dateOfBirth;
+    }
+
+    @Override
+    public String getBio() {
+        return this.biography;
+    }
+
+    /**
+     * Adds a friend to the user.
+     * @param user The friend to be added.
+     * @return true if successful otherwise false
+     */
+    public boolean AddFriend(User user) {
+        friendIDs.add(user.getID());
+        return true;
+    }
+
     /**
      * Adds a group chat to the user's list of group chats.
      * @param groupChat the group chat.

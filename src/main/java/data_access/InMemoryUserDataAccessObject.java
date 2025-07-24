@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import entity.User;
+import use_case.add_Bio.AddBioUserDataAccessInterface;
+import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
@@ -16,7 +18,9 @@ import use_case.signup.SignupUserDataAccessInterface;
 public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
-        LogoutUserDataAccessInterface {
+        LogoutUserDataAccessInterface,
+        AddBioUserDataAccessInterface,
+        AddDOBUserDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
 
@@ -51,5 +55,15 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public String getCurrentUsername() {
         return this.currentUsername;
+    }
+
+    @Override
+    public boolean addBio(User user) {
+        return false;
+    }
+
+    @Override
+    public boolean addDOB(User user) {
+        return false;
     }
 }
