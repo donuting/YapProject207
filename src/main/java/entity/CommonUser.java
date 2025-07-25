@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class CommonUser implements User {
 
-    private static final List<Integer> createdIDs = new ArrayList<>();
     private final String name;
     private String password;
     private final String ID;
@@ -89,19 +88,6 @@ public class CommonUser implements User {
 
         this.password = password;
         return "Successfully set password.";
-    }
-
-    /**
-     * generates an ID for the User.
-     * @return generated ID.
-     */
-    private Integer GenerateID(){
-        int id = new java.util.Random().nextInt(90000) + 10000;
-        while (createdIDs.contains(id)) {
-            id = new java.util.Random().nextInt(90000) + 10000;
-        }
-        createdIDs.add(id);
-        return id;
     }
 
     @Override
@@ -189,64 +175,6 @@ public class CommonUser implements User {
     }
 
     /**
-     * Removes a friend from the user.
-     * Also removes the personal chats with the friend
-     * @param user The friend to be removed.
-     * @return true if successful otherwise false
-     */
-    public boolean RemoveFriend(User user) {
-        if (friends.contains(user)) {
-            friends.remove(user);
-            for (PersonalChat chat : personalChats) {
-                if (chat.HasMember(user)){
-                    personalChats.remove(chat);
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Blocks a user.
-     * Also removes the user from the friends list if present.
-     * @param user The user to be blocked.
-     * @return true if successful otherwise false
-     */
-    public boolean blockUser(User user) {
-        if (!blocked.contains(user) && friends.contains(user)) {
-            blocked.add(user);
-            // Remove them from friends list if they are friends
-            friends.remove(user);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Unblocks a user.
-     * Gives the option to add the user to their friends list again.
-     * @param user The user to be unblocked.
-     * @return true if successful otherwise false
-     */
-    public boolean unblockUser(User user, boolean addAsFriend) {
-        boolean unblocked = blocked.remove(user);
-        if (unblocked && addAsFriend) {
-            AddFriend(user);
-        }
-        return unblocked;
-    }
-
-    /**
-     * Returns a list of blocked users.
-     * @return List of blocked users.
-     */
-    @Override
-    public List<User> getBlockedUsers() {
-        return blocked;
-    }
-
-    /**
      * Adds a group chat to the user's list of group chats.
      * @param groupChat the group chat.
      */
@@ -269,7 +197,50 @@ public class CommonUser implements User {
         return null;
     }
 
-    
+    /**
+     * Blocks a user.
+     * Also removes the user from the friends list if present.
+     * @param user The user to be blocked.
+     * @return true if successful otherwise false
+     */
+    public boolean blockUser(User user) {
+        if (!blockedIDs.contains(user.getID()) && friendIDs.contains(user.getID())) {
+            blockedIDs.add(user.getID());
+            // Remove them from friends list if they are friends
+            friendIDs.remove(user.getID());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Unblocks a user.
+     * Gives the option to add the user to their friends list again.
+     * @param user The user to be unblocked.
+     * @return true if successful otherwise false
+     */
+    public boolean unblockUser(User user, boolean addAsFriend) {
+        boolean unblocked = blockedIDs.remove(user.getID());
+        if (unblocked && addAsFriend) {
+            AddFriend(user);
+        }
+        return unblocked;
+    }
+
+    /**
+     * Returns a list of blocked users.
+     * @return List of blocked users.
+     */
+    @Override
+    public List<String> getBlockedUserIDs() {
+        return blockedIDs;
+    }
+
+    public boolean isBlocked(User user) {
+        return blockedIDs.contains(user.getID());
+    }
+
+
     // Todo: These methods will likely be replaced by use cases in the future, and for now use an older implementation. The logic should be updated while moving these to their own use cases:
 
 //    /**
