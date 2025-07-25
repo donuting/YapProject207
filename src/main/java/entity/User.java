@@ -16,7 +16,7 @@ public interface User {
 
     /**
      * Returns a list of blocked users.
-     * @return List of blocked users
+     * @return List of blocked users.
      */
     List<User> getBlockedUsers();
 
