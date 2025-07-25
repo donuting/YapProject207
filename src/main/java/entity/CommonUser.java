@@ -197,6 +197,50 @@ public class CommonUser implements User {
         return null;
     }
 
+    /**
+     * Blocks a user.
+     * Also removes the user from the friends list if present.
+     * @param user The user to be blocked.
+     * @return true if successful otherwise false
+     */
+    public boolean blockUser(User user) {
+        if (!blockedIDs.contains(user.getID()) && friendIDs.contains(user.getID())) {
+            blockedIDs.add(user.getID());
+            // Remove them from friends list if they are friends
+            friendIDs.remove(user.getID());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Unblocks a user.
+     * Gives the option to add the user to their friends list again.
+     * @param user The user to be unblocked.
+     * @return true if successful otherwise false
+     */
+    public boolean unblockUser(User user, boolean addAsFriend) {
+        boolean unblocked = blockedIDs.remove(user.getID());
+        if (unblocked && addAsFriend) {
+            AddFriend(user);
+        }
+        return unblocked;
+    }
+
+    /**
+     * Returns a list of blocked users.
+     * @return List of blocked users.
+     */
+    @Override
+    public List<String> getBlockedUserIDs() {
+        return blockedIDs;
+    }
+
+    public boolean isBlocked(User user) {
+        return blockedIDs.contains(user.getID());
+    }
+
+
     // Todo: These methods will likely be replaced by use cases in the future, and for now use an older implementation. The logic should be updated while moving these to their own use cases:
 
 //    /**

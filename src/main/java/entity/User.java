@@ -1,6 +1,7 @@
 package entity;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 
 /**
  * The representation of a user in our program.
@@ -30,6 +31,12 @@ public interface User {
      * @return the user data of the user.
      */
     JsonObject getUserData();
+
+    /**
+     * Returns blocked users.
+     * @return list of blocked users.
+     */
+    List<String> getBlockedUserIDs();
 
     /**
      * Adds a group chat to the user's list of group chats.

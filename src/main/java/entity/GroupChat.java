@@ -18,15 +18,45 @@ public class GroupChat implements Chat {
     }
 
     @Override
-    public boolean AddMember(String userID){
-        //TODO: create execution
+    public boolean AddMember(String userID) {
+        for (String memberID : memberIDs) {
+            User member = getUserByID(memberID);
+            if (member != null) {
+                List<String> blockedIDs = member.getBlockedUserIDs();
+                if (blockedIDs != null && blockedIDs.contains(userID)) {
+                    return false;
+                }
+            }
+        }
+        if (!memberIDs.contains(userID)) {
+            memberIDs.add(userID);
+            return true;
+        }
         return false;
     }
 
     @Override
     public  boolean AddMessage(Message message){
-        //TODO: create execution
-        return false;
+            if (message == null) {
+                return false;
+            }
+        User sender = message.GetSender();
+        if (sender == null) return false;
+        String senderID = sender.getID();
+
+        for (String memberID : memberIDs) {
+            if (memberID.equals(senderID)) continue;
+            User member = getUserByID(memberID);
+            if (member != null) {
+                List<String> blockedIDs = member.getBlockedUserIDs();
+                if (blockedIDs != null && blockedIDs.contains(senderID)) {
+                    System.out.println("Sender is blocked.");
+                    return false;
+                }
+            }
+        }
+        messageHistory.add(message);
+        return true;
     }
 
     @Override
@@ -75,6 +105,9 @@ public class GroupChat implements Chat {
         return -1;
     }
 
+    private User getUserByID(String userID) {
+        return null;
+    }
 
     public boolean EditMessage(Message oldMessage, Message newMessage) {
         //TODO: create execution
