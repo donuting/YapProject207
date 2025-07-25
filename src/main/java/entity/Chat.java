@@ -12,7 +12,6 @@ public interface Chat {
 
     /**
      * Adds a user to the chat.
-     * If the user is blocked, they will not be added.
      * @param userID The ID of the user to be added.
      * @return true if successful otherwise false
      */
@@ -20,7 +19,6 @@ public interface Chat {
 
     /**
      * Adds a message to the chat.
-     * If the recipient is blocked, no message will be sent.
      * @param message The message to be added.
      * @return true if successful otherwise false
      */
