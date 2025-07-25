@@ -81,6 +81,12 @@ public class GroupChat implements Chat {
         return false;
     }
 
+    @Override
+    public String getChannelURL() {
+        return channelURL;
+    }
+
+    @Override
     public void setChannelURL(String channelURL) {
         this.channelURL = channelURL;
     }

@@ -58,7 +58,11 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
     }
 
     // Todo: implement
-    public GroupChat get(String channelURL) {
+    public GroupChat getGroupChat(SendBirdGroupChannel sendBirdGroupChannel) {
+        return null;
+    }
+
+    public GroupChat getPersonalChat(SendBirdGroupChannel sendBirdGroupChannel) {
         return null;
     }
 }

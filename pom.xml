@@ -13,16 +13,18 @@
             <id>sendbird</id>
             <url>https://repo.sendbird.com/public/maven</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
-
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
-
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
@@ -45,7 +47,11 @@
             <artifactId>sendbird-platform-sdk</artifactId>
             <version>1.0.23</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.EnderCrypt</groupId>
+            <artifactId>JPantry</artifactId>
+            <version>b051df713c</version>
+        </dependency>
     </dependencies>
 
 
