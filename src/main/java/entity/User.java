@@ -1,6 +1,7 @@
 package entity;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import java.util.List;
 
 /**
  * The representation of a user in our program.
@@ -29,7 +30,13 @@ public interface User {
      * Returns a JSONObject containing user data.
      * @return the user data of the user.
      */
-    JSONObject getMetadata();
+    JsonObject getUserData();
+
+    /**
+     * Returns blocked users.
+     * @return list of blocked users.
+     */
+    List<String> getBlockedUserIDs();
 
     /**
      * Adds a group chat to the user's list of group chats.
@@ -38,4 +45,21 @@ public interface User {
     void addGroupChat(GroupChat groupChat);
 
 
+    /**
+     * Adds a bio to the user.
+     * @param bio The bio to be added.
+     * @return true if successful otherwise false
+     */
+    boolean EditBiography(String bio);
+
+    /**
+     * Adds a DOB to the chat.
+     * @param DOB The DOB to be added.
+     * @return true if successful otherwise false
+     */
+    boolean EditDOB(String DOB);
+
+    String getDOB();
+
+    String getBio();
 }

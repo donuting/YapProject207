@@ -12,6 +12,8 @@ import java.util.Map;
 
 import entity.User;
 import entity.UserFactory;
+import use_case.add_Bio.AddBioUserDataAccessInterface;
+import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -21,7 +23,9 @@ import use_case.signup.SignupUserDataAccessInterface;
  */
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
                                                  LoginUserDataAccessInterface,
-                                                 ChangePasswordUserDataAccessInterface {
+                                                 ChangePasswordUserDataAccessInterface,
+                                                AddDOBUserDataAccessInterface,
+                                                AddBioUserDataAccessInterface {
 
     private static final String HEADER = "username,password";
 
@@ -113,5 +117,15 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
         // Replace the User object in the map
         accounts.put(user.getName(), user);
         save();
+    }
+
+    @Override
+    public boolean addBio(User user) {
+        return false;
+    }
+
+    @Override
+    public boolean addDOB(User user) {
+        return false;
     }
 }
