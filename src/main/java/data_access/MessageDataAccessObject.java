@@ -120,6 +120,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
         requestBody.put("user_id", message.GetSenderId());
         requestBody.put("message", message.GetText());
         requestBody.put("created_at", System.currentTimeMillis());
+        requestBody.put("updated_at", System.currentTimeMillis());
 
         final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
 
