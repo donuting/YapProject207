@@ -52,7 +52,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
             if (sendBirdMessages != null) {
                 for (SendbirdMessageResponse sendBirdMessage : sendBirdMessages) {
 
-                    String userId = sendBirdMessage.getData();
+                    String userId = sendBirdMessage.getUser().getUserId();
                     String messageBody = sendBirdMessage.getMessage();
                     Integer messageId = sendBirdMessage.getMessageId();
 
@@ -80,6 +80,24 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
      */
     @Override
     public boolean deleteMessage(String MID, Chat chat) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        MessageApi apiInstance = new MessageApi(defaultClient);
+        String channelType = "group_channels";
+        try {
+            Object result = apiInstance.deleteAMessage(channelType, chat.getChannelURL(), MID)
+                    .apiToken(API_TOKEN)
+                    .execute();
+            System.out.println(result);
+            return true;
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MessageApi#deleteAMessage");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
         return false;
     }
 
