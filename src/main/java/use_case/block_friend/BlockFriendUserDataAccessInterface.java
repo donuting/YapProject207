@@ -1,21 +1,23 @@
 package use_case.block_friend;
 
-import entity.User;
-
 /**
  * DAO interface for the Block Friend use case.
  */
 public interface BlockFriendUserDataAccessInterface {
-    /**
-     * Get a user object by username.
-     */
-    User getUser(String username);
 
     /**
      * Block the target user for the current user.
-     * @param currentUser The user performing the block.
-     * @param blockedUser The user to be blocked.
+     * @param currentUsername The user performing the block.
+     * @param blockedUsername The user to be blocked.
      * @return true if blocking successful, false otherwise.
      */
-    boolean blockFriend(User currentUser, User blockedUser);
+    boolean blockFriend(String currentUsername, String blockedUsername);
+
+    /**
+     * Checks if the given username exists.
+     *
+     * @param username the username to look for
+     * @return true if a user with the given username exists; false otherwise
+     */
+    boolean existsByName(String username);
 }

@@ -10,7 +10,7 @@ public class CommonUserFactory implements UserFactory {
 
     @Override
     public User create(String name, String password) {
-        return new CommonUser(name, password, "", "", "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<GroupChat>(), new ArrayList<GroupChat>());
+        return new CommonUser(name, password, null, "", "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList<GroupChat>(), new ArrayList<GroupChat>());
     }
 
     @Override

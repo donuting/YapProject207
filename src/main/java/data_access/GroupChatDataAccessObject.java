@@ -2,14 +2,14 @@ package data_access;
 
 import entity.GroupChat;
 import entity.GroupChatFactory;
-import org.openapitools.client.model.GcCreateChannelData;
-import org.openapitools.client.model.SendBirdGroupChannel;
+import org.openapitools.client.model.*;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.Configuration;
 import org.sendbird.client.api.GroupChannelApi;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,12 +17,13 @@ import java.util.List;
  */
 public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterface {
 
-    static String API_TOKEN = ""; // Todo: get a api token for SendBird
-    static String APPLICATION_ID = "https://api-APP_ID.sendbird.com"; // Todo: figure out the application ID
+    private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
+    private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
+    private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
 
     /**
      * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
-     * @return generated ID.
+     * @return the GroupChat object.
      */
     @Override
     public GroupChat create(List<String> memberIDs, String chatName, GroupChatFactory groupChatFactory) {
@@ -30,21 +31,19 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
         defaultClient.setBasePath(APPLICATION_ID);
 
         GroupChannelApi apiInstance = new GroupChannelApi(defaultClient);
-
-        // specify channel data
-        GcCreateChannelData gcCreateChannelData = new GcCreateChannelData()
+        CreateAGroupChannelRequest createAGroupChannelRequest = new CreateAGroupChannelRequest()
                 .userIds(memberIDs)
-                .name(chatName);
+                .name(chatName)
+                .isPublic(true);
 
         try {
-            SendBirdGroupChannel result = apiInstance.gcCreateChannel()
+            SendbirdGroupChannelDetail result = apiInstance.createAGroupChannel()
                     .apiToken(API_TOKEN)
-                    .gcCreateChannelData(gcCreateChannelData)
+                    .createAGroupChannelRequest(createAGroupChannelRequest)
                     .execute();
+            System.out.println(result);
 
-            GroupChat newChat = groupChatFactory.create(memberIDs, chatName);
-            newChat.setChannelURL(result.getChannelUrl());
-            return newChat;
+            return groupChatFactory.create(memberIDs, chatName, new ArrayList<>(), result.getChannelUrl());
 
         }
         catch (ApiException e) {
@@ -57,12 +56,140 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
         return null;
     }
 
-    // Todo: implement
-    public GroupChat getGroupChat(SendBirdGroupChannel sendBirdGroupChannel) {
+
+    /**
+     * Loads an existing GroupChat object from a channel URL.
+     * @return the GroupChat Object, or null if it doesn't exist.
+     */
+    public GroupChat load(String channelURL) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        GroupChannelApi apiInstance = new GroupChannelApi(defaultClient);
+        boolean showMembers = true;
+
+        try {
+            GetAGroupChannelResponse result = apiInstance.getAGroupChannel(channelURL)
+                    .showMember(showMembers)
+                    .apiToken(API_TOKEN)
+                    .execute();
+            System.out.println(result);
+
+            List<SendbirdMember> members = result.getMembers();
+            List<String> memberIDs = new ArrayList<>();
+            if (members != null) {
+                for (SendbirdMember member : members) {
+                    memberIDs.add(member.getUserId());
+                }
+            }
+            String chatName = result.getName();
+            GroupChat groupChat = new GroupChatFactory().create(memberIDs, chatName, new ArrayList<>(), channelURL);
+            messageDataAccessObject.loadMessages(groupChat);
+            return groupChat;
+
+        } catch (ApiException e) {
+            System.err.println("Exception when calling GroupChannelApi#getAGroupChannel");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public GroupChat getPersonalChat(SendBirdGroupChannel sendBirdGroupChannel) {
-        return null;
+    /**
+     * Adds a user to a group chat in SendBird.
+     */
+    public void addUser(String channelURL, String userID) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        GroupChannelApi apiInstance = new GroupChannelApi(defaultClient);
+        JoinAChannelRequest joinAChannelRequest = new JoinAChannelRequest()
+                .userId(userID);
+        try {
+             SendbirdGroupChannelDetail result = apiInstance.joinAChannel(channelURL)
+                    .apiToken(API_TOKEN)
+                    .joinAChannelRequest(joinAChannelRequest)
+                    .execute();
+            System.out.println(result);
+
+        } catch (ApiException e) {
+            System.err.println("Exception when calling GroupChannelApi#joinAChannel");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Removes a user from a group chat in SendBird.
+     */
+    public void removeUser(String channelURL, String userID) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        GroupChannelApi apiInstance = new GroupChannelApi(defaultClient);
+        List<String> userIds = new ArrayList<>();
+        userIds.add(userID);
+        LeaveAChannelRequest leaveAChannelRequest = new LeaveAChannelRequest()
+                .userIds(userIds);
+        try {
+            Object result = apiInstance.leaveAChannel(channelURL)
+                    .apiToken(API_TOKEN)
+                    .leaveAChannelRequest(leaveAChannelRequest)
+                    .execute();
+            System.out.println(result);
+
+        } catch (ApiException e) {
+            System.err.println("Exception when calling GroupChannelApi#leaveAChannel");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Deletes a chat in SendBird.
+     */
+    public void delete(String channelURL) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        GroupChannelApi apiInstance = new GroupChannelApi(defaultClient);
+        String apiToken = API_TOKEN; // String |
+        try {
+            Object result = apiInstance.deleteAGroupChannel(channelURL)
+                    .apiToken(apiToken)
+                    .execute();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling GroupChannelApi#deleteAGroupChannel");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates a GroupChat object given a SendBirdGroupChannel object. Used when loading GroupChat objects when logging in.
+     * @return the GroupChat Object, or null if it doesn't exist.
+     */
+    public GroupChat getGroupChat(SendbirdGroupChannel sendBirdGroupChannel) {
+        List<SendbirdMember> members = sendBirdGroupChannel.getMembers();
+        List<String> memberIDs = new ArrayList<>();
+        if (members != null) {
+            for (SendbirdMember member : members) {
+                memberIDs.add(member.getUserId());
+            }
+        }
+        String chatName = sendBirdGroupChannel.getName();
+        String channelURL = sendBirdGroupChannel.getChannelUrl();
+        GroupChat groupChat = new GroupChatFactory().create(memberIDs, chatName, new ArrayList<>(), channelURL);
+        messageDataAccessObject.loadMessages(groupChat);
+        return groupChat;
     }
 }

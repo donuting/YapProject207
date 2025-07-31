@@ -2,26 +2,42 @@ package entity;
 
 public class CommonMessage implements Message {
 
-    private final Integer MID;
-    private final User sender;
+    private Integer MID;
+    private final String senderId;
     boolean messageSeen;
     String text;
 
-    public CommonMessage(User sender, String text) {
+    public CommonMessage(String senderId, String text, Integer MID) {
+        this.MID = MID;
+        this.senderId = senderId;
+        this.text = text;
+        this.messageSeen = false;
+    }
+
+    public CommonMessage(String senderId, String text) {
         this.MID = GenerateID();
-        this.sender = sender;
+        this.senderId = senderId;
         this.text = text;
         this.messageSeen = false;
     }
 
     @Override
-    public User GetSender(){
-        return this.sender;
+    public String GetSenderId(){
+        return this.senderId;
     }
 
     @Override
     public String GetText(){
         return this.text;
+    }
+
+    @Override
+    public void SetMID(Integer MID) {
+        this.MID = MID;
+    }
+
+    public Integer GetMID() {
+        return MID;
     }
 
     /**
@@ -32,7 +48,4 @@ public class CommonMessage implements Message {
         java.util.Random rng = new java.util.Random();
         return rng.nextInt(1000000);
     }
-
-
-
 }
