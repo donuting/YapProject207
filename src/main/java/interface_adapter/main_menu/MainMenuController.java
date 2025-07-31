@@ -45,8 +45,6 @@ public class MainMenuController {
      */
     public void switchToProfileSettings() {
         // Navigate to profile settings screen
-        viewManagerModel.setState("profile settings");
-        viewManagerModel.firePropertyChanged();
     }
 
     /**

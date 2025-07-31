@@ -69,7 +69,7 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
-    private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
+    private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject(); // Todo: Add the DAOs to the App Builder (so far just SendBirdUserDataAccessObject and GroupChatDataAccessObject)
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;
