@@ -7,8 +7,10 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.InMemoryUserDataAccessObject;
+import data_access.InMemorySelfChatUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.UserFactory;
+
 import interface_adapter.add_chat.AddChatController;
 import interface_adapter.add_chat.AddChatPresenter;
 import interface_adapter.add_chat.AddChatViewModel;
@@ -28,13 +30,20 @@ import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuViewModel;
 import interface_adapter.view_chats.ViewChatsController;
 import interface_adapter.view_chats.ViewChatsViewModel;
+import interface_adapter.self_chat.SelfChatController;
+import interface_adapter.self_chat.SelfChatPresenter;
+import interface_adapter.self_chat.SelfChatViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+
 import use_case.create_chat.CreateChatInputBoundary;
 import use_case.create_chat.CreateChatInteractor;
 import use_case.create_chat.CreateChatOutputBoundary;
 import use_case.add_friend.AddFriendOutputBoundary;
+import use_case.self_chat.SelfChatInputBoundary;
+import use_case.self_chat.SelfChatInteractor;
+import use_case.self_chat.SelfChatOutputBoundary;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
@@ -47,12 +56,14 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
+
 import view.AddChatView;
 import view.AddFriendView;
 import view.LoggedInView;
 import view.LoginView;
 import view.MainMenuView;
 import view.ViewChatsView;
+import view.SelfChatView;
 import view.SignupView;
 import view.ViewManager;
 
@@ -70,6 +81,7 @@ public class AppBuilder {
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject(); // Todo: Add the DAOs to the App Builder (so far just SendBirdUserDataAccessObject and GroupChatDataAccessObject)
+    private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject = new InMemorySelfChatUserDataAccessObject();
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;
@@ -88,6 +100,8 @@ public class AppBuilder {
     private AddChatViewModel addChatViewModel;
     private AddFriendView addFriendView;
     private AddFriendViewModel addFriendViewModel;
+    private SelfChatView selfChatView;
+    private SelfChatViewModel selfChatViewModel;
   
 
     public AppBuilder() {
@@ -168,6 +182,17 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the Self Chat View to the application.
+     * @return this builder
+     */
+    public AppBuilder addSelfChatView() {
+        selfChatViewModel = new SelfChatViewModel();
+        selfChatView = new SelfChatView(selfChatViewModel);
+        cardPanel.add(selfChatView, selfChatView.getViewName());
+        return this;
+    }
+
+    /**
      * Adds the Signup Use Case to the application.
      * @return this builder
      */
@@ -230,8 +255,21 @@ public class AppBuilder {
         return this;
     }
 
+
+//    /**
+//     * Adds the AddChat Use Case to the application.
+//     * @return this builder
+//     */
+//    public AppBuilder addAddChatUseCase() {
+//        final CreateChatOutputBoundary createChatOutputBoundary = new AddChatPresenter(viewManagerModel, addChatViewModel);
+//        final CreateChatInputBoundary createChatInteractor = new CreateChatInteractor(groupChatDataAccessObject, groupChatPresenter, chatFactory);
+//        final AddChatController addChatController = new AddChatController(createChatInteractor);
+//        addChatView.setAddChatController(addChatController);
+//        return this;
+//    }
+
     /**
-     * Adds the AddFriend Use Case to the application.
+     * Adds the AddChat Use Case to the application.
      * @return this builder
      */
     public AppBuilder addAddFriendUseCase() {
@@ -255,8 +293,23 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addViewChatsUseCase() {
-        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel, addChatViewModel, viewChatsViewModel);
+        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel, addChatViewModel, viewChatsViewModel, selfChatViewModel);
         viewChatsView.setViewChatsController(viewChatsController);
+        return this;
+    }
+
+    /**
+     * Adds the Self Chat Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addSelfChatUseCase() {
+        final SelfChatOutputBoundary selfChatOutputBoundary = new SelfChatPresenter(selfChatViewModel);
+        final SelfChatInputBoundary selfChatInteractor = new SelfChatInteractor(
+                selfChatDataAccessObject, selfChatOutputBoundary);
+
+        final SelfChatController selfChatController = new SelfChatController(
+                selfChatInteractor, viewManagerModel);
+        selfChatView.setSelfChatController(selfChatController);
         return this;
     }
 
