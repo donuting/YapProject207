@@ -28,6 +28,8 @@ import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import use_case.add_friend.AddFriendInputBoundary;
+import use_case.add_friend.AddFriendInteractor;
 import use_case.add_friend.AddFriendOutputBoundary;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
@@ -214,15 +216,20 @@ public class AppBuilder {
         return this;
     }
 
-    /**
-     * Adds the AddFriend Use Case to the application.
-     * @return this builder
-     */
-    public AppBuilder addAddFriendUseCase() {
-        final AddFriendController addFriendController = new AddFriendController(viewManagerModel);
-        addFriendView.setAddFriendController(addFriendController);
-        return this;
-    }
+//    /**
+//     * Adds the AddFriend Use Case to the application.
+//     * @return this builder
+//     */
+//    public AppBuilder addAddFriendUseCase() {
+//        final AddFriendOutputBoundary addFriendOutputBoundary = new AddFriendPresenter(loginViewModel,
+//                addFriendViewModel);
+//
+//        final AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(userDataAccessObject, addFriendOutputBoundary);
+//
+//        final AddFriendController addFriendController = new AddFriendController(viewManagerModel);
+//        addFriendView.setAddFriendController(addFriendController);
+//        return this;
+//    }
 
     /**
      * Adds the Main Menu Use Case to the application.

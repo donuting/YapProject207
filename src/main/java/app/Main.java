@@ -26,7 +26,6 @@ public class Main {
                                             .addLogoutUseCase()
                                             .addMainMenuUseCase()
                                             .addViewChatsUseCase()
-                                            .addAddFriendUseCase()
                                             .build();
 
         application.pack();

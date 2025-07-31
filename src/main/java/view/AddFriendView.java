@@ -22,6 +22,7 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
     private final String viewName = "add friend";
     private final AddFriendViewModel addFriendViewModel;
 
+    private final JTextField currentUsernameInputField = new JTextField(15);
     private final JTextField friendUsernameInputField = new JTextField(15);
     private final JTextField friendIDInputField = new JTextField(15);
     // can lower text field to 8 probably since all ID's will be 8 digits
@@ -41,10 +42,12 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
 
 
         // Labels
+        final LabelTextPanel currentUsernameInfo = new LabelTextPanel(
+                new JLabel("Your Username"), currentUsernameInputField);
         final LabelTextPanel friendUsernameInfo = new LabelTextPanel(
-                new JLabel("Username"), friendUsernameInputField);
+                new JLabel("Friend Username"), friendUsernameInputField);
         final LabelTextPanel friendIDInfo = new LabelTextPanel(
-                new JLabel("User ID"), friendIDInputField);
+                new JLabel("Friend ID"), friendIDInputField);
 
         // Buttons
         addFriendButton = new JButton("Add Friend");
@@ -64,6 +67,7 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         // Adding components to layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
+        this.add(currentUsernameInfo);
         this.add(friendUsernameInfo);
         this.add(friendIDInfo);
         this.add(buttons);
@@ -81,7 +85,8 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
                 addFriendController.switchToMainMenu();
             }
             else if (evt.getSource() == addFriendButton) {
-                addFriendController.addFriend(friendUsernameInputField.getText(), friendIDInputField.getText());
+                addFriendController.execute(currentUsernameInputField.getText(),
+                        friendUsernameInputField.getText(), friendIDInputField.getText());
             }
         }
     }
