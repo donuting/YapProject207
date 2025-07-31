@@ -8,8 +8,8 @@ import org.openapitools.client.model.*;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.Configuration;
-import org.sendbird.client.api.GroupChannelApi;
 import org.sendbird.client.api.UserApi;
+import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
@@ -24,10 +24,11 @@ import java.util.List;
 public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
-        LogoutUserDataAccessInterface {
+        LogoutUserDataAccessInterface,
+        BlockFriendUserDataAccessInterface {
 
-    static String API_TOKEN = ""; // Todo: get a api token for SendBird
-    static String APPLICATION_ID = "https://api-APP_ID.sendbird.com"; // Todo: figure out the application ID
+    private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
+    private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
     private final UserFactory userFactory;
     private final GroupChatDataAccessObject groupChatDataAccessObject;
     private String currentUsername;
@@ -46,40 +47,26 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      */
     @Override
     public void changePassword(User user) {
-        pantryUserDataAccessObject.changePassword(user.getID(), user.getPassword()); // The user object already contains the new password
+        pantryUserDataAccessObject.changePassword(user.getName(), user.getPassword()); // The user object already contains the new password
     }
 
     /**
      * Returns the user with the given username.
      *
      * @param username the username to look up
-     * @return the user with the given username
+     * @return the user with the given username or null if the user does not exist
      */
     @Override
     public User get(String username) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath(APPLICATION_ID);
-
-        UserApi userApiInstance = new UserApi(defaultClient);
-        String apiToken = API_TOKEN;
-
-        try {
-            ListUsersResponse UserResponse = userApiInstance.listUsers()
-                    .apiToken(apiToken)
-                    .nickname(username)
-                    .execute();
-
-            if (UserResponse.getUsers().size() != 1) {
-                throw new ApiException("The user could not be found");
-            }
-
-            // Get User Data from SendBird
-            SendBirdUser sendBirdUser = UserResponse.getUsers().get(0);
-            String name = sendBirdUser.getNickname();
-            String userId = sendBirdUser.getUserId();
+        // check the user exists
+        if (!existsByName(username)) {
+            return null;
+        }
+        else {
 
             // Get User Data from Pantry
-            JsonObject jsonData = pantryUserDataAccessObject.getUserData(userId);
+            JsonObject jsonData = pantryUserDataAccessObject.getUserDataFromUsername(username);
+            String userId = jsonData.get("userId").getAsString();
             String password = jsonData.get("password").getAsString();
             String biography = jsonData.get("biography").getAsString();
             String dateOfBirth = jsonData.get("dateOfBirth").getAsString();
@@ -89,30 +76,35 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
             List<String> personalChannelURls = convertJsonArrayToList(jsonData.getAsJsonArray("personalChannelURls"));
 
             // Get channel URLs
-            GroupChannelApi groupApiInstance = new GroupChannelApi(defaultClient);
+            ApiClient defaultClient = Configuration.getDefaultApiClient();
+            defaultClient.setBasePath(APPLICATION_ID);
+            UserApi apiInstance = new UserApi(defaultClient);
+
             try {
-                GcListChannelsResponse gcResponse = groupApiInstance.gcListChannels()
-                        .apiToken(apiToken)
-                        .userId(userId)
+                ListMyGroupChannelsResponse result = apiInstance.listMyGroupChannels(userId)
+                        .apiToken(API_TOKEN)
+                        .showMember(true)
                         .execute();
+
+                System.out.println(result);
 
                 // Create GroupChat and PersonalChat objects
                 List<GroupChat> groupChats = new ArrayList<>();
                 List<GroupChat> personalChats = new ArrayList<>();
-                List<SendBirdGroupChannel> channels = gcResponse.getChannels();
+                List<SendbirdGroupChannel> channels = result.getChannels();
                 if (channels != null) {
-                    for (SendBirdGroupChannel sendBirdGroupChannel : channels) {
+                    for (SendbirdGroupChannel sendBirdGroupChannel : channels) {
                         String channelURL = sendBirdGroupChannel.getChannelUrl();
                         if (groupChannelURLs.contains(channelURL)) {
                             groupChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel)); // Todo: implement this method
                         } else if (personalChannelURls.contains(channelURL)) {
-                            personalChats.add(groupChatDataAccessObject.getPersonalChat(sendBirdGroupChannel)); // Todo: implement this method
+                            personalChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel)); // Todo: implement this method
                         }
                     }
                 }
 
                 // Initialize the user
-                return userFactory.create(name, password, userId, biography, dateOfBirth, friendIDs, blockedIDs, groupChats, personalChats);
+                return userFactory.create(username, password, userId, biography, dateOfBirth, friendIDs, blockedIDs, groupChats, personalChats);
 
             } catch (ApiException e) {
                 System.err.println("Exception when calling GroupChannelApi#gcListChannels");
@@ -121,20 +113,29 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                 System.err.println("Response headers: " + e.getResponseHeaders());
                 e.printStackTrace();
             }
-        } catch (ApiException e) {
-            System.err.println("Exception when calling UserApi#listUsers");
-            System.err.println("Status code: " + e.getCode());
-            System.err.println("Reason: " + e.getResponseBody());
-            System.err.println("Response headers: " + e.getResponseHeaders());
-            e.printStackTrace();
+
+            return null;
         }
-        return null;
+    }
+
+    /**
+     * Block the target user for the current user.
+     *
+     * @param currentUsername The user performing the block.
+     * @param blockedUsername The user to be blocked.
+     * @return true if blocking successful, false otherwise.
+     */
+    @Override
+    public boolean blockFriend(String currentUsername, String blockedUsername) {
+        return pantryUserDataAccessObject.blockFriend(currentUsername, blockedUsername);
     }
 
     private List<String> convertJsonArrayToList(JsonArray jsonArray) {
         List<String> newList = new ArrayList<>();
-        for (JsonElement element : jsonArray) {
-            newList.add(element.getAsString());
+        if (jsonArray != null) {
+            for (JsonElement element : jsonArray) {
+                newList.add(element.getAsString());
+            }
         }
         return newList;
     }
@@ -178,6 +179,8 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                     .apiToken(apiToken)
                     .nickname(username)
                     .execute();
+            System.out.println(result);
+
             if (result.getUsers() == null) {
                 return false;
             }
@@ -205,6 +208,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                     .apiToken(apiToken)
                     .userIds(userID)
                     .execute();
+            System.out.println(result);
 
             if (result.getUsers() == null) {
                 return false;
@@ -240,15 +244,16 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         // If the user is already in the database
         if (existsByID(user.getID())) {
 
-            UpdateUserByIdData updateUserByIdData = new UpdateUserByIdData()
+            UpdateAUserRequest updateAUserRequest = new UpdateAUserRequest()
                     .nickname(user.getName());
 
             try {
                 // Update username on SendBird
-                SendBirdUser result = userApiInstance.updateUserById(userId)
+                SendbirdUser result = userApiInstance.updateAUser(userId)
                         .apiToken(apiToken)
-                        .updateUserByIdData(updateUserByIdData)
+                        .updateAUserRequest(updateAUserRequest)
                         .execute();
+                System.out.println(result);
 
                 // Update other user data on Pantry
                 pantryUserDataAccessObject.save(userData);
@@ -264,14 +269,15 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         // If the user still needs to be added to the database
         else {
 
-            CreateUserData createUserData = new CreateUserData()
-                    .userId(user.getID())
-                    .nickname(user.getName()); // CreateUserData |
+            CreateAUserRequest createAUserRequest = new CreateAUserRequest()
+                    .nickname(user.getName())
+                    .userId(userId);
+
             try {
                 // Update username on SendBird
-                SendBirdUser result = userApiInstance.createUser()
+                SendbirdUser result = userApiInstance.createAUser()
                         .apiToken(apiToken)
-                        .createUserData(createUserData)
+                        .createAUserRequest(createAUserRequest)
                         .execute();
 
                 // Update other user data on Pantry

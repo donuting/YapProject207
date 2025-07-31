@@ -1,8 +1,5 @@
 package entity;
 
-import org.openapitools.client.model.SendBirdGroupChannel;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroupChat implements Chat {
@@ -11,12 +8,14 @@ public class GroupChat implements Chat {
     private List<Message> messageHistory;
     private String channelURL = null; // placeholder
 
-    public GroupChat(List<String> memberIDs, String chatName) {
+    public GroupChat(List<String> memberIDs, String chatName, List<Message> messageHistory, String channelURL) {
         this.memberIDs = memberIDs;
-        this.chatName = chatName; // old implementation: members.get(0).getName()+"-"+members.get(1).getName();
-        this.messageHistory = new ArrayList<Message>();
+        this.chatName = chatName;
+        this.messageHistory = messageHistory;
+        this.channelURL = channelURL;
     }
 
+    // Todo: move this logic into an interactor so that we can call a DAO. Also avoid creating user objects if we don't need to.
     @Override
     public boolean AddMember(String userID) {
         for (String memberID : memberIDs) {
@@ -36,13 +35,12 @@ public class GroupChat implements Chat {
     }
 
     @Override
-    public  boolean AddMessage(Message message){
+    public boolean AddMessage(Message message){
             if (message == null) {
                 return false;
             }
-        User sender = message.GetSender();
-        if (sender == null) return false;
-        String senderID = sender.getID();
+        String senderID = message.GetSenderId();
+        if (senderID == null) return false;
 
         for (String memberID : memberIDs) {
             if (memberID.equals(senderID)) continue;
@@ -91,20 +89,6 @@ public class GroupChat implements Chat {
         return false;
     }
 
-    /**
-     * generates an ID for the Chat.
-     * @return generated ID.
-     */
-    private Integer GenerateCID(){
-        //TODO: create execution
-        return -1;
-    }
-
-    public Integer getCID(){
-        //TODO: create execution
-        return -1;
-    }
-
     private User getUserByID(String userID) {
         return null;
     }
@@ -117,6 +101,16 @@ public class GroupChat implements Chat {
     @Override
     public String getChannelURL() {
         return channelURL;
+    }
+
+    @Override
+    public void setMessageHistory(List<Message> messageHistory) {
+        this.messageHistory = messageHistory;
+    }
+
+    @Override
+    public List<Message> getMessageHistory() {
+        return messageHistory;
     }
 
     @Override

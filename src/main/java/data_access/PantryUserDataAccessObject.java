@@ -1,8 +1,11 @@
 package data_access;
 
+import com.google.gson.JsonArray;
 import endercrypt.library.jpantry.JPantry;
 import endercrypt.library.jpantry.PantryBasket;;
 import com.google.gson.JsonObject;
+
+import java.util.List;
 
 /**
  * The DAO for accessing user data in Pantry.
@@ -17,21 +20,38 @@ public class PantryUserDataAccessObject {
             .login();
     private static final String API_TOKEN = "0d4b194b-2f55-4c9e-8dee-a00d3ecf3cc9";
 
-    public JsonObject getUserData(String userId) {
-        PantryBasket basket = pantry.getBasket(userId);
-        return basket.getJson().complete();
-    }
-
     public void save(JsonObject userData) {
-        final String basketName = userData.get("userID").getAsString(); // The name of the user's basket in Pantry is the User ID
+        final String basketName = userData.get("username").getAsString(); // The name of the user's basket in Pantry is the username
         PantryBasket basket = pantry.getBasket(basketName);
-        basket.setJson(userData);
+        basket.setJson(userData).complete();
     }
 
-    public void changePassword(String userId, String password) {
-        PantryBasket basket = pantry.getBasket(userId);
+    public void changePassword(String username, String password) {
+        PantryBasket basket = pantry.getBasket(username);
         JsonObject updateData = new JsonObject();
-        updateData.addProperty("password", userId);
-        basket.mergeJson(updateData);
+        updateData.addProperty("password", password);
+        basket.mergeJson(updateData).complete();
+    }
+
+    public void changeUsername(String username) {
+        // unimplemented for now
+    }
+
+    public boolean blockFriend(String currentUsername, String blockedUsername) {
+        // This method only allows blocking one-way, not mutual blocking
+        String blockedId = getUserDataFromUsername(blockedUsername).get("userId").getAsString();
+        JsonArray blockedIDs = getUserDataFromUsername(currentUsername).getAsJsonArray("blockedIDs");
+        blockedIDs.add(blockedId);
+
+        PantryBasket basket = pantry.getBasket(currentUsername);
+        JsonObject updateData = new JsonObject();
+        updateData.add("blockedIDs", blockedIDs);
+        basket.mergeJson(updateData).complete();
+        return true;
+    }
+
+    public JsonObject getUserDataFromUsername(String username) {
+        PantryBasket basket = pantry.getBasket(username);
+        return basket.getJson().complete();
     }
 }

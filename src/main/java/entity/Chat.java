@@ -1,8 +1,5 @@
 package entity;
 
-
-import org.openapitools.client.model.SendBirdGroupChannel;
-
 import java.util.List;
 
 /**
@@ -46,9 +43,25 @@ public interface Chat {
 
     /**
      * Returns a list of the members in the chat.
-     * @returns the list of members.
+     * @return the list of members.
      */
     List<String> getMemberIDs();
 
+    /**
+     * Returns the URL of the channel associated with the chat.
+     * @return the channel URL.
+     */
     String getChannelURL();
+
+    /**
+     * Sets the message history of the chat.
+     * @param messageHistory the message history
+     */
+    void setMessageHistory(List<Message> messageHistory);
+
+    /**
+     * Returns the message history of the chat.
+     * @return the message history.
+     */
+    List<Message> getMessageHistory();
 }

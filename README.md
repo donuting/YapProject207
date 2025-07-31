@@ -8,6 +8,8 @@ Rawahah Qazi: rqaziut
 
 Karan Chauhan: Karan
 
+Herman Piera: hpiera27
+
 A new messaging app developed with the latest technologies.
 Allows any user to message other people across the internet, and connect with
 friends and family.

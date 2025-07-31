@@ -12,5 +12,5 @@ public interface ChatFactory {
      * @param memberIDs the list of the IDs of the members of the new chat
      * @return the new user
      */
-    Chat create(List<String> memberIDs, String chatName);
+    Chat create(List<String> memberIDs, String chatName, List<Message> messageHistory, String channelURL);
 }
