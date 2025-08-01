@@ -21,7 +21,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
 
     @Override
     public void execute(SendMessageInputData sendMessageInputData) {
-        final Message message = messageFactory.create(sendMessageInputData.getSender(),
+        final Message message = messageFactory.create(sendMessageInputData.getSender().getID(),
                                             sendMessageInputData.getText());
         boolean result = userDataAccessObject.sendMessage(message, sendMessageInputData.getChat());
 

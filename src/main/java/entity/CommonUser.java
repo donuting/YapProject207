@@ -34,7 +34,11 @@ public class CommonUser implements User {
                       List<GroupChat> personalChats) {
         this.name = name;
         this.password = password;
-        this.ID = ID;
+        if (ID != null) {
+            this.ID = ID;
+        } else {
+            this.ID = generateID();
+        }
         this.biography = biography;
         this.dateOfBirth = dateOfBirth;
         this.friendIDs = friendIDs;
@@ -44,6 +48,11 @@ public class CommonUser implements User {
     }
 
     // Necessary methods
+
+    private String generateID() {
+        java.util.Random rng = new java.util.Random();
+        return Integer.toString(rng.nextInt(1000000));
+    }
 
     @Override
     public String getName() {
@@ -90,6 +99,11 @@ public class CommonUser implements User {
         return "Successfully set password.";
     }
 
+    /**
+     * generates an ID for the User.
+     * @return generated ID.
+     */
+
     @Override
     public String getID() {
         return ID;
@@ -103,6 +117,7 @@ public class CommonUser implements User {
     public JsonObject getUserData() {
         JsonObject userData = new JsonObject();
         userData.addProperty("username", name);
+        userData.addProperty("userId", ID);
         userData.addProperty("password", password);
         userData.addProperty("biography", biography);
         userData.addProperty("dateOfBirth", dateOfBirth);
@@ -126,17 +141,6 @@ public class CommonUser implements User {
 
         return userData;
     }
-
-    /**
-     * generates an ID for the User.
-     * @return generated ID.
-     */
-    private String GenerateID(){
-        //TODO: need to add randomiser and makes ure the ID is unique
-        return name;
-    }
-
-
 
     @Override
     public boolean EditBiography(String bio) {
@@ -166,11 +170,11 @@ public class CommonUser implements User {
 
     /**
      * Adds a friend to the user.
-     * @param user The friend to be added.
+     * @param userId The friend to be added.
      * @return true if successful otherwise false
      */
-    public boolean AddFriend(User user) {
-        friendIDs.add(user.getID());
+    public boolean AddFriend(String userId) {
+        friendIDs.add(userId);
         return true;
     }
 
@@ -184,13 +188,13 @@ public class CommonUser implements User {
 
     /**
      * fetchs a personal chat of the user.
-     * @param CID The CID of the chat needed.
-     * @return the chat with the CID provided, null if the chat does not exist
+     * @param channelURL The URL of the chat needed.
+     * @return the chat with the URL provided, null if the chat does not exist
      */
-    public Chat getChat(Integer CID) {
+    public Chat getChat(String channelURL) {
         //TODO: need to take care of the case when chat not in list
         for (GroupChat chat : groupChats) {
-            if (chat.getCID()==CID){
+            if (chat.getChannelURL().equals(channelURL)){
                 return chat;
             }
         }
@@ -200,14 +204,14 @@ public class CommonUser implements User {
     /**
      * Blocks a user.
      * Also removes the user from the friends list if present.
-     * @param user The user to be blocked.
+     * @param userId The user to be blocked.
      * @return true if successful otherwise false
      */
-    public boolean blockUser(User user) {
-        if (!blockedIDs.contains(user.getID()) && friendIDs.contains(user.getID())) {
-            blockedIDs.add(user.getID());
+    public boolean blockUser(String userId) {
+        if (!blockedIDs.contains(userId) && friendIDs.contains(userId)) {
+            blockedIDs.add(userId);
             // Remove them from friends list if they are friends
-            friendIDs.remove(user.getID());
+            friendIDs.remove(userId);
             return true;
         }
         return false;
@@ -216,13 +220,13 @@ public class CommonUser implements User {
     /**
      * Unblocks a user.
      * Gives the option to add the user to their friends list again.
-     * @param user The user to be unblocked.
+     * @param userId The user to be unblocked.
      * @return true if successful otherwise false
      */
-    public boolean unblockUser(User user, boolean addAsFriend) {
-        boolean unblocked = blockedIDs.remove(user.getID());
+    public boolean unblockUser(String userId, boolean addAsFriend) {
+        boolean unblocked = blockedIDs.remove(userId);
         if (unblocked && addAsFriend) {
-            AddFriend(user);
+            AddFriend(userId);
         }
         return unblocked;
     }

@@ -21,12 +21,16 @@ public class Main {
                                             .addFriendView()
                                             .addMainMenuView()
                                             .addViewChatsView()
+                                            .addSelfChatView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
                                             .addChangePasswordUseCase()
                                             .addLogoutUseCase()
                                             .addMainMenuUseCase()
                                             .addViewChatsUseCase()
+                                            .addAddFriendUseCase()
+//  will be implemented later               .addAddChatUseCase()
+                                            .addSelfChatUseCase()
                                             .build();
 
         application.pack();
