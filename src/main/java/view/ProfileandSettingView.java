@@ -146,4 +146,8 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
     public void setPandSController(PandSController pandSController) {
         this.pandSController = pandSController;
     }
+
+    public String getViewName() {
+        return viewName;
+    }
 }
