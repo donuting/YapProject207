@@ -48,8 +48,12 @@ public class MainMenuController {
      */
     public void switchToProfileSettings() {
         final String currentUsername = mainMenuViewModel.getState().getUsername();
+        final String password = mainMenuViewModel.getState().getPassword();
+        final String UID = mainMenuViewModel.getState().getUID();
         pandSViewModel.getState().setUsername(currentUsername);
-        pandSViewModel.firePropertyChanged();
+        pandSViewModel.getState().setChangePasswordText(password);
+        pandSViewModel.getState().setUID(UID);
+        pandSViewModel.firePropertyChanged("Profile And Settings");
         // Navigate to profile settings screen
 
         viewManagerModel.setState("Profile And Settings");
