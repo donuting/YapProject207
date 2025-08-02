@@ -10,33 +10,32 @@ public interface AddFriendUserDataAccessInterface {
     /**
      * Checks if the given user exists.
      * @param username the username to look for
-     * @param userID the id that must match the username
      * @return true if a user with the given username exists and the userid matches that same user; false otherwise
      */
-    boolean userExists(String username, String userID);
+    boolean existsByName(String username);
 
     /**
      * Checks if user already has friend added.
-     * @param currentUser user performing friendship
-     * @param friend user receiving friendship
+     * @param userID id of user performing friendship
+     * @param friendUsername user receiving friendship
      * @return true if the two users have each other added already
      */
-    boolean alreadyFriend(User currentUser, User friend);
+    boolean alreadyFriend(String userID, String friendUsername);
 
     /**
-     * Returns the user with the given ID.
-     * @param userID the ID to look up
+     * Returns the user with the given username.
+     * @param username the ID to look up
      * @return the user with the given ID
      */
-    User getUser(String userID);
-
-    /**
-     * Returns the user with the given username and ID, more secure.
-     * @param username the username to loop up
-     * @param userID the ID to look up
-     * @return the user with the given ID and username
-     */
-    User getFriendUser(String username, String userID);
+    User get(String username);
+//
+//    /**
+//     * Returns the user with the given username and ID, more secure.
+//     * @param username the username to loop up
+//     * @param userID the ID to look up
+//     * @return the user with the given ID and username
+//     */
+//    User getFriendUser(String username, String userID);
 
     /**
      * Add friendship.
@@ -44,5 +43,5 @@ public interface AddFriendUserDataAccessInterface {
      * @param friend the user receiving the friendship
      * @return true if friendship was successful
      */
-    boolean addFriend(User currentUser, User friend);
+    boolean addFriend(String userID, String friendUsername);
 }

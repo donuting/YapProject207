@@ -1,5 +1,6 @@
 package use_case.add_friend;
 
+import data_access.InMemoryUserDataAccessObject;
 import entity.User;
 import entity.UserFactory;
 
@@ -9,65 +10,71 @@ import entity.UserFactory;
 public class AddFriendInteractor implements AddFriendInputBoundary {
     private final AddFriendUserDataAccessInterface userDataAccessObject;
     private final AddFriendOutputBoundary presenter;
-    // private final UserFactory userFactory;
+
 
     public AddFriendInteractor(AddFriendUserDataAccessInterface userDataAccessInterface,
                                AddFriendOutputBoundary addFriendOutputBoundary) {
-                               // UserFactory userFactory) {
+
         this.userDataAccessObject = userDataAccessInterface;
         this.presenter = addFriendOutputBoundary;
-        // this.userFactory = userFactory;
 
     }
 
     @Override
     public void execute(AddFriendInputData addFriendInputData) {
-        final String currentUserID = addFriendInputData.getCurrentUserID();
+        final String currentUsername = addFriendInputData.getCurrentUsername();
         final String friendUsername = addFriendInputData.getFriendUsername();
         final String friendID = addFriendInputData.getFriendID();
 
-        boolean success  = false;
 
-        // getting both users, first one not needed?
-        User currentUser = userDataAccessObject.getUser(currentUserID);
-        if (currentUser == null) {
-            presenter.prepareFailView("You are not found");
+        // check that nothing is empty
+        if (currentUsername == null || friendUsername == null || friendID == null) {
+            presenter.prepareFailView("Please fill out all fields",
+                    new AddFriendOutputData(friendUsername, true, null));
             return;
         }
 
-        User friend = userDataAccessObject.getFriendUser(friendUsername, friendID);
-        if (friend == null) {
-            presenter.prepareFailView("User not found");
+        if (currentUsername.trim().isEmpty() || friendUsername.trim().isEmpty() || friendID.trim().isEmpty()) {
+            presenter.prepareFailView("Please fill out all fields", new AddFriendOutputData(currentUsername,
+                    true, null));
             return;
         }
 
-        // adding self is prohibited
-        if (currentUserID.equals(friendID)) {
-            presenter.prepareFailView("You cannot add yourself");
+        if (friendID.equals(userDataAccessObject.get(currentUsername).getID())) {
+            presenter.prepareFailView("You cannot add yourself as a friend",
+                    new AddFriendOutputData(friendUsername, true, null));
             return;
         }
 
-        // Username or ID cannot be empty
-        if (friendUsername == null || friendUsername.trim().isEmpty()) {
-            presenter.prepareFailView("Username cannot be empty");
-            return;
-        }
+        try {
+            //check if user exists
+            if (!userDataAccessObject.existsByName(friendUsername)) {
+                presenter.prepareFailView("User " + friendUsername + " does not exist",
+                        new AddFriendOutputData(friendUsername, true, null));
+                return;
+            }
 
-        if (friendID == null || friendID.trim().isEmpty()) {
-            presenter.prepareFailView("ID cannot be empty");
-            return;
-        }
+            // check if already friends
+            if (userDataAccessObject.alreadyFriend(currentUsername, friendUsername)) {
+                presenter.prepareFailView("You are already friends with " + friendUsername,
+                        new AddFriendOutputData(friendUsername, true, null));
+                return;
+            }
 
-        // Check if already friends
-        if (userDataAccessObject.alreadyFriend(currentUser, friend)) {
-            presenter.prepareFailView("User is already added");
-            return;
-        }
-        else {
-            AddFriendOutputData outputData = new AddFriendOutputData(currentUserID, friendUsername, friendID);
-            presenter.prepareSuccessView(outputData);
-        }
+            // attempt to add friend
+            boolean success = userDataAccessObject.addFriend(currentUsername, friendUsername);
 
+            if (success) {
+                AddFriendOutputData outputData = new AddFriendOutputData(friendUsername, false,
+                        "Successfully added " + friendUsername);
+                presenter.prepareSuccessView(outputData);
+            } else {
+                presenter.prepareFailView("Failed to add friend", new AddFriendOutputData(friendUsername,
+                        true, null));
+            }
+        } catch (Exception e) {
+            presenter.prepareFailView("Error occurred", new AddFriendOutputData(friendUsername,
+                    true, null));
+        }
     }
-
 }

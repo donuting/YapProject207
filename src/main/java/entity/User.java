@@ -62,4 +62,6 @@ public interface User {
     String getDOB();
 
     String getBio();
+
+    boolean AddFriend(String userID);
 }

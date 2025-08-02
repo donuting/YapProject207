@@ -7,9 +7,22 @@ import interface_adapter.ViewModel;
  */
 public class AddFriendViewModel extends ViewModel<AddFriendState> {
 
+    public static final String TITLE = "Adding Friend View";
+    public static final String YOUR_USERNAME = "Your username";
+    public static final String FRIEND_USERNAME = "Friend's username";
+    public static final String FRIEND_ID = "Friend ID";
+    public static final String ADD_BUTTON = "Add Friend";
+    public static final String CANCEL_BUTTON = "Cancel";
+
     public AddFriendViewModel() {
         super("add friend");
         setState(new AddFriendState());
     }
+    public void setErrorMessage(String errorMessage) {
+        AddFriendState currentState = getState();
+        AddFriendState newState = new AddFriendState(currentState);
+        newState.setErrorMessage(errorMessage);
+        setState(newState);
 
+    }
 }

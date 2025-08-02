@@ -15,5 +15,7 @@ public interface AddFriendOutputBoundary {
      * Prepares the failure view for the AddFriend Use Case.
      * @param errorMessage the explanation of the failure
      */
-    void prepareFailView(String errorMessage);
+    void prepareFailView(String errorMessage, AddFriendOutputData outputData);
+
+    //void prepareFailView(String errorMessage);
 }

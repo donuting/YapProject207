@@ -37,22 +37,22 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         addFriendViewModel.addPropertyChangeListener(this);
 
         // Title
-        final JLabel title = new JLabel("Adding Friend View");
+        final JLabel title = new JLabel(AddFriendViewModel.TITLE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
         // Labels
         final LabelTextPanel currentUsernameInfo = new LabelTextPanel(
-                new JLabel("Your Username"), currentUsernameInputField);
+                new JLabel(AddFriendViewModel.YOUR_USERNAME), currentUsernameInputField);
         final LabelTextPanel friendUsernameInfo = new LabelTextPanel(
-                new JLabel("Friend Username"), friendUsernameInputField);
+                new JLabel(AddFriendViewModel.FRIEND_USERNAME), friendUsernameInputField);
         final LabelTextPanel friendIDInfo = new LabelTextPanel(
-                new JLabel("Friend ID"), friendIDInputField);
+                new JLabel(AddFriendViewModel.FRIEND_ID), friendIDInputField);
 
         // Buttons
-        addFriendButton = new JButton("Add Friend");
+        addFriendButton = new JButton(AddFriendViewModel.ADD_BUTTON);
         addFriendButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton(AddFriendViewModel.CANCEL_BUTTON);
         cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         final JPanel buttons = new JPanel();
         buttons.add(addFriendButton);
@@ -95,12 +95,15 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
     public void propertyChange(PropertyChangeEvent evt) {
         final AddFriendState state = (AddFriendState) evt.getNewValue();
         setFields(state);
-        // add error field
+        if (state.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(this, state.getErrorMessage());
+        }
     }
 
     private void setFields(AddFriendState state) {
-        friendUsernameInputField.setText(state.getUsername());
-        friendIDInputField.setText(state.getUserID());
+        currentUsernameInputField.setText(state.getCurrentUsername());
+        friendUsernameInputField.setText(state.getFriendUsername());
+        friendIDInputField.setText(state.getFriendUserID());
     }
 
     public String getViewName() {
