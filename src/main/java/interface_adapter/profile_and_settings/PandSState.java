@@ -11,6 +11,11 @@ public class PandSState {
     private String username = "";
 
     public PandSState(){
+        this.UID = "";
+        this.ChangePasswordText = "";
+        this.AddBioText = "";
+        this.AddDOBText = "";
+        this.username = "";
     }
 
     public PandSState(PandSState pandSState){

@@ -22,6 +22,7 @@ public class Main {
                                             .addMainMenuView()
                                             .addViewChatsView()
                                             .addSelfChatView()
+                                            .addProfileandSettingsView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
                                             .addChangePasswordUseCase()
@@ -31,6 +32,7 @@ public class Main {
                                             .addAddFriendUseCase()
 //  will be implemented later               .addAddChatUseCase()
                                             .addSelfChatUseCase()
+                                            .addProfileandSettingsUseCase()
                                             .build();
 
         application.pack();

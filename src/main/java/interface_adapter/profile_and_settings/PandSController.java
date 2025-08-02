@@ -74,7 +74,7 @@ public class PandSController {
         mainMenuViewModel.getState().setUsername(currentUsername);
         mainMenuViewModel.firePropertyChanged();
 
-        viewManagerModel.setState("Main Menu");
+        viewManagerModel.setState("main menu");
         viewManagerModel.firePropertyChanged();
     }
 
@@ -82,7 +82,7 @@ public class PandSController {
      * Executes the switch to logout use case.
      */
     public void logout() {
-        viewManagerModel.setState("Logout");
+        viewManagerModel.setState("sign up");
         viewManagerModel.firePropertyChanged();
     }
 }
