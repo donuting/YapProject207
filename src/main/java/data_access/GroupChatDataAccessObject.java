@@ -20,6 +20,7 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
     private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
+    public GroupChat activeGroupChat = null;
 
     /**
      * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
@@ -172,6 +173,22 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
             System.err.println("Response headers: " + e.getResponseHeaders());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Returns the GroupChat object the user is viewing.
+     * @return the GroupChat object the user is viewing, or null if no chat is being viewed.
+     */
+    public GroupChat getActiveGroupChat() {
+        return activeGroupChat;
+    }
+
+    /**
+     * Sets the GroupChat object corresponding to the chat the user is currently viewing.
+     * @param activeGroupChat the active group chat, or null if none are being viewed.
+     */
+    public void setActiveGroupChat(GroupChat activeGroupChat) {
+        this.activeGroupChat = activeGroupChat;
     }
 
     /**

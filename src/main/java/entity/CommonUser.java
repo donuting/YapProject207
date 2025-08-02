@@ -244,6 +244,26 @@ public class CommonUser implements User {
         return blockedIDs.contains(user.getID());
     }
 
+    /**
+     * Removes a user from this user's friend list.
+     * @param userId The user to be removed.
+     * @return true if successful otherwise false
+     */
+    public boolean removeFriend(String userId) {
+        if (friendIDs.contains(userId)) {
+            friendIDs.remove(userId);
+
+            // removes personal chat between the user and the friend
+            for (GroupChat personalChat : personalChats) {
+                if (personalChat.HasMember(userId)) {
+                    personalChats.remove(personalChat);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     // Todo: These methods will likely be replaced by use cases in the future, and for now use an older implementation. The logic should be updated while moving these to their own use cases:
 
