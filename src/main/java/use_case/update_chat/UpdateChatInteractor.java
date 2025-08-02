@@ -1,6 +1,7 @@
 package use_case.update_chat;
 
 import entity.Chat;
+import entity.GroupChatFactory;
 import entity.Message;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
         ScheduledExecutorService checkIfViewingChatExecutor = Executors.newSingleThreadScheduledExecutor();
 
         // Check if viewing this chat every 1 second, with 3-second initial delay so that the chat is updated at least once.
-        Runnable checkIfViewingChatRunnable = () -> checkIfViewingChat(inputData, updateChatExecutor);
+        Runnable checkIfViewingChatRunnable = () -> checkIfViewingChat(inputData, updateChatExecutor, checkIfViewingChatExecutor);
         checkIfViewingChatExecutor.scheduleAtFixedRate(checkIfViewingChatRunnable, 3, 1, TimeUnit.SECONDS);
 
         // Update this chat every 2 seconds
@@ -42,8 +43,14 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
     }
 
     private void updateChat(UpdateChatInputData inputData) {
-        // Load the current active chat
+        // Load the previous active chat
         Chat previousActiveChat = updateChatDataAccessObject.getActiveChat();
+        if (previousActiveChat == null) {
+            GroupChatFactory groupChatFactory = new GroupChatFactory();
+            previousActiveChat = groupChatFactory.create(new ArrayList<>(), "", new ArrayList<>(), "");
+        }
+
+        // Load the new active chat
         String channelUrl = inputData.getChannelUrl();
         Chat newActiveChat = updateChatDataAccessObject.load(channelUrl);
 
@@ -82,9 +89,10 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
         }
     }
 
-    private void checkIfViewingChat(UpdateChatInputData inputData, ScheduledExecutorService scheduledExecutorService) {
+    private void checkIfViewingChat(UpdateChatInputData inputData, ScheduledExecutorService updateChatExecutor, ScheduledExecutorService checkIfViewingChatExecutor) {
         if (!updateChatDataAccessObject.getActiveChat().getChannelURL().equals(inputData.getChannelUrl())) {
-            scheduledExecutorService.shutdownNow();
+            updateChatExecutor.shutdownNow();
+            checkIfViewingChatExecutor.shutdownNow();
         }
     }
 
