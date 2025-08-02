@@ -13,7 +13,6 @@ public class RemoveFriendInteractor implements RemoveFriendInputBoundary{
 
     /**
      * Execute the Remove Friend use case.
-     *
      * @param inputData The input data for this use case.
      */
     @Override
