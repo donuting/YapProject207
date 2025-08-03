@@ -30,6 +30,9 @@ import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuViewModel;
+import interface_adapter.profile_and_settings.PandSController;
+import interface_adapter.profile_and_settings.PandSPresenter;
+import interface_adapter.profile_and_settings.PandSViewModel;
 import interface_adapter.view_chats.ViewChatsController;
 import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.self_chat.SelfChatController;
@@ -39,9 +42,17 @@ import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 
+
 import use_case.add_friend.AddFriendInputBoundary;
 import use_case.add_friend.AddFriendInteractor;
 import use_case.add_friend.AddFriendUserDataAccessInterface;
+
+import use_case.add_Bio.AddBioInputBoundary;
+import use_case.add_Bio.AddBioInteractor;
+import use_case.add_Bio.AddBioOutputBoundary;
+import use_case.add_DOB.AddDOBInputBoundary;
+import use_case.add_DOB.AddDOBInteractor;
+
 import use_case.create_chat.CreateChatInputBoundary;
 import use_case.create_chat.CreateChatInteractor;
 import use_case.create_chat.CreateChatOutputBoundary;
@@ -66,15 +77,7 @@ import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
 
-import view.AddChatView;
-import view.AddFriendView;
-import view.LoggedInView;
-import view.LoginView;
-import view.MainMenuView;
-import view.ViewChatsView;
-import view.SelfChatView;
-import view.SignupView;
-import view.ViewManager;
+import view.*;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -112,7 +115,10 @@ public class AppBuilder {
     private AddFriendViewModel addFriendViewModel;
     private SelfChatView selfChatView;
     private SelfChatViewModel selfChatViewModel;
-  
+
+    private ProfileandSettingView profileandSettingView;
+    private PandSViewModel profileandSettingViewModel;
+
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -202,6 +208,13 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addProfileandSettingsView(){
+        profileandSettingViewModel = new PandSViewModel();
+        profileandSettingView = new ProfileandSettingView(profileandSettingViewModel);
+        cardPanel.add(profileandSettingView, profileandSettingView.getViewName());
+        return this;
+    }
+
     /**
      * Adds the Signup Use Case to the application.
      * @return this builder
@@ -245,6 +258,7 @@ public class AppBuilder {
 
         final ChangePasswordController changePasswordController =
                 new ChangePasswordController(changePasswordInteractor);
+
         loggedInView.setChangePasswordController(changePasswordController);
         return this;
     }
@@ -295,12 +309,34 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addProfileandSettingsUseCase() {
+        final ChangePasswordOutputBoundary changePasswordOutputBoundary =
+                new ChangePasswordPresenter(loggedInViewModel);
+
+        final ChangePasswordInputBoundary changePasswordInteractor =
+                new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
+
+        final PandSPresenter pandSPresenter =
+                new PandSPresenter(profileandSettingViewModel);
+
+        final AddBioInputBoundary addBioInputBoundary =
+                new AddBioInteractor(userDataAccessObject, pandSPresenter, userFactory);
+
+        final AddDOBInputBoundary addDOBInputBoundary =
+                new AddDOBInteractor(userDataAccessObject, pandSPresenter, userFactory);
+
+
+        final PandSController pandSController = new PandSController(viewManagerModel,mainMenuViewModel,profileandSettingViewModel, changePasswordInteractor, addBioInputBoundary, addDOBInputBoundary);
+        profileandSettingView.setPandSController(pandSController);
+        return this;
+    }
+
     /**
      * Adds the Main Menu Use Case to the application.
      * @return this builder
      */
     public AppBuilder addMainMenuUseCase() {
-        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel, addFriendViewModel);
+        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel, addFriendViewModel, profileandSettingViewModel);
         mainMenuView.setMainMenuController(mainMenuController);
         return this;
     }
