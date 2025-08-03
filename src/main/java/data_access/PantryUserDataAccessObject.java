@@ -54,4 +54,20 @@ public class PantryUserDataAccessObject {
         PantryBasket basket = pantry.getBasket(username);
         return basket.getJson().complete();
     }
+
+    public boolean updateBio(String username, String biography) {
+        PantryBasket basket = pantry.getBasket(username);
+        JsonObject updateData = new JsonObject();
+        updateData.addProperty("biography", biography);
+        basket.mergeJson(updateData).complete();
+        return true;
+    }
+
+    public boolean updateDateOfBirth(String username, String dateOfBirth) {
+        PantryBasket basket = pantry.getBasket(username);
+        JsonObject updateData = new JsonObject();
+        updateData.addProperty("dateOfBirth", dateOfBirth);
+        basket.mergeJson(updateData).complete();
+        return true;
+    }
 }
