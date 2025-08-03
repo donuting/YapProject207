@@ -9,6 +9,8 @@ import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.Configuration;
 import org.sendbird.client.api.UserApi;
+import use_case.add_Bio.AddBioUserDataAccessInterface;
+import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -25,7 +27,9 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
-        BlockFriendUserDataAccessInterface {
+        BlockFriendUserDataAccessInterface,
+        AddBioUserDataAccessInterface,
+        AddDOBUserDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -52,7 +56,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
 
     /**
      * Returns the user with the given username.
-     *
      * @param username the username to look up
      * @return the user with the given username or null if the user does not exist
      */
@@ -120,7 +123,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
 
     /**
      * Block the target user for the current user.
-     *
      * @param currentUsername The user performing the block.
      * @param blockedUsername The user to be blocked.
      * @return true if blocking successful, false otherwise.
@@ -142,7 +144,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
 
     /**
      * Returns the username of the curren user of the application.
-     *
      * @return the username of the current user; null indicates that no one is logged into the application.
      */
     @Override
@@ -152,7 +153,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
 
     /**
      * Sets the username indicating who is the current user of the application.
-     *
      * @param username the new current username; null to indicate that no one is currently logged into the application.
      */
     @Override
@@ -291,5 +291,31 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Updates the system to record this user's bio.
+     *
+     * @param user the user whose bio is to be updated
+     */
+    @Override
+    public boolean addBio(User user) {
+        if (existsByID(user.getID())) {
+            return pantryUserDataAccessObject.updateBio(user.getName(), user.getBio());
+        }
+        return false;
+    }
+
+    /**
+     * Updates the system to record this user's DOB.
+     *
+     * @param user the user whose DOB is to be updated
+     */
+    @Override
+    public boolean addDOB(User user) {
+        if (existsByID(user.getID())) {
+            return pantryUserDataAccessObject.updateDateOfBirth(user.getName(), user.getDOB());
+        }
+        return false;
     }
 }
