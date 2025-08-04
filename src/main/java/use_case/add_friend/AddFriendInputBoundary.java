@@ -9,4 +9,9 @@ public interface AddFriendInputBoundary {
      * @param inputData input data for this use case
      */
     void execute(AddFriendInputData inputData);
+
+    /**
+     * Executes the switch to the Main Menu View.
+     */
+    void switchToMainMenuView();
 }

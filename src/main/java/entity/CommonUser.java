@@ -173,7 +173,7 @@ public class CommonUser implements User {
      * @param userId The friend to be added.
      * @return true if successful otherwise false
      */
-    public boolean AddFriend(String userId) {
+    public boolean addFriend(String userId) {
         friendIDs.add(userId);
         return true;
     }
@@ -226,7 +226,7 @@ public class CommonUser implements User {
     public boolean unblockUser(String userId, boolean addAsFriend) {
         boolean unblocked = blockedIDs.remove(userId);
         if (unblocked && addAsFriend) {
-            AddFriend(userId);
+            addFriend(userId);
         }
         return unblocked;
     }
