@@ -6,12 +6,14 @@ public class CommonMessage implements Message {
     private final String senderId;
     boolean messageSeen;
     String text;
+    long timestamp;
 
-    public CommonMessage(String senderId, String text, Integer MID) {
+    public CommonMessage(String senderId, String text, Integer MID, long timestamp) {
         this.MID = MID;
         this.senderId = senderId;
         this.text = text;
         this.messageSeen = false;
+        this.timestamp = timestamp;
     }
 
     public CommonMessage(String senderId, String text) {
@@ -19,6 +21,7 @@ public class CommonMessage implements Message {
         this.senderId = senderId;
         this.text = text;
         this.messageSeen = false;
+        this.timestamp = 0L; // default
     }
 
     @Override
@@ -38,6 +41,16 @@ public class CommonMessage implements Message {
 
     public Integer GetMID() {
         return MID;
+    }
+
+    /**
+     * returns the timestamp of the message.
+     *
+     * @return timestamp of the message
+     */
+    @Override
+    public long getTimestamp() {
+        return timestamp;
     }
 
     /**

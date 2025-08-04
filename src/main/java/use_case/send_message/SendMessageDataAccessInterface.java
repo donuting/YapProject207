@@ -14,5 +14,5 @@ public interface SendMessageDataAccessInterface {
      * @param message the message to be sent
      * @param chat the chat in which the message will be sent
      */
-    boolean sendMessage(Message message, Chat chat);
+    Message sendMessage(Message message, Chat chat);
 }

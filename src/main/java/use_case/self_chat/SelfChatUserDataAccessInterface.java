@@ -1,7 +1,9 @@
 package use_case.self_chat;
 
-import java.time.LocalDateTime;
 import java.util.List;
+
+import entity.Message;
+import entity.User;
 
 /**
  * Data Access Interface for Self Chat functionality.
@@ -9,29 +11,29 @@ import java.util.List;
 public interface SelfChatUserDataAccessInterface {
 
     /**
-     * Saves a message with timestamp.
+     * Saves a message in self chat.
      *
-     * @param message   the message to save
-     * @param timestamp when the message was created
+     * @param message the message to save
+     * @return the sent message
      */
-    void saveMessage(String message, LocalDateTime timestamp);
+    Message sendMessage(Message message);
 
     /**
      * Gets all saved messages.
      *
      * @return list of all messages
      */
-    List<String> getAllMessages();
-
-    /**
-     * Gets all timestamps for saved messages.
-     *
-     * @return list of all timestamps
-     */
-    List<LocalDateTime> getAllTimestamps();
+    List<Message> loadMessages();
 
     /**
      * Clears all saved messages.
      */
     void clearAllMessages();
+
+    /**
+     * Gets the current user.
+     *
+     * @return the current user.
+     */
+    User getCurrentUser();
 }

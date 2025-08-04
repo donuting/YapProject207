@@ -1,5 +1,6 @@
 package use_case.login;
 
+import entity.GroupChat;
 import entity.User;
 
 /**
@@ -38,4 +39,6 @@ public interface LoginUserDataAccessInterface {
      * @param user the new current user; null to indicate that no one is currently logged into the application.
      */
     void setCurrentUser(User user);
+
+    void setCurrentSelfChat(GroupChat selfChat);
 }

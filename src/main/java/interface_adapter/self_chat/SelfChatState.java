@@ -1,22 +1,22 @@
 package interface_adapter.self_chat;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.JsonObject;
+
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The state for the Self Chat View Model.
  */
 public class SelfChatState {
     private String username = "";
-    private List<String> messages = new ArrayList<>();
-    private List<LocalDateTime> timestamps = new ArrayList<>();
+    private Map<Integer, JsonObject> messageData = new HashMap<>(); // A map from the message ID to the message data (body text, message ID, timestamp)
     private String errorMessage = "";
 
     public SelfChatState(SelfChatState copy) {
         this.username = copy.username;
-        this.messages = new ArrayList<>(copy.messages);
-        this.timestamps = new ArrayList<>(copy.timestamps);
+        this.messageData = copy.messageData;
         this.errorMessage = copy.errorMessage;
     }
 
@@ -32,25 +32,12 @@ public class SelfChatState {
         this.username = username;
     }
 
-    public List<String> getMessages() {
-        return new ArrayList<>(messages);
+    public Map<Integer, JsonObject> getMessages() {
+        return new HashMap<>(messageData);
     }
 
-    public void setMessages(List<String> messages) {
-        this.messages = new ArrayList<>(messages);
-    }
-
-    public void addMessage(String message, LocalDateTime timestamp) {
-        this.messages.add(message);
-        this.timestamps.add(timestamp);
-    }
-
-    public List<LocalDateTime> getTimestamps() {
-        return new ArrayList<>(timestamps);
-    }
-
-    public void setTimestamps(List<LocalDateTime> timestamps) {
-        this.timestamps = new ArrayList<>(timestamps);
+    public void addMessageData(Map<Integer, JsonObject> messageData) {
+        this.messageData.putAll(messageData);
     }
 
     public String getErrorMessage() {
@@ -62,11 +49,10 @@ public class SelfChatState {
     }
 
     public void clearMessages() {
-        this.messages.clear();
-        this.timestamps.clear();
+        this.messageData.clear();
     }
 
     public int getMessageCount() {
-        return messages.size();
+        return messageData.size();
     }
 }

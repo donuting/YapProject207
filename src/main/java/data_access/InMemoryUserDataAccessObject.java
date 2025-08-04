@@ -1,8 +1,10 @@
 package data_access;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import entity.GroupChat;
 import entity.User;
 import use_case.add_Bio.AddBioUserDataAccessInterface;
 import use_case.add_DOB.AddDOBUserDataAccessInterface;
@@ -16,7 +18,8 @@ import use_case.signup.SignupUserDataAccessInterface;
  * In-memory implementation of the DAO for storing user data. This implementation does
  * NOT persist data between runs of the program. This DAO should not be implemented.
  */
-public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
+public class InMemoryUserDataAccessObject implements
+        SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
@@ -38,15 +41,26 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         users.put(user.getName(), user);
     }
 
+    /**
+     * Creates a new self chat for the user.
+     *
+     * @param memberIds the list of members of the self chat (just the user)
+     * @param chatName  the name of the self chat
+     */
+    @Override
+    public GroupChat createSelfChat(List<String> memberIds, String chatName) {
+        return null;
+    }
+
     @Override
     public User get(String username) {
         return users.get(username);
     }
 
     @Override
-    public void changePassword(User user) {
+    public void changePassword(String username , String password) {
         // Replace the old entry with the new password
-        users.put(user.getName(), user);
+
     }
 
     @Override
@@ -70,12 +84,29 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     }
 
     @Override
-    public boolean addBio(User user) {
+    public void setCurrentSelfChat(GroupChat selfChat) {
+
+    }
+
+    /**
+     * Updates the system to record this user's bio.
+     *
+     * @param username the username of the updated user
+     * @param bio      the bio to be updated
+     */
+    @Override
+    public boolean addBio(String username, String bio) {
         return false;
     }
 
+    /**
+     * Updates the system to record this user's DOB.
+     *
+     * @param username the name of the user whose DOB is to be updated
+     * @param dob      the user's date of birth
+     */
     @Override
-    public boolean addDOB(User user) {
+    public boolean addDOB(String username, String dob) {
         return false;
     }
 

@@ -40,21 +40,23 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     private final UserFactory userFactory;
     private final GroupChatDataAccessObject groupChatDataAccessObject;
     private User currentUser = null;
+    private GroupChat currentSelfChat = null;
     private final PantryUserDataAccessObject pantryUserDataAccessObject = new PantryUserDataAccessObject();
 
-    public SendBirdUserDataAccessObject(UserFactory userFactory, GroupChatDataAccessObject groupChatDataAccessObject) {
-        this.userFactory = userFactory;
-        this.groupChatDataAccessObject = groupChatDataAccessObject;
+    public SendBirdUserDataAccessObject() {
+        this.userFactory = new CommonUserFactory();
+        this.groupChatDataAccessObject = new GroupChatDataAccessObject();
     }
 
     /**
      * Updates the system to record this user's password.
      *
-     * @param user the user whose password is to be updated
+     * @param username the user whose password is to be updated
+     * @param password the new password
      */
     @Override
-    public void changePassword(User user) {
-        pantryUserDataAccessObject.changePassword(user.getName(), user.getPassword()); // The user object already contains the new password
+    public void changePassword(String username, String password) {
+        pantryUserDataAccessObject.changePassword(username, password); // The user object already contains the new password
     }
 
     /**
@@ -80,6 +82,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
             List<String> blockedIDs = convertJsonArrayToList(jsonData.getAsJsonArray("blockedIDs"));
             List<String> groupChannelURLs = convertJsonArrayToList(jsonData.getAsJsonArray("groupChannelURLs"));
             List<String> personalChannelURls = convertJsonArrayToList(jsonData.getAsJsonArray("personalChannelURls"));
+            String selfChatUrl = jsonData.get("selfChatURL").getAsString();
 
             // Get channel URLs
             ApiClient defaultClient = Configuration.getDefaultApiClient();
@@ -97,20 +100,24 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                 // Create GroupChat and PersonalChat objects
                 List<GroupChat> groupChats = new ArrayList<>();
                 List<GroupChat> personalChats = new ArrayList<>();
+                GroupChat selfChat = null;
                 List<SendbirdGroupChannel> channels = result.getChannels();
                 if (channels != null) {
                     for (SendbirdGroupChannel sendBirdGroupChannel : channels) {
                         String channelURL = sendBirdGroupChannel.getChannelUrl();
                         if (groupChannelURLs.contains(channelURL)) {
-                            groupChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel)); // Todo: implement this method
+                            groupChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
                         } else if (personalChannelURls.contains(channelURL)) {
-                            personalChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel)); // Todo: implement this method
+                            personalChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
+                        } else if (selfChatUrl.equals(channelURL)) {
+                            selfChat = groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel);
                         }
                     }
                 }
 
+
                 // Initialize the user
-                return userFactory.create(username, password, userId, biography, dateOfBirth, friendIDs, blockedIDs, groupChats, personalChats);
+                return userFactory.create(username, password, userId, biography, dateOfBirth, friendIDs, blockedIDs, groupChats, personalChats, selfChat);
 
             } catch (ApiException e) {
                 System.err.println("Exception when calling GroupChannelApi#gcListChannels");
@@ -336,14 +343,26 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     }
 
     /**
-     * Updates the system to record this user's bio.
+     * Creates a new self chat for the user.
      *
-     * @param user the user whose bio is to be updated
+     * @param memberIds the list of members of the self chat (just the user)
+     * @param chatName  the name of the self chat
      */
     @Override
-    public boolean addBio(User user) {
-        if (existsByID(user.getID())) {
-            return pantryUserDataAccessObject.updateBio(user.getName(), user.getBio());
+    public GroupChat createSelfChat(List<String> memberIds, String chatName) {
+        return groupChatDataAccessObject.create(memberIds, chatName, new GroupChatFactory());
+    }
+
+    /**
+     * Updates the system to record this user's bio.
+     *
+     * @param username the name of the user whose bio is to be updated
+     * @param bio the biography
+     */
+    @Override
+    public boolean addBio(String username, String bio) {
+        if (existsByName(username)) {
+            return pantryUserDataAccessObject.updateBio(username, bio);
         }
         return false;
     }
@@ -351,13 +370,22 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     /**
      * Updates the system to record this user's DOB.
      *
-     * @param user the user whose DOB is to be updated
+     * @param username the name of the user whose DOB is to be updated\
+     * @param dob the date of birth
      */
     @Override
-    public boolean addDOB(User user) {
-        if (existsByID(user.getID())) {
-            return pantryUserDataAccessObject.updateDateOfBirth(user.getName(), user.getDOB());
+    public boolean addDOB(String username, String dob) {
+        if (existsByName(username)) {
+            return pantryUserDataAccessObject.updateDateOfBirth(username, dob);
         }
         return false;
+    }
+
+    public GroupChat getCurrentSelfChat() {
+        return currentSelfChat;
+    }
+
+    public void setCurrentSelfChat(GroupChat currentSelfChat) {
+        this.currentSelfChat = currentSelfChat;
     }
 }

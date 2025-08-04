@@ -1,6 +1,10 @@
 package use_case.self_chat;
 
-import java.time.LocalDateTime;
+import entity.CommonMessageFactory;
+import entity.Message;
+import entity.MessageFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +14,7 @@ public class SelfChatInteractor implements SelfChatInputBoundary {
 
     private final SelfChatUserDataAccessInterface selfChatDataAccess;
     private final SelfChatOutputBoundary selfChatPresenter;
+    private final MessageFactory messageFactory = new CommonMessageFactory();
 
     public SelfChatInteractor(SelfChatUserDataAccessInterface selfChatDataAccess,
                               SelfChatOutputBoundary selfChatPresenter) {
@@ -20,20 +25,24 @@ public class SelfChatInteractor implements SelfChatInputBoundary {
     @Override
     public void execute(SelfChatInputData selfChatInputData) {
         try {
-            String message = selfChatInputData.getMessage();
-            LocalDateTime timestamp = selfChatInputData.getTimestamp();
+            String userId = selfChatDataAccess.getCurrentUser().getID();
+            String username = selfChatDataAccess.getCurrentUser().getName();
+            String messageBody = selfChatInputData.getMessage();
 
             // Validate message
-            if (message == null || message.trim().isEmpty()) {
+            if (messageBody == null || messageBody.trim().isEmpty()) {
                 selfChatPresenter.presentError("Message cannot be empty");
                 return;
             }
 
+            Message message = messageFactory.create(userId, messageBody);
+
             // Save the message
-            selfChatDataAccess.saveMessage(message, timestamp);
+            List<Message> sentMessages = new ArrayList<>();
+            sentMessages.add(selfChatDataAccess.sendMessage(message));
 
             // Present success
-            SelfChatOutputData outputData = new SelfChatOutputData(message, timestamp, true, null);
+            SelfChatOutputData outputData = new SelfChatOutputData(username, sentMessages, true, null);
             selfChatPresenter.presentMessage(outputData);
 
         } catch (Exception e) {
@@ -54,15 +63,15 @@ public class SelfChatInteractor implements SelfChatInputBoundary {
     @Override
     public void loadMessages() {
         try {
-            List<String> messages = selfChatDataAccess.getAllMessages();
-            List<LocalDateTime> timestamps = selfChatDataAccess.getAllTimestamps();
+            String username = selfChatDataAccess.getCurrentUser().getName();
+            List<Message> messages = selfChatDataAccess.loadMessages();
 
-            SelfChatOutputData outputData = new SelfChatOutputData(messages, timestamps, true, null);
-            selfChatPresenter.presentLoadedMessages(outputData);
+            SelfChatOutputData outputData = new SelfChatOutputData(username, messages, true, null);
+            selfChatPresenter.presentMessage(outputData);
 
         } catch (Exception e) {
-            SelfChatOutputData outputData = new SelfChatOutputData((String) null, null, false, "Failed to load messages: " + e.getMessage());
-            selfChatPresenter.presentLoadedMessages(outputData);
+            SelfChatOutputData outputData = new SelfChatOutputData("", new ArrayList<>(), false, "Failed to load messages: " + e.getMessage());
+            selfChatPresenter.presentMessage(outputData);
         }
     }
 }

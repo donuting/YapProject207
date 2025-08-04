@@ -78,4 +78,10 @@ public interface User {
      * @param username The new name.
      */
     void setName(String username);
+
+    boolean blockUser(String userId);
+
+    GroupChat getSelfChat();
+
+    void setSelfChat(GroupChat selfChat);
 }

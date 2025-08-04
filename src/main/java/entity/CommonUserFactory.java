@@ -9,8 +9,8 @@ import java.util.List;
 public class CommonUserFactory implements UserFactory {
 
     @Override
-    public User create(String name, String password) {
-        return new CommonUser(name, password, null, "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+    public User create(String name, String password, GroupChat selfChat) {
+        return new CommonUser(name, password, null, "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), selfChat);
     }
 
     @Override
@@ -22,7 +22,8 @@ public class CommonUserFactory implements UserFactory {
                        List<String> friendIDs,
                        List<String> blockedIDs,
                        List<GroupChat> groupChats,
-                       List<GroupChat> personalChats) {
-        return new CommonUser(name, password, ID, biography, dateOfBirth, friendIDs, blockedIDs, groupChats, personalChats);
+                       List<GroupChat> personalChats,
+                       GroupChat selfChat) {
+        return new CommonUser(name, password, ID, biography, dateOfBirth, friendIDs, blockedIDs, groupChats, personalChats, selfChat);
     }
 }

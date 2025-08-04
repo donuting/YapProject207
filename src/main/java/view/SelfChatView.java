@@ -1,5 +1,6 @@
 package view;
 
+import com.google.gson.JsonObject;
 import interface_adapter.self_chat.SelfChatController;
 import interface_adapter.self_chat.SelfChatState;
 import interface_adapter.self_chat.SelfChatViewModel;
@@ -10,9 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The View for the self chat functionality.
@@ -23,7 +23,8 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
     private final SelfChatViewModel selfChatViewModel;
 
     private final JLabel titleLabel;
-    private final JTextArea chatArea;
+    private final JPanel chatArea;
+    private final Map<JTextArea, String> messages = new HashMap<>();
     private final JScrollPane chatScrollPane;
     private final JTextField messageField;
     private final JButton sendButton;
@@ -66,12 +67,10 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
         JPanel topPanel = createTopPanel();
 
         // Create chat display area
-        chatArea = new JTextArea();
-        chatArea.setEditable(false);
+        chatArea = new JPanel();
+        chatArea.setLayout(new BoxLayout(chatArea, BoxLayout.Y_AXIS));
         chatArea.setFont(new Font("Arial", Font.PLAIN, 14));
         chatArea.setBackground(new Color(248, 248, 248));
-        chatArea.setLineWrap(true);
-        chatArea.setWrapStyleWord(true);
         chatArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         chatScrollPane = new JScrollPane(chatArea);
@@ -173,21 +172,34 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
     }
 
     private void updateChatDisplay() {
+
         SelfChatState state = selfChatViewModel.getState();
-        List<String> messages = state.getMessages();
-        List<LocalDateTime> timestamps = state.getTimestamps();
+        Map<Integer, JsonObject> messageData = state.getMessages();
 
-        StringBuilder chatText = new StringBuilder();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        for (JsonObject jsonObject : messageData.values()) {
 
-        for (int i = 0; i < messages.size(); i++) {
-            if (i < timestamps.size()) {
-                chatText.append("[").append(timestamps.get(i).format(formatter)).append("]\n");
+            String newMessageId = jsonObject.get("message_ID").getAsString();
+            if (!messages.containsValue(newMessageId)) {
+
+                // Create new text field
+                JTextArea messageSpace = new JTextArea();
+                messageSpace.setAlignmentX(Component.LEFT_ALIGNMENT);
+                messageSpace.setFont(new Font("Arial", Font.PLAIN, 14));
+                messageSpace.setLineWrap(true);
+                messageSpace.setWrapStyleWord(true);
+                messageSpace.setEditable(false);
+                messageSpace.setPreferredSize(new Dimension(200, 40));
+                messageSpace.setMaximumSize(new Dimension(200, 40));
+                messageSpace.setText(jsonObject.get("message").getAsString());
+
+                // Add the new message to the list of messages
+                messages.put(messageSpace, newMessageId);
+
+                // Add the new message to the chat area
+                chatArea.add(messageSpace);
+
             }
-            chatText.append(messages.get(i)).append("\n\n");
         }
-
-        chatArea.setText(chatText.toString());
 
         // Auto-scroll to bottom
         SwingUtilities.invokeLater(() -> {

@@ -23,7 +23,7 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     public void execute(SendMessageInputData sendMessageInputData) {
         final Message message = messageFactory.create(sendMessageInputData.getSender().getID(),
                                             sendMessageInputData.getText());
-        boolean result = userDataAccessObject.sendMessage(message, sendMessageInputData.getChat());
+        boolean result = (userDataAccessObject.sendMessage(message, sendMessageInputData.getChat()) != null);
 
         if (result) {
             final SendMessageOutputData sendMessageOutputData = new SendMessageOutputData(sendMessageInputData.getSender(), false,
@@ -35,7 +35,5 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
                                                                                         message, sendMessageInputData.getChat());
             messagePresenter.prepareFailSendMessageView("Send Message Failed", sendMessageOutputData);
         }
-
-
     }
 }

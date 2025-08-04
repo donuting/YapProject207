@@ -28,4 +28,10 @@ public interface Message {
      * @return ID of the message
      */
     Integer GetMID();
+
+    /**
+     * returns the timestamp of the message.
+     * @return timestamp of the message
+     */
+    long getTimestamp();
 }

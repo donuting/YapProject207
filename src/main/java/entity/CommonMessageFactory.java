@@ -3,8 +3,8 @@ package entity;
 public class CommonMessageFactory implements MessageFactory {
 
     @Override
-    public Message create(String senderId, String text, Integer messageId) {
-        return new CommonMessage(senderId, text, messageId);
+    public Message create(String senderId, String text, Integer messageId, long timestamp) {
+        return new CommonMessage(senderId, text, messageId, timestamp);
     }
 
     @Override

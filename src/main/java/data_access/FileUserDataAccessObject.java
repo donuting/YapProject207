@@ -8,8 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import entity.GroupChat;
 import entity.User;
 import entity.UserFactory;
 import use_case.add_Bio.AddBioUserDataAccessInterface;
@@ -57,7 +59,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
                     final String[] col = row.split(",");
                     final String username = String.valueOf(col[headers.get("username")]);
                     final String password = String.valueOf(col[headers.get("password")]);
-                    final User user = userFactory.create(username, password);
+                    final User user = userFactory.create(username, password, null);
                     accounts.put(username, user);
                 }
             }
@@ -92,6 +94,17 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
         this.save();
     }
 
+    /**
+     * Creates a new self chat for the user.
+     *
+     * @param memberIds the list of members of the self chat (just the user)
+     * @param chatName  the name of the self chat
+     */
+    @Override
+    public GroupChat createSelfChat(List<String> memberIds, String chatName) {
+        return null;
+    }
+
     @Override
     public User get(String username) {
         return accounts.get(username);
@@ -118,24 +131,40 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
     }
 
     @Override
+    public void setCurrentSelfChat(GroupChat selfChat) {
+
+    }
+
+    @Override
     public boolean existsByName(String identifier) {
         return accounts.containsKey(identifier);
     }
 
     @Override
-    public void changePassword(User user) {
+    public void changePassword(String username, String password) {
         // Replace the User object in the map
-        accounts.put(user.getName(), user);
-        save();
+
     }
 
+    /**
+     * Updates the system to record this user's bio.
+     *
+     * @param username the username of the updated user
+     * @param bio      the bio to be updated
+     */
     @Override
-    public boolean addBio(User user) {
+    public boolean addBio(String username, String bio) {
         return false;
     }
 
+    /**
+     * Updates the system to record this user's DOB.
+     *
+     * @param username the name of the user whose DOB is to be updated
+     * @param dob      the user's date of birth
+     */
     @Override
-    public boolean addDOB(User user) {
+    public boolean addDOB(String username, String dob) {
         return false;
     }
 }

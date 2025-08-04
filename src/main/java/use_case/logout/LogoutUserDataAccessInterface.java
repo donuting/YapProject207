@@ -1,5 +1,6 @@
 package use_case.logout;
 
+import entity.GroupChat;
 import entity.User;
 
 /**
@@ -18,4 +19,10 @@ public interface LogoutUserDataAccessInterface {
      * @param user the new current usernserame
      */
     void setCurrentUser(User user);
+
+    /**
+     * Sets the self chat corresponding to the current user of the application.
+     * @param selfChat the self chat
+     */
+    void setCurrentSelfChat(GroupChat selfChat);
 }

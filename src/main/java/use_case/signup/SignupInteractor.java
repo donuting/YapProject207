@@ -1,7 +1,12 @@
 package use_case.signup;
 
+import entity.GroupChat;
+import entity.GroupChatFactory;
 import entity.User;
 import entity.UserFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Signup Interactor.
@@ -10,6 +15,7 @@ public class SignupInteractor implements SignupInputBoundary {
     private final SignupUserDataAccessInterface userDataAccessObject;
     private final SignupOutputBoundary userPresenter;
     private final UserFactory userFactory;
+    private final GroupChatFactory groupChatFactory;
 
     public SignupInteractor(SignupUserDataAccessInterface signupDataAccessInterface,
                             SignupOutputBoundary signupOutputBoundary,
@@ -17,6 +23,7 @@ public class SignupInteractor implements SignupInputBoundary {
         this.userDataAccessObject = signupDataAccessInterface;
         this.userPresenter = signupOutputBoundary;
         this.userFactory = userFactory;
+        this.groupChatFactory = new GroupChatFactory();
     }
 
     @Override
@@ -28,7 +35,14 @@ public class SignupInteractor implements SignupInputBoundary {
             userPresenter.prepareFailView("Passwords don't match.");
         }
         else {
-            final User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword());
+            final User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), null);
+
+            // create the new user's self chat
+            List<String> memberIds = new ArrayList<>();
+            memberIds.add(user.getID());
+            GroupChat selfChat = userDataAccessObject.createSelfChat(memberIds, user.getName() + "'s Self Chat");
+            user.setSelfChat(selfChat);
+
             userDataAccessObject.save(user);
 
             final SignupOutputData signupOutputData = new SignupOutputData(user.getName(), false);
