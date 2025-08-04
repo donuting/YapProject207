@@ -8,7 +8,9 @@ import javax.swing.WindowConstants;
 
 import data_access.InMemoryUserDataAccessObject;
 import data_access.InMemorySelfChatUserDataAccessObject;
+import data_access.MessageDataAccessObject;
 import entity.CommonUserFactory;
+import entity.MessageFactory;
 import entity.UserFactory;
 
 import interface_adapter.add_chat.AddChatController;
@@ -40,11 +42,17 @@ import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 
+
+import use_case.add_friend.AddFriendInputBoundary;
+import use_case.add_friend.AddFriendInteractor;
+import use_case.add_friend.AddFriendUserDataAccessInterface;
+
 import use_case.add_Bio.AddBioInputBoundary;
 import use_case.add_Bio.AddBioInteractor;
 import use_case.add_Bio.AddBioOutputBoundary;
 import use_case.add_DOB.AddDOBInputBoundary;
 import use_case.add_DOB.AddDOBInteractor;
+
 import use_case.create_chat.CreateChatInputBoundary;
 import use_case.create_chat.CreateChatInteractor;
 import use_case.create_chat.CreateChatOutputBoundary;
@@ -61,6 +69,10 @@ import use_case.login.LoginOutputBoundary;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
+import use_case.send_message.SendMessageDataAccessInterface;
+import use_case.send_message.SendMessageInputBoundary;
+import use_case.send_message.SendMessageInteractor;
+import use_case.send_message.SendMessageOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
@@ -82,6 +94,7 @@ public class AppBuilder {
 
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject(); // Todo: Add the DAOs to the App Builder (so far just SendBirdUserDataAccessObject and GroupChatDataAccessObject)
     private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject = new InMemorySelfChatUserDataAccessObject();
+    private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;
@@ -280,11 +293,18 @@ public class AppBuilder {
 //    }
 
     /**
-     * Adds the AddChat Use Case to the application.
+     * Adds the Add Friend Use Case to the application.
      * @return this builder
      */
     public AppBuilder addAddFriendUseCase() {
-        final AddFriendController addFriendController = new AddFriendController(viewManagerModel);
+        final AddFriendOutputBoundary addFriendOutputBoundary = new AddFriendPresenter(addFriendViewModel);
+
+        final AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(userDataAccessObject,
+                addFriendOutputBoundary);
+
+        final AddFriendController addFriendController = new AddFriendController(viewManagerModel,
+                addFriendInteractor);
+
         addFriendView.setAddFriendController(addFriendController);
         return this;
     }

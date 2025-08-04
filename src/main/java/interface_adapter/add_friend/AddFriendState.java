@@ -4,31 +4,64 @@ package interface_adapter.add_friend;
  * The state for the AddFriend View Model.
  */
 public class AddFriendState {
-    private String username = "";
-    private String addFriendError;
-    private String userID;
 
-    public String getUsername() {
-        return username;
+
+    private String currentUsername = "";
+    private String errorMessage;
+    private String successMessage;
+    private String friendName;
+    private String friendUserID;
+
+    public AddFriendState () {
+
     }
 
-    public String getAddFriendError() {
-        return addFriendError;
+    public  AddFriendState(AddFriendState copy) {
+        this.currentUsername = copy.currentUsername;
+        this.errorMessage = copy.errorMessage;
+        this.successMessage = copy.successMessage;
+        this.friendName = copy.friendName;
+        this.friendUserID = copy.friendUserID;
+
     }
 
-    public String getUserID() {
-        return userID;
+    public String getCurrentUsername() {
+        return currentUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setAddFriendError(String addFriendError) {
-        this.addFriendError = addFriendError;
+    public String getSuccessMessage() {
+        return successMessage;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public String getFriendUsername() {
+        return friendName;
+    }
+
+    public void setFriendUsername(String friendName) {
+        this.friendName = friendName;
+    }
+
+    public void setCurrentUsername(String currentUsername) {
+        this.currentUsername = currentUsername;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
+
+    public String getFriendUserID() {
+        return friendUserID;
+    }
+
+    public void setFriendUserID(String friendUserID) {
+        this.friendUserID = friendUserID;
     }
 }

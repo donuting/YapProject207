@@ -65,8 +65,7 @@ public class GroupChat implements Chat {
 
     @Override
     public boolean HasMember(String userID){
-        //TODO: create execution
-        return false;
+        return memberIDs.contains(userID);
     }
 
     /**
