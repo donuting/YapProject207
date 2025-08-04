@@ -6,6 +6,7 @@ import java.util.Map;
 import entity.User;
 import use_case.add_Bio.AddBioUserDataAccessInterface;
 import use_case.add_DOB.AddDOBUserDataAccessInterface;
+import use_case.add_friend.AddFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
@@ -20,7 +21,8 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
         AddBioUserDataAccessInterface,
-        AddDOBUserDataAccessInterface {
+        AddDOBUserDataAccessInterface,
+        AddFriendUserDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
 
@@ -64,6 +66,16 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
 
     @Override
     public boolean addDOB(User user) {
+        return false;
+    }
+
+    @Override
+    public boolean alreadyFriend(String userID, String friendUsername) {
+        return false;
+    }
+
+    @Override
+    public boolean addFriend(String userID, String friendUsername) {
         return false;
     }
 }

@@ -63,10 +63,14 @@ public interface User {
 
     String getBio();
 
+
+    boolean AddFriend(String userID);
+
     /**
      * Removes a user from this user's friend list.
      * @param userId The user to be removed.
      * @return true if successful otherwise false
      */
     boolean removeFriend(String userId);
+
 }

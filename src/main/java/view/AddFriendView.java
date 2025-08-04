@@ -22,6 +22,7 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
     private final String viewName = "add friend";
     private final AddFriendViewModel addFriendViewModel;
 
+    private final JTextField currentUsernameInputField = new JTextField(15);
     private final JTextField friendUsernameInputField = new JTextField(15);
     private final JTextField friendIDInputField = new JTextField(15);
     // can lower text field to 8 probably since all ID's will be 8 digits
@@ -36,20 +37,22 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         addFriendViewModel.addPropertyChangeListener(this);
 
         // Title
-        final JLabel title = new JLabel("Adding Friend View");
+        final JLabel title = new JLabel(AddFriendViewModel.TITLE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
         // Labels
+        final LabelTextPanel currentUsernameInfo = new LabelTextPanel(
+                new JLabel(AddFriendViewModel.YOUR_USERNAME), currentUsernameInputField);
         final LabelTextPanel friendUsernameInfo = new LabelTextPanel(
-                new JLabel("Username"), friendUsernameInputField);
+                new JLabel(AddFriendViewModel.FRIEND_USERNAME), friendUsernameInputField);
         final LabelTextPanel friendIDInfo = new LabelTextPanel(
-                new JLabel("User ID"), friendIDInputField);
+                new JLabel(AddFriendViewModel.FRIEND_ID), friendIDInputField);
 
         // Buttons
-        addFriendButton = new JButton("Add Friend");
+        addFriendButton = new JButton(AddFriendViewModel.ADD_BUTTON);
         addFriendButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton(AddFriendViewModel.CANCEL_BUTTON);
         cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         final JPanel buttons = new JPanel();
         buttons.add(addFriendButton);
@@ -64,6 +67,7 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         // Adding components to layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
+        this.add(currentUsernameInfo);
         this.add(friendUsernameInfo);
         this.add(friendIDInfo);
         this.add(buttons);
@@ -81,7 +85,8 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
                 addFriendController.switchToMainMenu();
             }
             else if (evt.getSource() == addFriendButton) {
-                addFriendController.addFriend(friendUsernameInputField.getText(), friendIDInputField.getText());
+                addFriendController.execute(currentUsernameInputField.getText(),
+                        friendUsernameInputField.getText(), friendIDInputField.getText());
             }
         }
     }
@@ -90,12 +95,15 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
     public void propertyChange(PropertyChangeEvent evt) {
         final AddFriendState state = (AddFriendState) evt.getNewValue();
         setFields(state);
-        // add error field
+        if (state.getErrorMessage() != null) {
+            JOptionPane.showMessageDialog(this, state.getErrorMessage());
+        }
     }
 
     private void setFields(AddFriendState state) {
-        friendUsernameInputField.setText(state.getUsername());
-        friendIDInputField.setText(state.getUserID());
+        currentUsernameInputField.setText(state.getCurrentUsername());
+        friendUsernameInputField.setText(state.getFriendUsername());
+        friendIDInputField.setText(state.getFriendUserID());
     }
 
     public String getViewName() {
