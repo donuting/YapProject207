@@ -16,11 +16,11 @@ public interface AddFriendUserDataAccessInterface {
 
     /**
      * Checks if user already has friend added.
-     * @param userID id of user performing friendship
+     * @param currentUsername user performing friendship
      * @param friendUsername user receiving friendship
      * @return true if the two users have each other added already
      */
-    boolean alreadyFriend(String userID, String friendUsername);
+    boolean alreadyFriend(String currentUsername, String friendUsername);
 
     /**
      * Returns the user with the given username.
@@ -39,9 +39,9 @@ public interface AddFriendUserDataAccessInterface {
 
     /**
      * Add friendship.
-     * @param currentUser the user performing the friendship
-     * @param friend the user receiving the friendship
+     * @param currentUsername the user performing the friendship
+     * @param friendUsername the user receiving the friendship
      * @return true if friendship was successful
      */
-    boolean addFriend(String userID, String friendUsername);
+    boolean addFriend(String currentUsername, String friendUsername);
 }

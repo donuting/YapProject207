@@ -167,6 +167,16 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         return null;
     }
 
+    /**
+     * Sets the user indicating who is the current user of the application.
+     *
+     * @param user the new current user; null to indicate that no one is currently logged into the application.
+     */
+    @Override
+    public void setCurrentUser(User user) {
+
+    }
+
     @Override
     public boolean addBio(User user) {
         return false;

@@ -107,6 +107,16 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
         return this.currentUsername;
     }
 
+    /**
+     * Sets the user indicating who is the current user of the application.
+     *
+     * @param user the new current user; null to indicate that no one is currently logged into the application.
+     */
+    @Override
+    public void setCurrentUser(User user) {
+
+    }
+
     @Override
     public boolean existsByName(String identifier) {
         return accounts.containsKey(identifier);

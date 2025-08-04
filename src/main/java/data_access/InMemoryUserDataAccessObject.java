@@ -14,7 +14,7 @@ import use_case.signup.SignupUserDataAccessInterface;
 
 /**
  * In-memory implementation of the DAO for storing user data. This implementation does
- * NOT persist data between runs of the program.
+ * NOT persist data between runs of the program. This DAO should not be implemented.
  */
 public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
@@ -59,6 +59,16 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         return this.currentUsername;
     }
 
+    /**
+     * Sets the user indicating who is the current user of the application.
+     *
+     * @param user the new current user; null to indicate that no one is currently logged into the application.
+     */
+    @Override
+    public void setCurrentUser(User user) {
+
+    }
+
     @Override
     public boolean addBio(User user) {
         return false;
@@ -70,12 +80,12 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     }
 
     @Override
-    public boolean alreadyFriend(String userID, String friendUsername) {
+    public boolean alreadyFriend(String currentUsername, String friendUsername) {
         return false;
     }
 
     @Override
-    public boolean addFriend(String userID, String friendUsername) {
+    public boolean addFriend(String currentUsername, String friendUsername) {
         return false;
     }
 }

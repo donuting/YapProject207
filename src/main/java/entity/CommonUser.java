@@ -4,13 +4,14 @@ package entity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple implementation of the User interface.
  */
 public class CommonUser implements User {
 
-    private final String name;
+    private String name;
     private String password;
     private final String ID;
     private String biography;
@@ -34,11 +35,7 @@ public class CommonUser implements User {
                       List<GroupChat> personalChats) {
         this.name = name;
         this.password = password;
-        if (ID != null) {
-            this.ID = ID;
-        } else {
-            this.ID = generateID();
-        }
+        this.ID = Objects.requireNonNullElseGet(ID, this::generateID);
         this.biography = biography;
         this.dateOfBirth = dateOfBirth;
         this.friendIDs = friendIDs;
@@ -262,6 +259,16 @@ public class CommonUser implements User {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Sets the username of a user.
+     *
+     * @param username The new name.
+     */
+    @Override
+    public void setName(String username) {
+        this.name = username;
     }
 
 

@@ -11,10 +11,12 @@ import org.sendbird.client.Configuration;
 import org.sendbird.client.api.UserApi;
 import use_case.add_Bio.AddBioUserDataAccessInterface;
 import use_case.add_DOB.AddDOBUserDataAccessInterface;
+import use_case.add_friend.AddFriendUserDataAccessInterface;
 import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
+import use_case.remove_friend.RemoveFriendDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.util.ArrayList;
@@ -29,19 +31,20 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         LogoutUserDataAccessInterface,
         BlockFriendUserDataAccessInterface,
         AddBioUserDataAccessInterface,
-        AddDOBUserDataAccessInterface {
+        AddDOBUserDataAccessInterface,
+        AddFriendUserDataAccessInterface,
+        RemoveFriendDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
     private final UserFactory userFactory;
     private final GroupChatDataAccessObject groupChatDataAccessObject;
-    private String currentUsername;
-    private PantryUserDataAccessObject pantryUserDataAccessObject = new PantryUserDataAccessObject();
+    private User currentUser = null;
+    private final PantryUserDataAccessObject pantryUserDataAccessObject = new PantryUserDataAccessObject();
 
     public SendBirdUserDataAccessObject(UserFactory userFactory, GroupChatDataAccessObject groupChatDataAccessObject) {
         this.userFactory = userFactory;
         this.groupChatDataAccessObject = groupChatDataAccessObject;
-        this.currentUsername = null; // default
     }
 
     /**
@@ -122,6 +125,18 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     }
 
     /**
+     * Add friendship.
+     *
+     * @param currentUsername the current user.
+     * @param friendUsername the username of the friend to be added.
+     * @return true if friendship was successful
+     */
+    @Override
+    public boolean addFriend(String currentUsername, String friendUsername) {
+        return pantryUserDataAccessObject.addFriend(currentUsername, friendUsername);
+    }
+
+    /**
      * Block the target user for the current user.
      * @param currentUsername The user performing the block.
      * @param blockedUsername The user to be blocked.
@@ -143,12 +158,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     }
 
     /**
-     * Returns the username of the curren user of the application.
+     * Returns the username of the current user of the application.
      * @return the username of the current user; null indicates that no one is logged into the application.
      */
     @Override
     public String getCurrentUsername() {
-        return currentUsername;
+        return currentUser.getName();
     }
 
     /**
@@ -157,7 +172,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      */
     @Override
     public void setCurrentUsername(String username) {
-        this.currentUsername = username;
+        currentUser.setName(username);
     }
 
     /**
@@ -194,6 +209,33 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
             e.printStackTrace();
         }
         return true;
+    }
+
+    @Override
+    public boolean removeFriend(String currentUsername, String removedUsername) {
+        return pantryUserDataAccessObject.removeFriend(currentUsername, removedUsername);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    @Override
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+    }
+
+    /**
+     * Checks if user already has friend added.
+     *
+     * @param currentUsername user performing friendship
+     * @param friendUsername user receiving friendship
+     * @return true if the two users have each other added already
+     */
+    @Override
+    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+        return pantryUserDataAccessObject.alreadyFriend(currentUsername, friendUsername);
     }
 
     public boolean existsByID(String userID) {
