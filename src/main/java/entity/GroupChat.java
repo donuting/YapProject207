@@ -89,13 +89,9 @@ public class GroupChat implements Chat {
         return false;
     }
 
+    //TODO: method has no usage; consider deletion
     private User getUserByID(String userID) {
         return null;
-    }
-
-    public boolean EditMessage(Message oldMessage, Message newMessage) {
-        //TODO: create execution
-        return false;
     }
 
     @Override
