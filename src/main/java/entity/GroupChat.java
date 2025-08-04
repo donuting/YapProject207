@@ -88,7 +88,7 @@ public class GroupChat implements Chat {
         return false;
     }
 
-    //TODO: method has no usage; consider deletion
+    //TODO: implement method
     private User getUserByID(String userID) {
         return null;
     }
