@@ -6,6 +6,7 @@ import endercrypt.library.jpantry.JPantry;
 import endercrypt.library.jpantry.PantryBasket;;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class PantryUserDataAccessObject {
         // unimplemented for now
     }
 
-    public boolean blockFriend(String currentUsername, String blockedUsername) {
+    public String blockFriend(String currentUsername, String blockedUsername) {
         // This method only allows blocking one-way, not mutual blocking
         String blockedId = getUserDataFromUsername(blockedUsername).get("userId").getAsString();
         JsonArray blockedIDs = getUserDataFromUsername(currentUsername).getAsJsonArray("blockedIDs");
@@ -48,7 +49,7 @@ public class PantryUserDataAccessObject {
         JsonObject updateData = new JsonObject();
         updateData.add("blockedIDs", blockedIDs);
         basket.mergeJson(updateData).complete();
-        return true;
+        return blockedId;
     }
 
     public JsonObject getUserDataFromUsername(String username) {

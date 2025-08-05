@@ -149,10 +149,10 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      * Block the target user for the current user.
      * @param currentUsername The user performing the block.
      * @param blockedUsername The user to be blocked.
-     * @return true if blocking successful, false otherwise.
+     * @return the blocked user's ID.
      */
     @Override
-    public boolean blockFriend(String currentUsername, String blockedUsername) {
+    public String blockFriend(String currentUsername, String blockedUsername) {
         return pantryUserDataAccessObject.blockFriend(currentUsername, blockedUsername);
     }
 

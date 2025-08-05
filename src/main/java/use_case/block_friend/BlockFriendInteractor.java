@@ -1,5 +1,7 @@
 package use_case.block_friend;
 
+import entity.User;
+
 /**
  * The interactor for the Block Friend use case.
  */
@@ -15,17 +17,22 @@ public class BlockFriendInteractor implements BlockFriendInputBoundary {
 
     @Override
     public void execute(BlockFriendInputData inputData) {
-        String currentUsername = inputData.getCurrentUsername();
+        User currentUser = userDataAccessObject.getCurrentUser();
+        String currentUsername = currentUser.getName();
+
         String blockedUsername = inputData.getBlockedUsername();
         boolean currentUserExists = userDataAccessObject.existsByName(currentUsername);
         boolean blockedUserExists = userDataAccessObject.existsByName(blockedUsername);
         boolean success = false;
+        String blockedUserId = null;
         if (currentUserExists && blockedUserExists) {
-            success = userDataAccessObject.blockFriend(currentUsername, blockedUsername);
+            blockedUserId = userDataAccessObject.blockFriend(currentUsername, blockedUsername);
+            success = blockedUserId != null;
         }
 
         BlockFriendOutputData outputData = new BlockFriendOutputData(currentUsername, blockedUsername, success);
         if (success) {
+            currentUser.blockUser(blockedUserId);
             presenter.prepareSuccessView(outputData);
         }
         else {
