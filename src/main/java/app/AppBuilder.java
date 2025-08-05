@@ -297,12 +297,12 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addAddFriendUseCase() {
-        final AddFriendOutputBoundary addFriendOutputBoundary = new AddFriendPresenter(addFriendViewModel);
+        final AddFriendOutputBoundary addFriendOutputBoundary = new AddFriendPresenter(viewManagerModel, addFriendViewModel);
 
         final AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(userDataAccessObject,
                 addFriendOutputBoundary);
 
-        final AddFriendController addFriendController = new AddFriendController(viewManagerModel,
+        final AddFriendController addFriendController = new AddFriendController(//viewManagerModel,
                 addFriendInteractor);
 
         addFriendView.setAddFriendController(addFriendController);

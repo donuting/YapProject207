@@ -10,20 +10,17 @@ import use_case.add_friend.AddFriendInputData;
 public class AddFriendController {
 
     private final AddFriendInputBoundary addFriendUseCaseInteractor;
-    private ViewManagerModel viewManagerModel;
 
-    public AddFriendController(ViewManagerModel viewManagerModel,
+    public AddFriendController(//ViewManagerModel viewManagerModel,
                                AddFriendInputBoundary addFriendUseCaseInteractor) {
-        this.viewManagerModel = viewManagerModel;
         this.addFriendUseCaseInteractor = addFriendUseCaseInteractor;
     }
 
     /**
-     * Switches back to MainMenu.
+     * Switches back to Main Menu.
      */
     public void switchToMainMenu() {
-        viewManagerModel.setState("main menu");
-        viewManagerModel.firePropertyChanged();
+        addFriendUseCaseInteractor.switchToMainMenuView();
     }
 
     /**

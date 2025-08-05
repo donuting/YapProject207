@@ -63,8 +63,12 @@ public interface User {
 
     String getBio();
 
-
-    boolean AddFriend(String userID);
+    /**
+     * Adds the user to this user's friend list.
+     * @param userID user to be added
+     * @return true if successful
+     */
+    boolean addFriend(String userID);
 
     /**
      * Removes a user from this user's friend list.
