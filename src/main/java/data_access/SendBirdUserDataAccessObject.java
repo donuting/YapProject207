@@ -15,6 +15,7 @@ import use_case.add_friend.AddFriendUserDataAccessInterface;
 import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
+import use_case.delete_account.DeleteAccountDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.remove_friend.RemoveFriendDataAccessInterface;
@@ -35,7 +36,8 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         AddDOBUserDataAccessInterface,
         AddFriendUserDataAccessInterface,
         RemoveFriendDataAccessInterface,
-        CreateChatUserDataAccessInterface {
+        CreateChatUserDataAccessInterface,
+        DeleteAccountDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -413,5 +415,27 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
 
     public void setCurrentSelfChat(GroupChat currentSelfChat) {
         this.currentSelfChat = currentSelfChat;
+    }
+
+    public boolean deleteUserById(String userId) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        UserApi apiInstance = new UserApi(defaultClient);
+        String apiToken = API_TOKEN; // String |
+        try {
+            Object result = apiInstance.deleteAUser(userId)
+                    .apiToken(apiToken)
+                    .execute();
+            System.out.println(result);
+            return true;
+        } catch (ApiException e) {
+            System.err.println("Exception when calling UserApi#deleteAUser");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

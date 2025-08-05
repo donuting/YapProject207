@@ -11,7 +11,8 @@ public class DeleteAccountInteractor implements DeleteAccountInputBoundary {
 
     @Override
     public void execute(DeleteAccountInputData inputData) {
-        boolean result = accountDeletionDataAccessObject.deleteUserByUsername(inputData.getUsername());
+        String userId = accountDeletionDataAccessObject.getCurrentUser().getID();
+        boolean result = accountDeletionDataAccessObject.deleteUserById(userId);
         presenter.present(new DeleteAccountOutputData(result));
     }
 }
