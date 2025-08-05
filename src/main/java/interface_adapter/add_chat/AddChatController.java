@@ -19,8 +19,8 @@ public class AddChatController {
      * Executes the Add Chat Use Case.
      * @param chatName the name of the chat to create
      */
-    public void execute(String chatName, String ID) {
-        final use_case.create_chat.CreateChatInputData addChatInputData = new use_case.create_chat.CreateChatInputData(chatName, ID);
+    public void execute(String chatName) {
+        final use_case.create_chat.CreateChatInputData addChatInputData = new use_case.create_chat.CreateChatInputData(chatName);
 
         addChatUseCaseInteractor.execute(addChatInputData);
     }

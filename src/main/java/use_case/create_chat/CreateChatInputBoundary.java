@@ -10,10 +10,5 @@ public interface CreateChatInputBoundary {
      * @param createChatInputData the input data for this use case
      */
     void execute(CreateChatInputData createChatInputData);
-
-    /**
-     * Executes the switch to chat view use case.
-     */
-    void switchToChatView();
 }
 

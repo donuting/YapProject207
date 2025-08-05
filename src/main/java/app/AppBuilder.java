@@ -10,6 +10,7 @@ import data_access.InMemoryUserDataAccessObject;
 import data_access.InMemorySelfChatUserDataAccessObject;
 import data_access.MessageDataAccessObject;
 import entity.CommonUserFactory;
+import entity.GroupChatFactory;
 import entity.MessageFactory;
 import entity.UserFactory;
 
@@ -280,17 +281,17 @@ public class AppBuilder {
     }
 
 
-//    /**
-//     * Adds the AddChat Use Case to the application.
-//     * @return this builder
-//     */
-//    public AppBuilder addAddChatUseCase() {
-//        final CreateChatOutputBoundary createChatOutputBoundary = new AddChatPresenter(viewManagerModel, addChatViewModel);
-//        final CreateChatInputBoundary createChatInteractor = new CreateChatInteractor(groupChatDataAccessObject, groupChatPresenter, chatFactory);
-//        final AddChatController addChatController = new AddChatController(createChatInteractor);
-//        addChatView.setAddChatController(addChatController);
-//        return this;
-//    }
+    /**
+     * Adds the AddChat Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addAddChatUseCase() {
+        final CreateChatOutputBoundary createChatOutputBoundary = new AddChatPresenter(viewManagerModel, addChatViewModel);
+        final CreateChatInputBoundary createChatInteractor = new CreateChatInteractor(userDataAccessObject, createChatOutputBoundary, new GroupChatFactory());
+        final AddChatController addChatController = new AddChatController(createChatInteractor, viewManagerModel);
+        addChatView.setAddChatController(addChatController);
+        return this;
+    }
 
     /**
      * Adds the Add Friend Use Case to the application.

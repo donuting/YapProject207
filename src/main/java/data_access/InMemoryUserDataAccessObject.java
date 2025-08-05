@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import entity.GroupChat;
+import entity.GroupChatFactory;
 import entity.User;
 import use_case.add_Bio.AddBioUserDataAccessInterface;
 import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.add_friend.AddFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
+import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -25,7 +27,7 @@ public class InMemoryUserDataAccessObject implements
         LogoutUserDataAccessInterface,
         AddBioUserDataAccessInterface,
         AddDOBUserDataAccessInterface,
-        AddFriendUserDataAccessInterface {
+        AddFriendUserDataAccessInterface, CreateChatUserDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
 
@@ -118,5 +120,39 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public boolean addFriend(String currentUsername, String friendUsername) {
         return false;
+    }
+
+    /**
+     * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
+     *
+     * @param memberIDs        the member IDs of the users in the chat
+     * @param chatName         the name of the chat
+     * @param groupChatFactory the factory for the GroupChat
+     * @return the newly created GroupChat
+     */
+    @Override
+    public GroupChat create(List<String> memberIDs, String chatName, GroupChatFactory groupChatFactory) {
+        return null;
+    }
+
+    /**
+     * Get the current user.
+     *
+     * @return the current user.
+     */
+    @Override
+    public User getCurrentUser() {
+        return null;
+    }
+
+    /**
+     * Save a group chat to a user.
+     *
+     * @param newGroupChat the group chat.
+     * @param username
+     */
+    @Override
+    public void saveGroupChat(GroupChat newGroupChat, String username) {
+
     }
 }

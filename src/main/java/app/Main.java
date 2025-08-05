@@ -30,7 +30,7 @@ public class Main {
                                             .addMainMenuUseCase()
                                             .addViewChatsUseCase()
                                             .addAddFriendUseCase()
-//  will be implemented later               .addAddChatUseCase()
+                                            .addAddChatUseCase()
                                             .addSelfChatUseCase()
                                             .addProfileandSettingsUseCase()
                                             .build();

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * The DAO for group chat data.
  */
-public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterface {
+public class GroupChatDataAccessObject {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -26,7 +26,6 @@ public class GroupChatDataAccessObject implements CreateChatUserDataAccessInterf
      * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
      * @return the GroupChat object.
      */
-    @Override
     public GroupChat create(List<String> memberIDs, String chatName, GroupChatFactory groupChatFactory) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath(APPLICATION_ID);

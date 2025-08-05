@@ -22,6 +22,8 @@ public class AddChatPresenter implements CreateChatOutputBoundary {
         final AddChatState addChatState = addChatViewModel.getState();
         addChatState.setSuccess(true);
         addChatState.setChatNameError("");
+        addChatState.setChatName(outputData.getChatName());
+        addChatState.setID(outputData.getUserId());
         addChatViewModel.setState(addChatState);
         addChatViewModel.firePropertyChanged();
 
@@ -41,10 +43,5 @@ public class AddChatPresenter implements CreateChatOutputBoundary {
         addChatState.setChatNameError(errorMessage);
 
         addChatViewModel.firePropertyChanged();
-    }
-
-    @Override
-    public void switchToChatView() {
-
     }
 }

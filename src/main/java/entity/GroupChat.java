@@ -112,6 +112,16 @@ public class GroupChat implements Chat {
         return messageHistory;
     }
 
+    /**
+     * Returns the name of this chat.
+     *
+     * @return the chat name.
+     */
+    @Override
+    public String getName() {
+        return this.chatName;
+    }
+
     @Override
     public void setChannelURL(String channelURL) {
         this.channelURL = channelURL;

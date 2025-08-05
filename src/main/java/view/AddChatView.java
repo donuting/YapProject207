@@ -130,7 +130,7 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
         if (addChatController != null) {
             if (evt.getSource().equals(createChatButton)) {
                 final AddChatState currentState = addChatViewModel.getState();
-                addChatController.execute(currentState.getChatName(), currentState.getID());
+                addChatController.execute(currentState.getChatName());
             } else if (evt.getSource().equals(backToViewChatButton)) {
                 addChatController.backToViewChat();
             }

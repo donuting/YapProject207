@@ -14,8 +14,4 @@ public interface CreateChatOutputBoundary {
      */
     void prepareFailView(String errorMessage);
 
-    /**
-     * Switches the view to the newly created chat.
-     */
-    void switchToChatView();
 }

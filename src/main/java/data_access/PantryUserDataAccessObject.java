@@ -123,4 +123,14 @@ public class PantryUserDataAccessObject {
 
         return true;
     }
+
+    public void saveGroupChat(String username, String channelURL) {
+        JsonArray groupChats = getUserDataFromUsername(username).getAsJsonArray("groupChannelURLs");
+        groupChats.add(channelURL);
+
+        PantryBasket basket = pantry.getBasket(username);
+        JsonObject updateData = new JsonObject();
+        updateData.add("groupChannelURLs", groupChats);
+        basket.mergeJson(updateData).complete();
+    }
 }

@@ -14,6 +14,7 @@ import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.add_friend.AddFriendUserDataAccessInterface;
 import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
+import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.remove_friend.RemoveFriendDataAccessInterface;
@@ -33,7 +34,8 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         AddBioUserDataAccessInterface,
         AddDOBUserDataAccessInterface,
         AddFriendUserDataAccessInterface,
-        RemoveFriendDataAccessInterface {
+        RemoveFriendDataAccessInterface,
+        CreateChatUserDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -223,9 +225,33 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         return pantryUserDataAccessObject.removeFriend(currentUsername, removedUsername);
     }
 
+    /**
+     * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
+     *
+     * @param memberIDs        the member IDs of the users in the chat
+     * @param chatName         the name of the chat
+     * @param groupChatFactory the factory for the GroupChat
+     * @return the newly created GroupChat
+     */
+    @Override
+    public GroupChat create(List<String> memberIDs, String chatName, GroupChatFactory groupChatFactory) {
+        return groupChatDataAccessObject.create(memberIDs, chatName, groupChatFactory);
+    }
+
     @Override
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    /**
+     * Save a group chat to a user.
+     *
+     * @param newGroupChat the group chat.
+     * @param username
+     */
+    @Override
+    public void saveGroupChat(GroupChat newGroupChat, String username) {
+        pantryUserDataAccessObject.saveGroupChat(username, newGroupChat.getChannelURL());
     }
 
     @Override
