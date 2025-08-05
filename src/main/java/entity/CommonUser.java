@@ -240,9 +240,19 @@ public class CommonUser implements User {
         return blockedIDs;
     }
 
-    public boolean isBlocked(User user) {
-        return blockedIDs.contains(user.getID());
+    public boolean isBlocked(String userID) {
+        return blockedIDs.contains(userID);
     }
+
+    //VisibleForTesting
+    public List<String> getFriendIDs() {return friendIDs;}
+
+    //VisibleForTesting
+    public List<GroupChat> getGroupChats() {return groupChats;}
+
+    //VisibleForTesting
+    public List<GroupChat> getPersonalChats() {return personalChats;}
+
 
     /**
      * Removes a user from this user's friend list.

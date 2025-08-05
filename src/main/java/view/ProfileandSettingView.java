@@ -51,8 +51,8 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         logoutButton = new JButton("Logout");
 
         //Create Other components
-        UID = new JLabel("UID =" + pandSViewModel.getState().getUID());
-        username = new JLabel("Username =" + pandSViewModel.getState().getUsername());
+        UID = new JLabel("UID = " + pandSViewModel.getState().getUID());
+        username = new JLabel("Username = " + pandSViewModel.getState().getUsername());
 
         //Add action listeners
         changePasswordButton.addActionListener(this);
