@@ -26,8 +26,8 @@ import use_case.signup.SignupUserDataAccessInterface;
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
                                                  LoginUserDataAccessInterface,
                                                  ChangePasswordUserDataAccessInterface,
-                                                AddDOBUserDataAccessInterface,
-                                                AddBioUserDataAccessInterface {
+                                                 AddDOBUserDataAccessInterface,
+                                                 AddBioUserDataAccessInterface {
 
     private static final String HEADER = "username,password";
 

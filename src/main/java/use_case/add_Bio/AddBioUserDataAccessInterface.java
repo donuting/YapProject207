@@ -1,7 +1,5 @@
 package use_case.add_Bio;
 
-import entity.User;
-
 /**
  * The interface of the DAO for the Add Bio Use Case.
  */

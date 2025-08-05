@@ -1,23 +1,16 @@
 package use_case.add_Bio;
 
-import entity.User;
-import entity.UserFactory;
-
 /**
  * The Add Bio Interactor.
  */
-public class AddBioInteractor implements AddBioInputBoundary{
+public class AddBioInteractor implements AddBioInputBoundary {
     private final AddBioUserDataAccessInterface userDataAccessObject;
     private final AddBioOutputBoundary userPresenter;
-    private final UserFactory userFactory;
 
-    public AddBioInteractor(AddBioUserDataAccessInterface userDataAccessObject, AddBioOutputBoundary userPresenter
-                            ,UserFactory userFactory) {
+    public AddBioInteractor(AddBioUserDataAccessInterface userDataAccessObject, AddBioOutputBoundary userPresenter) {
         this.userDataAccessObject = userDataAccessObject;
         this.userPresenter = userPresenter;
-        this.userFactory = userFactory;
     }
-
 
     @Override
     public void execute(AddBioInputData addBioInputData) {
@@ -33,7 +26,5 @@ public class AddBioInteractor implements AddBioInputBoundary{
             final AddBioOutputData changeBioOutputData = new AddBioOutputData(username, true, bio);
             userPresenter.prepareFailAddBioView("Add Bio Failed", changeBioOutputData);
         }
-
-
     }
 }

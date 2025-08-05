@@ -134,4 +134,8 @@ public class PantryUserDataAccessObject {
         updateData.add("groupChannelURLs", groupChats);
         basket.mergeJson(updateData).complete();
     }
+
+    public void deleteUser(String username) {
+        pantry.setInformation(username, null);
+    }
 }
