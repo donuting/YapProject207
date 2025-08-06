@@ -87,6 +87,7 @@ public class AddFriendInteractorTest {
     void AddFriendFailureTest2() {
         CommonUser commonUser = (CommonUser) user;
         CommonUser commonFriend = (CommonUser) friend;
+        commonUser.addFriend(commonFriend.getID());
         commonUser.blockUser(commonFriend.getID());
         dataAccess.save(commonUser);
         dataAccess.save(commonFriend);
@@ -99,7 +100,7 @@ public class AddFriendInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("You are already friends with" + commonFriend.getName(), errorMessage);
+                assertEquals("You are already friends with " + commonFriend.getName(), errorMessage);
 
             }
 
@@ -129,7 +130,7 @@ public class AddFriendInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("You are already friends with" + commonFriend.getName(), errorMessage);
+                assertEquals("You are already friends with " + commonFriend.getName(), errorMessage);
 
             }
 
