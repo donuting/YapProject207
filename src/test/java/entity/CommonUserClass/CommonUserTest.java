@@ -99,9 +99,31 @@ public class CommonUserTest {
 
     @Test
     void addFriendTest() {
-        user.AddFriend("001");
+        CommonUser friend = new CommonUser("Friend", "Password1", "002",
+                "Bio", "20250823", new ArrayList<String>(),
+                new ArrayList<String>(), new ArrayList<GroupChat>(),
+                new ArrayList<GroupChat>());
+        user.addFriend(friend.getID());
         List<String> friends = user.getFriendIDs();
-        assert friends.contains("001");
+        assert friends.contains(friend.getID());
+        friends = friend.getFriendIDs();
+        assert friends.contains(user.getID());
+        List<GroupChat> groups = user.getGroupChats();
+    }
+
+    @Test
+    void addFriendTest2() {
+        CommonUser friend = new CommonUser("Friend", "Password1", "002",
+                "Bio", "20250823", new ArrayList<String>(),
+                new ArrayList<String>(), new ArrayList<GroupChat>(),
+                new ArrayList<GroupChat>());
+        user.addFriend(friend.getID());
+        List<GroupChat> groups = user.getGroupChats();
+        assert !groups.isEmpty();
+        GroupChat group = groups.get(0);
+        List<String> membersID = group.getMemberIDs();
+        assert membersID.contains(friend.getID());
+        assert membersID.contains(user.getID());
     }
 
     /*
@@ -135,7 +157,7 @@ public class CommonUserTest {
 
     @Test
     void blockUserTest2() {
-        user.AddFriend("001");
+        user.addFriend("001");
         boolean result = user.blockUser("001");
         assertTrue(result);
         result = user.blockUser("001");
@@ -150,14 +172,14 @@ public class CommonUserTest {
 
     @Test
     void unblockUserTest2() {
-        user.AddFriend("001");
+        user.addFriend("001");
         boolean result = user.unblockUser("001", true);
         assertFalse(result);
     }
 
     @Test
     void unblockUserTest3() {
-        user.AddFriend("001");
+        user.addFriend("001");
         user.blockUser("001");
         boolean result = user.unblockUser("001", true);
         assertTrue(result);
@@ -177,7 +199,7 @@ public class CommonUserTest {
 
     @Test
     void isBlockedTest2() {
-        user.AddFriend("001");
+        user.addFriend("001");
         user.blockUser("001");
         boolean result = user.isBlocked("001");
         assertTrue(result);

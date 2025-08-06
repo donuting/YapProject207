@@ -1,6 +1,5 @@
 package entity.GroupChatClass;
 
-import data_access.GroupChatDataAccessObject;
 import entity.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
