@@ -106,7 +106,7 @@ public class GroupChatDataAccessObject {
      * @param channelUrl the URL of the chat.
      * @param userId the ID of the user.
      */
-    public void addUser(String channelUrl, String userId) {
+    public GroupChat addUser(String channelUrl, String userId) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath(APPLICATION_ID);
 
@@ -119,6 +119,18 @@ public class GroupChatDataAccessObject {
                     .joinAChannelRequest(joinChannelRequest)
                     .execute();
             System.out.println(result);
+
+            List<SendbirdMember> members = result.getMembers();
+            List<String> memberIds = new ArrayList<>();
+            if (members != null) {
+                for (SendbirdMember member : members) {
+                    memberIds.add(member.getUserId());
+                }
+            }
+            String chatName = result.getName();
+            GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>(), channelUrl);
+            messageDataAccessObject.loadMessages(groupChat);
+            return groupChat;
         }
         catch (ApiException e) {
             System.err.println("Exception when calling GroupChannelApi#joinAChannel");
@@ -127,6 +139,7 @@ public class GroupChatDataAccessObject {
             System.err.println("Response headers: " + e.getResponseHeaders());
             e.printStackTrace();
         }
+        return null;
     }
 
     /**

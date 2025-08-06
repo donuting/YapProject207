@@ -10,6 +10,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The interactor for the Update Chat use case.
+ */
 public class UpdateChatInteractor implements UpdateChatInputBoundary {
     private final UpdateChatDataAccessInterface updateChatDataAccessObject;
     private final UpdateChatOutputBoundary presenter;

@@ -20,6 +20,7 @@ import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.delete_account.DeleteAccountDataAccessInterface;
+import use_case.join_chat.JoinChatDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.remove_friend.RemoveFriendDataAccessInterface;
@@ -38,7 +39,8 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         AddFriendUserDataAccessInterface,
         RemoveFriendDataAccessInterface,
         CreateChatUserDataAccessInterface,
-        DeleteAccountDataAccessInterface {
+        DeleteAccountDataAccessInterface,
+        JoinChatDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -244,6 +246,29 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    /**
+     * Loads a GroupChat object given its channel URL
+     *
+     * @param channelUrl the channel URL.
+     * @return the retrieved group chat.
+     */
+    @Override
+    public GroupChat load(String channelUrl) {
+        return groupChatDataAccessObject.load(channelUrl);
+    }
+
+    /**
+     * Adds a user to a group chat given its channel URL, and returns the updated group chat.
+     *
+     * @param userId     the user's ID.
+     * @param channelUrl the channel URL.
+     * @return the updated group chat.
+     */
+    @Override
+    public GroupChat addUser(String userId, String channelUrl) {
+        return groupChatDataAccessObject.addUser(userId, channelUrl);
     }
 
     /**
