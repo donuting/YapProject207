@@ -4,13 +4,14 @@ package entity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple implementation of the User interface.
  */
 public class CommonUser implements User {
 
-    private final String name;
+    private String name;
     private String password;
     private final String ID;
     private String biography;
@@ -19,6 +20,7 @@ public class CommonUser implements User {
     private List<String> blockedIDs;
     private List<GroupChat> groupChats;
     private List<GroupChat> personalChats;
+    private GroupChat selfChat;
 
     /**
      * A constructor for the CommonUser class. This should only be used in the signup and login use cases.
@@ -31,20 +33,18 @@ public class CommonUser implements User {
                       List<String> friendIDs,
                       List<String> blockedIDs,
                       List<GroupChat> groupChats,
-                      List<GroupChat> personalChats) {
+                      List<GroupChat> personalChats,
+                      GroupChat selfChat) {
         this.name = name;
         this.password = password;
-        if (ID != null) {
-            this.ID = ID;
-        } else {
-            this.ID = generateID();
-        }
+        this.ID = Objects.requireNonNullElseGet(ID, this::generateID);
         this.biography = biography;
         this.dateOfBirth = dateOfBirth;
         this.friendIDs = friendIDs;
         this.blockedIDs = blockedIDs;
         this.groupChats = groupChats;
         this.personalChats = personalChats;
+        this.selfChat = selfChat;
     }
 
     // Necessary methods
@@ -138,7 +138,11 @@ public class CommonUser implements User {
         userData.add ("blockedIDs", blockedIDsJson);
         userData.add("groupChannelURLs", groupChannelURLsJson);
         userData.add("personalChannelURLs", personalChannelURLsJson);
-
+        if (selfChat != null) {
+            userData.addProperty("selfChatURL", selfChat.getChannelURL());
+        } else {
+            userData.addProperty("selfChatURL", "");
+        }
         return userData;
     }
 
@@ -217,6 +221,16 @@ public class CommonUser implements User {
         return false;
     }
 
+    @Override
+    public GroupChat getSelfChat() {
+        return selfChat;
+    }
+
+    @Override
+    public void setSelfChat(GroupChat selfChat) {
+        this.selfChat = selfChat;
+    }
+
     /**
      * Unblocks a user.
      * Gives the option to add the user to their friends list again.
@@ -272,6 +286,16 @@ public class CommonUser implements User {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Sets the username of a user.
+     *
+     * @param username The new name.
+     */
+    @Override
+    public void setName(String username) {
+        this.name = username;
     }
 
 

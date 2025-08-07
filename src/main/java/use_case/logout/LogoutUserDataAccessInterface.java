@@ -1,5 +1,8 @@
 package use_case.logout;
 
+import entity.GroupChat;
+import entity.User;
+
 /**
  * DAO for the Logout Use Case.
  */
@@ -13,7 +16,13 @@ public interface LogoutUserDataAccessInterface {
 
     /**
      * Sets the username indicating who is the current user of the application.
-     * @param username the new current username
+     * @param user the new current usernserame
      */
-    void setCurrentUsername(String username);
+    void setCurrentUser(User user);
+
+    /**
+     * Sets the self chat corresponding to the current user of the application.
+     * @param selfChat the self chat
+     */
+    void setCurrentSelfChat(GroupChat selfChat);
 }

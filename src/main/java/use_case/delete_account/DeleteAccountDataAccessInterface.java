@@ -1,6 +1,9 @@
 package use_case.delete_account;
 
+import entity.User;
+
 public interface DeleteAccountDataAccessInterface {
-    boolean deleteUserById(String userId);
-    boolean deleteUserByUsername(String username);
+    boolean deleteUserById(String userId, String username);
+
+    User getCurrentUser();
 }

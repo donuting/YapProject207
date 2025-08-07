@@ -1,7 +1,9 @@
 package data_access;
 
 import java.io.IOException;
+import java.util.List;
 
+import entity.GroupChat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +62,7 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
                 final String name = userJSONObject.getString(USERNAME);
                 final String password = userJSONObject.getString(PASSWORD);
 
-                return userFactory.create(name, password);
+                return userFactory.create(name, password, null);
             }
             else {
                 throw new RuntimeException(responseBody.getString(MESSAGE));
@@ -129,16 +131,27 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         }
     }
 
+    /**
+     * Creates a new self chat for the user.
+     *
+     * @param memberIds the list of members of the self chat (just the user)
+     * @param chatName  the name of the self chat
+     */
     @Override
-    public void changePassword(User user) {
+    public GroupChat createSelfChat(List<String> memberIds, String chatName) {
+        return null;
+    }
+
+    @Override
+    public void changePassword(String username, String password) {
         final OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
 
         // POST METHOD
         final MediaType mediaType = MediaType.parse(CONTENT_TYPE_JSON);
         final JSONObject requestBody = new JSONObject();
-        requestBody.put(USERNAME, user.getName());
-        requestBody.put(PASSWORD, user.getPassword());
+        requestBody.put(USERNAME, username);
+        requestBody.put(PASSWORD, password);
         final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
         final Request request = new Request.Builder()
                 .url("http://vm003.teach.cs.toronto.edu:20112/user")
@@ -167,13 +180,40 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         return null;
     }
 
+    /**
+     * Sets the user indicating who is the current user of the application.
+     *
+     * @param user the new current user; null to indicate that no one is currently logged into the application.
+     */
     @Override
-    public boolean addBio(User user) {
-        return false;
+    public void setCurrentUser(User user) {
+
     }
 
     @Override
-    public boolean addDOB(User user) {
+    public void setCurrentSelfChat(GroupChat selfChat) {
+
+    }
+
+    /**
+     * Updates the system to record this user's bio.
+     *
+     * @param username the username of the updated user
+     * @param bio      the bio to be updated
+     */
+    @Override
+    public boolean addBio(String username, String bio) {
+        return false;
+    }
+
+    /**
+     * Updates the system to record this user's DOB.
+     *
+     * @param username the name of the user whose DOB is to be updated
+     * @param dob      the user's date of birth
+     */
+    @Override
+    public boolean addDOB(String username, String dob) {
         return false;
     }
 }

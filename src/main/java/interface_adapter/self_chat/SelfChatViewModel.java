@@ -1,6 +1,9 @@
 package interface_adapter.self_chat;
 
+import com.google.gson.JsonObject;
 import interface_adapter.ViewModel;
+
+import java.util.Map;
 
 /**
  * The View Model for the Self Chat View.
@@ -17,10 +20,10 @@ public class SelfChatViewModel extends ViewModel<SelfChatState> {
         setState(new SelfChatState());
     }
 
-    public void addMessage(String message) {
+    public void addMessages(Map<Integer, JsonObject> messageData) {
         SelfChatState currentState = getState();
         SelfChatState newState = new SelfChatState(currentState);
-        newState.addMessage(message, java.time.LocalDateTime.now());
+        newState.addMessageData(messageData);
         setState(newState);
     }
 

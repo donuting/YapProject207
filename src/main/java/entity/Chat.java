@@ -64,4 +64,10 @@ public interface Chat {
      * @return the message history.
      */
     List<Message> getMessageHistory();
+
+    /**
+     * Returns the name of this chat.
+     * @return the chat name.
+     */
+    String getName();
 }

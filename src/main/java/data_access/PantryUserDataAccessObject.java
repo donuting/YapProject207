@@ -1,10 +1,12 @@
 package data_access;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import endercrypt.library.jpantry.JPantry;
 import endercrypt.library.jpantry.PantryBasket;;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +39,7 @@ public class PantryUserDataAccessObject {
         // unimplemented for now
     }
 
-    public boolean blockFriend(String currentUsername, String blockedUsername) {
+    public String blockFriend(String currentUsername, String blockedUsername) {
         // This method only allows blocking one-way, not mutual blocking
         String blockedId = getUserDataFromUsername(blockedUsername).get("userId").getAsString();
         JsonArray blockedIDs = getUserDataFromUsername(currentUsername).getAsJsonArray("blockedIDs");
@@ -47,7 +49,7 @@ public class PantryUserDataAccessObject {
         JsonObject updateData = new JsonObject();
         updateData.add("blockedIDs", blockedIDs);
         basket.mergeJson(updateData).complete();
-        return true;
+        return blockedId;
     }
 
     public JsonObject getUserDataFromUsername(String username) {
@@ -69,5 +71,71 @@ public class PantryUserDataAccessObject {
         updateData.addProperty("dateOfBirth", dateOfBirth);
         basket.mergeJson(updateData).complete();
         return true;
+    }
+
+    public boolean addFriend(String currentUsername, String friendUsername) {
+        PantryBasket userBasket = pantry.getBasket(currentUsername);
+        PantryBasket friendBasket = pantry.getBasket(friendUsername);
+        String currentId = userBasket.getJson().complete().get("userId").getAsString();
+        String friendId = friendBasket.getJson().complete().get("userId").getAsString();
+
+        // Add friend to current user's friends
+        JsonObject currentUpdateData = new JsonObject();
+        JsonArray currentUserFriendIDs = getUserDataFromUsername(friendUsername).getAsJsonArray("friendIDs");
+        currentUserFriendIDs.add(currentId);
+        currentUpdateData.add("friendIDs", currentUserFriendIDs);
+        userBasket.mergeJson(currentUpdateData).complete();
+
+        // Add current user to friend's friends
+        JsonObject friendUpdateData = new JsonObject();
+        JsonArray friendFriendIDs = getUserDataFromUsername(friendUsername).getAsJsonArray("friendIDs");
+        friendFriendIDs.add(friendId);
+        friendUpdateData.add("friendIDs", friendFriendIDs);
+        userBasket.mergeJson(friendUpdateData).complete();
+
+        return true;
+    }
+
+    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+        JsonArray currentUserFriendsJson = getUserDataFromUsername(currentUsername).get("friendIDs").getAsJsonArray();
+        JsonElement friendID = getUserDataFromUsername(friendUsername).get("userId");
+        return currentUserFriendsJson.contains(friendID);
+    }
+
+    public boolean removeFriend(String currentUsername, String removedUsername) {
+        PantryBasket userBasket = pantry.getBasket(currentUsername);
+        PantryBasket friendBasket = pantry.getBasket(removedUsername);
+        JsonElement currentId = userBasket.getJson().complete().get("userId");
+        JsonElement friendId = friendBasket.getJson().complete().get("userId");
+
+        // Remove friend from current user's friends
+        JsonObject currentUpdateData = new JsonObject();
+        JsonArray currentUserFriendIDs = getUserDataFromUsername(currentUsername).getAsJsonArray("friendIDs");
+        currentUserFriendIDs.remove(currentId);
+        currentUpdateData.add("friendIDs", currentUserFriendIDs);
+        userBasket.mergeJson(currentUpdateData).complete();
+
+        // Remove current user from friend's friends
+        JsonObject friendUpdateData = new JsonObject();
+        JsonArray friendFriendIDs = getUserDataFromUsername(removedUsername).getAsJsonArray("friendIDs");
+        friendFriendIDs.remove(friendId);
+        friendUpdateData.add("friendIDs", friendFriendIDs);
+        userBasket.mergeJson(friendUpdateData).complete();
+
+        return true;
+    }
+
+    public void saveGroupChat(String username, String channelURL) {
+        JsonArray groupChats = getUserDataFromUsername(username).getAsJsonArray("groupChannelURLs");
+        groupChats.add(channelURL);
+
+        PantryBasket basket = pantry.getBasket(username);
+        JsonObject updateData = new JsonObject();
+        updateData.add("groupChannelURLs", groupChats);
+        basket.mergeJson(updateData).complete();
+    }
+
+    public void deleteUser(String username) {
+        pantry.setInformation(username, null);
     }
 }

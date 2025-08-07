@@ -55,8 +55,9 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
                     String userId = sendBirdMessage.getUser().getUserId();
                     String messageBody = sendBirdMessage.getMessage();
                     Integer messageId = sendBirdMessage.getMessageId();
+                    long updatedAt = sendBirdMessage.getUpdatedAt();
 
-                    Message message = messageFactory.create(userId, messageBody, messageId);
+                    Message message = messageFactory.create(userId, messageBody, messageId, updatedAt);
                     messageHistory.add(message);
                 }
             }
@@ -108,7 +109,12 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
      * @param chat the chat in which the message will be sent
      */
     @Override
-    public boolean sendMessage(Message message, Chat chat) {
+    public Message sendMessage(Message message, Chat chat) {
+
+        // The below code is a different implementation of this method,  the
+        // library we are using doesn't allow us to specify the userID sending
+        // the message (ie it is bugged, this should not be the case),
+        // so we are just using a different implementation (using OkHttp).
 
         final OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -119,8 +125,13 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
         requestBody.put("message_type", "MESG");
         requestBody.put("user_id", message.GetSenderId());
         requestBody.put("message", message.GetText());
-        requestBody.put("created_at", System.currentTimeMillis());
-        requestBody.put("updated_at", System.currentTimeMillis());
+
+        long createdAt = message.getTimestamp();
+        if (createdAt == 0L) {
+            createdAt = System.currentTimeMillis();
+        }
+        requestBody.put("created_at", createdAt);
+        requestBody.put("updated_at", createdAt);
 
         final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
 
@@ -137,9 +148,9 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
             final JSONObject responseBody = new JSONObject(response.body().string());
 
             if (response.code() == 200) {
-                Integer messageId = responseBody.getInt("message_id");
+                Integer messageId = (int) responseBody.getLong("message_id");
                 message.SetMID(messageId);
-                return true;
+                return message;
             }
             else {
                 System.out.println(response.code());
@@ -147,53 +158,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
                 throw new RuntimeException(responseBody.getString("message"));
             }
         } catch (IOException | JSONException ex) {
-            throw new RuntimeException(ex);
+            return null;
         }
-
-        // The below code is the normal implementation of this method, but the
-        // library we are using doesn't allow us to specify the userID sending
-        // the message (ie it is bugged, this should not be the case),
-        // so we are just using a different implementation (using OkHttp).
-
-
-//        ApiClient defaultClient = Configuration.getDefaultApiClient();
-//        defaultClient.setBasePath(APPLICATION_ID);
-//
-//        MessageApi apiInstance = new MessageApi(defaultClient);
-//        String channelType = "group_channels"; // String | (Required)
-//        String channelUrl = chat.getChannelURL(); // String | (Required)
-//        String userId = message.GetSenderId();
-//
-//        String apiToken = API_TOKEN; // String |
-//        SendTextMessageRequestBody sendTextMessageRequestBody = new SendTextMessageRequestBody()
-//                .message(message.GetText())
-//                .messageType(SendTextMessageRequestBody.MessageTypeEnum.MESG)
-//                .data(userId)
-//                .createdAt(System.currentTimeMillis());
-//        // We are storing the userID in the parameter data, because the
-//        // library doesn't allow you to specify the userID sending the message
-//
-//        SendAMessageRequest sendAMessageRequest = new SendAMessageRequest();
-//        sendAMessageRequest.setActualInstance(sendTextMessageRequestBody);
-//
-//        try {
-//            SendbirdMessageResponse result = apiInstance.sendAMessage(channelType, channelUrl)
-//                    .apiToken(apiToken)
-//                    .sendAMessageRequest(sendAMessageRequest)
-//                    .execute();
-//            System.out.println(result);
-//
-//            message.SetMID(result.getMessageId()); // Set message ID given by SendBird
-//
-//            return true;
-//
-//        } catch (ApiException e) {
-//            System.err.println("Exception when calling MessageApi#sendAMessage");
-//            System.err.println("Status code: " + e.getCode());
-//            System.err.println("Reason: " + e.getResponseBody());
-//            System.err.println("Response headers: " + e.getResponseHeaders());
-//            e.printStackTrace();
-//        }
-//        return false;
     }
 }

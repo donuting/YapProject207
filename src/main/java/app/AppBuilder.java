@@ -6,20 +6,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import data_access.InMemoryUserDataAccessObject;
 import data_access.InMemorySelfChatUserDataAccessObject;
+import data_access.InMemoryUserDataAccessObject;
 import data_access.MessageDataAccessObject;
 import entity.CommonUserFactory;
-import entity.MessageFactory;
+import entity.GroupChatFactory;
 import entity.UserFactory;
-
+import interface_adapter.ViewManagerModel;
 import interface_adapter.add_chat.AddChatController;
 import interface_adapter.add_chat.AddChatPresenter;
 import interface_adapter.add_chat.AddChatViewModel;
 import interface_adapter.add_friend.AddFriendController;
 import interface_adapter.add_friend.AddFriendPresenter;
 import interface_adapter.add_friend.AddFriendViewModel;
-import interface_adapter.ViewManagerModel;
 import interface_adapter.change_password.ChangePasswordController;
 import interface_adapter.change_password.ChangePasswordPresenter;
 import interface_adapter.change_password.LoggedInViewModel;
@@ -33,50 +32,39 @@ import interface_adapter.main_menu.MainMenuViewModel;
 import interface_adapter.profile_and_settings.PandSController;
 import interface_adapter.profile_and_settings.PandSPresenter;
 import interface_adapter.profile_and_settings.PandSViewModel;
-import interface_adapter.view_chats.ViewChatsController;
-import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.self_chat.SelfChatController;
 import interface_adapter.self_chat.SelfChatPresenter;
 import interface_adapter.self_chat.SelfChatViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-
-
-import use_case.add_friend.AddFriendInputBoundary;
-import use_case.add_friend.AddFriendInteractor;
-import use_case.add_friend.AddFriendUserDataAccessInterface;
-
+import interface_adapter.view_chats.ViewChatsController;
+import interface_adapter.view_chats.ViewChatsViewModel;
 import use_case.add_Bio.AddBioInputBoundary;
 import use_case.add_Bio.AddBioInteractor;
-import use_case.add_Bio.AddBioOutputBoundary;
 import use_case.add_DOB.AddDOBInputBoundary;
 import use_case.add_DOB.AddDOBInteractor;
-
-import use_case.create_chat.CreateChatInputBoundary;
-import use_case.create_chat.CreateChatInteractor;
-import use_case.create_chat.CreateChatOutputBoundary;
+import use_case.add_friend.AddFriendInputBoundary;
+import use_case.add_friend.AddFriendInteractor;
 import use_case.add_friend.AddFriendOutputBoundary;
-import use_case.self_chat.SelfChatInputBoundary;
-import use_case.self_chat.SelfChatInteractor;
-import use_case.self_chat.SelfChatOutputBoundary;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
+import use_case.create_chat.CreateChatInputBoundary;
+import use_case.create_chat.CreateChatInteractor;
+import use_case.create_chat.CreateChatOutputBoundary;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
-import use_case.send_message.SendMessageDataAccessInterface;
-import use_case.send_message.SendMessageInputBoundary;
-import use_case.send_message.SendMessageInteractor;
-import use_case.send_message.SendMessageOutputBoundary;
+import use_case.self_chat.SelfChatInputBoundary;
+import use_case.self_chat.SelfChatInteractor;
+import use_case.self_chat.SelfChatOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
-
 import view.*;
 
 /**
@@ -92,8 +80,10 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
-    private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject(); // Todo: Add the DAOs to the App Builder (so far just SendBirdUserDataAccessObject and GroupChatDataAccessObject)
-    private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject = new InMemorySelfChatUserDataAccessObject();
+    private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
+    // Todo: Add the DAOs to the App Builder (so far just SendBirdUserDataAccessObject and GroupChatDataAccessObject)
+    private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject =
+            new InMemorySelfChatUserDataAccessObject();
     private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
 
     private SignupView signupView;
@@ -118,7 +108,6 @@ public class AppBuilder {
 
     private ProfileandSettingView profileandSettingView;
     private PandSViewModel profileandSettingViewModel;
-
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -179,6 +168,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Adds the AddChat View to the application.
+     * @return this builder
+     */
     public AppBuilder addAddChatView() {
         addChatViewModel = new AddChatViewModel();
         addChatView = new AddChatView(addChatViewModel);
@@ -208,7 +201,11 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addProfileandSettingsView(){
+    /**
+     * Adds the Profile and Settings View to the application.
+     * @return this builder
+     */
+    public AppBuilder addProfileandSettingsView() {
         profileandSettingViewModel = new PandSViewModel();
         profileandSettingView = new ProfileandSettingView(profileandSettingViewModel);
         cardPanel.add(profileandSettingView, profileandSettingView.getViewName());
@@ -235,8 +232,9 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addLoginUseCase() {
+        // Changed to navigate to main menu
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
-                mainMenuViewModel, loginViewModel);  // Changed to navigate to main menu
+                mainMenuViewModel, loginViewModel);
         final LoginInputBoundary loginInteractor = new LoginInteractor(
                 userDataAccessObject, loginOutputBoundary);
 
@@ -279,18 +277,19 @@ public class AppBuilder {
         return this;
     }
 
-
-//    /**
-//     * Adds the AddChat Use Case to the application.
-//     * @return this builder
-//     */
-//    public AppBuilder addAddChatUseCase() {
-//        final CreateChatOutputBoundary createChatOutputBoundary = new AddChatPresenter(viewManagerModel, addChatViewModel);
-//        final CreateChatInputBoundary createChatInteractor = new CreateChatInteractor(groupChatDataAccessObject, groupChatPresenter, chatFactory);
-//        final AddChatController addChatController = new AddChatController(createChatInteractor);
-//        addChatView.setAddChatController(addChatController);
-//        return this;
-//    }
+    /**
+     * Adds the AddChat Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addAddChatUseCase() {
+        final CreateChatOutputBoundary createChatOutputBoundary =
+                new AddChatPresenter(viewManagerModel, addChatViewModel);
+        final CreateChatInputBoundary createChatInteractor =
+                new CreateChatInteractor(userDataAccessObject, createChatOutputBoundary, new GroupChatFactory());
+        final AddChatController addChatController = new AddChatController(createChatInteractor, viewManagerModel);
+        addChatView.setAddChatController(addChatController);
+        return this;
+    }
 
     /**
      * Adds the Add Friend Use Case to the application.
@@ -309,6 +308,10 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Adds the Profile and Settings Use Case to the application.
+     * @return this builder
+     */
     public AppBuilder addProfileandSettingsUseCase() {
         final ChangePasswordOutputBoundary changePasswordOutputBoundary =
                 new ChangePasswordPresenter(loggedInViewModel);
@@ -316,18 +319,22 @@ public class AppBuilder {
         final ChangePasswordInputBoundary changePasswordInteractor =
                 new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
 
-        final PandSPresenter pandSPresenter =
+        final PandSPresenter profileAndSettingsPresenter =
                 new PandSPresenter(profileandSettingViewModel);
 
         final AddBioInputBoundary addBioInputBoundary =
-                new AddBioInteractor(userDataAccessObject, pandSPresenter, userFactory);
+                new AddBioInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
-        final AddDOBInputBoundary addDOBInputBoundary =
-                new AddDOBInteractor(userDataAccessObject, pandSPresenter, userFactory);
+        final AddDOBInputBoundary addDateOfBirthInputBoundary =
+                new AddDOBInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory);
 
-
-        final PandSController pandSController = new PandSController(viewManagerModel,mainMenuViewModel,profileandSettingViewModel, changePasswordInteractor, addBioInputBoundary, addDOBInputBoundary);
-        profileandSettingView.setPandSController(pandSController);
+        final PandSController profileAndSettingsController = new PandSController(viewManagerModel,
+                mainMenuViewModel,
+                profileandSettingViewModel,
+                changePasswordInteractor,
+                addBioInputBoundary,
+                addDateOfBirthInputBoundary);
+        profileandSettingView.setPandSController(profileAndSettingsController);
         return this;
     }
 
@@ -336,7 +343,12 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addMainMenuUseCase() {
-        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel, logoutController, viewChatsViewModel, mainMenuViewModel, addFriendViewModel, profileandSettingViewModel);
+        final MainMenuController mainMenuController = new MainMenuController(viewManagerModel,
+                logoutController,
+                viewChatsViewModel,
+                mainMenuViewModel,
+                addFriendViewModel,
+                profileandSettingViewModel);
         mainMenuView.setMainMenuController(mainMenuController);
         return this;
     }
@@ -346,7 +358,10 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addViewChatsUseCase() {
-        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel, addChatViewModel, viewChatsViewModel, selfChatViewModel);
+        final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel,
+                addChatViewModel,
+                viewChatsViewModel,
+                selfChatViewModel);
         viewChatsView.setViewChatsController(viewChatsController);
         return this;
     }

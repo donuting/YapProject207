@@ -77,4 +77,15 @@ public interface User {
      */
     boolean removeFriend(String userId);
 
+    /**
+     * Sets the username of a user.
+     * @param username The new name.
+     */
+    void setName(String username);
+
+    boolean blockUser(String userId);
+
+    GroupChat getSelfChat();
+
+    void setSelfChat(GroupChat selfChat);
 }

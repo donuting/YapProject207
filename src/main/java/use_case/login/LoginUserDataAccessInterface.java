@@ -1,5 +1,6 @@
 package use_case.login;
 
+import entity.GroupChat;
 import entity.User;
 
 /**
@@ -34,8 +35,10 @@ public interface LoginUserDataAccessInterface {
     String getCurrentUsername();
 
     /**
-     * Sets the username indicating who is the current user of the application.
-     * @param username the new current username; null to indicate that no one is currently logged into the application.
+     * Sets the user indicating who is the current user of the application.
+     * @param user the new current user; null to indicate that no one is currently logged into the application.
      */
-    void setCurrentUsername(String username);
+    void setCurrentUser(User user);
+
+    void setCurrentSelfChat(GroupChat selfChat);
 }

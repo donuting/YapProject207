@@ -21,18 +21,16 @@ public class AddDOBInteractor implements AddDOBInputBoundary {
 
     @Override
     public void execute(AddDOBInputData addDOBInputData) {
-        final User user = userFactory.create(addDOBInputData.getUsername(),
-                                            addDOBInputData.getPassword());
-        String dob = user.getDOB();
-        user.EditDOB(addDOBInputData.getDOB());
-        boolean result = userDataAccessObject.addDOB(user);
+        String dob = addDOBInputData.getDOB();
+        String username = addDOBInputData.getUsername();
+        boolean result = userDataAccessObject.addDOB(username, dob);
 
         if (result) {
-            final AddDOBOutputData addDOBOutputData = new AddDOBOutputData(user.getName(), false, addDOBInputData.getDOB());
+            final AddDOBOutputData addDOBOutputData = new AddDOBOutputData(username, false, dob);
             userPresenter.prepareSuccessAddDOBView(addDOBOutputData);
         }
         else {
-            final AddDOBOutputData addDOBOutputData = new AddDOBOutputData(user.getName(), true, dob);
+            final AddDOBOutputData addDOBOutputData = new AddDOBOutputData(username, true, dob);
             userPresenter.prepareFailAddDOBView("Failed Adding DOB", addDOBOutputData);
         }
 

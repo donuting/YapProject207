@@ -2,6 +2,7 @@ package use_case.create_chat;
 
 import entity.GroupChat;
 import entity.GroupChatFactory;
+import entity.User;
 
 import java.util.List;
 
@@ -15,4 +16,18 @@ public interface CreateChatUserDataAccessInterface {
      * @return the newly created GroupChat
      */
     GroupChat create(List<String> memberIDs, String chatName, GroupChatFactory groupChatFactory);
+
+    /**
+     * Get the current user.
+     *
+     * @return the current user.
+     */
+    User getCurrentUser();
+
+    /**
+     * Save a group chat to a user.
+     *
+     * @param newGroupChat the group chat.
+     */
+    void saveGroupChat(GroupChat newGroupChat, String username);
 }

@@ -1,7 +1,16 @@
 package interface_adapter.self_chat;
 
+import com.google.gson.JsonObject;
+import entity.Message;
 import use_case.self_chat.SelfChatOutputBoundary;
 import use_case.self_chat.SelfChatOutputData;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Presenter for the Self Chat Use Case.
@@ -17,8 +26,27 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
     @Override
     public void presentMessage(SelfChatOutputData outputData) {
         if (outputData.isSuccess()) {
-            // Message was successfully added
-            selfChatViewModel.addMessage(outputData.getMessage());
+            // Messages were successfully added
+            selfChatViewModel.setUsername(outputData.getUsername());
+
+            Map<Integer, JsonObject> messageData = new HashMap<>();
+            for (Message message : outputData.getMessages()) {
+
+                // convert timestamp to LocalTimeDate
+                Instant instant = Instant.ofEpochMilli(message.getTimestamp());
+                ZoneId zoneId = ZoneId.systemDefault();
+                LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+                String formattedDate = localDateTime.format(formatter);
+
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("timestamp", formattedDate);
+                jsonObject.addProperty("message_body", message.GetText());
+                jsonObject.addProperty("message_ID", message.GetMID());
+
+                messageData.put(message.GetMID(), jsonObject);
+            }
+            selfChatViewModel.addMessages(messageData);
         } else {
             // There was an error
             selfChatViewModel.setErrorMessage(outputData.getErrorMessage());
@@ -31,20 +59,6 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
             selfChatViewModel.clearMessages();
         } else {
             selfChatViewModel.setErrorMessage(errorMessage);
-        }
-    }
-
-    @Override
-    public void presentLoadedMessages(SelfChatOutputData outputData) {
-        if (outputData.isSuccess()) {
-            // Update the view model with loaded messages
-            selfChatViewModel.setState(new SelfChatState());
-            for (int i = 0; i < outputData.getAllMessages().size(); i++) {
-                String message = outputData.getAllMessages().get(i);
-                selfChatViewModel.addMessage(message);
-            }
-        } else {
-            selfChatViewModel.setErrorMessage(outputData.getErrorMessage());
         }
     }
 

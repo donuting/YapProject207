@@ -1,9 +1,10 @@
 package data_access;
 
+import entity.GroupChat;
+import entity.Message;
+import entity.User;
 import use_case.self_chat.SelfChatUserDataAccessInterface;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,65 +13,53 @@ import java.util.List;
  */
 public class InMemorySelfChatUserDataAccessObject implements SelfChatUserDataAccessInterface {
 
-    private final List<String> messages;
-    private final List<LocalDateTime> timestamps;
+    private final SendBirdUserDataAccessObject sendBirdUserDataAccessObject = new SendBirdUserDataAccessObject();
+    private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
 
-    public InMemorySelfChatUserDataAccessObject() {
-        this.messages = new ArrayList<>();
-        this.timestamps = new ArrayList<>();
-    }
-
+    /**
+     * Sends a message in a user's self chat.
+     *
+     * @return the message sent
+     */
     @Override
-    public void saveMessage(String message, LocalDateTime timestamp) {
-        if (message == null || timestamp == null) {
+    public Message sendMessage(Message message) {
+        if (message.GetText() == null) {
             throw new IllegalArgumentException("Message and timestamp cannot be null");
         }
-
-        messages.add(message);
-        timestamps.add(timestamp);
+        GroupChat selfChat = sendBirdUserDataAccessObject.getCurrentSelfChat();
+        return messageDataAccessObject.sendMessage(message, selfChat);
     }
 
+    /**
+     * Gets all saved messages.
+     *
+     * @return list of all messages
+     */
     @Override
-    public List<String> getAllMessages() {
-        return new ArrayList<>(messages);
+    public List<Message> loadMessages() {
+        GroupChat selfChat = sendBirdUserDataAccessObject.getCurrentSelfChat();
+        messageDataAccessObject.loadMessages(selfChat);
+        return selfChat.getMessageHistory();
     }
 
-    @Override
-    public List<LocalDateTime> getAllTimestamps() {
-        return new ArrayList<>(timestamps);
-    }
-
+    /**
+     * Clears all messages in the self chat.
+     */
     @Override
     public void clearAllMessages() {
-        messages.clear();
-        timestamps.clear();
+        GroupChat selfChat = sendBirdUserDataAccessObject.getCurrentSelfChat();
+        for (Message message : selfChat.getMessageHistory()) {
+            messageDataAccessObject.deleteMessage(message.GetMID().toString(), selfChat);
+        }
     }
 
     /**
-     * Gets the number of stored messages.
-     * @return the count of messages
+     * Returns the current user.
+     *
+     * @return the current user.
      */
-    public int getMessageCount() {
-        return messages.size();
-    }
-
-    /**
-     * Gets a specific message by index.
-     * @param index the index of the message
-     * @return the message at the specified index
-     * @throws IndexOutOfBoundsException if index is invalid
-     */
-    public String getMessage(int index) {
-        return messages.get(index);
-    }
-
-    /**
-     * Gets a specific timestamp by index.
-     * @param index the index of the timestamp
-     * @return the timestamp at the specified index
-     * @throws IndexOutOfBoundsException if index is invalid
-     */
-    public LocalDateTime getTimestamp(int index) {
-        return timestamps.get(index);
+    @Override
+    public User getCurrentUser() {
+        return sendBirdUserDataAccessObject.getCurrentUser();
     }
 }
