@@ -59,7 +59,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
                     final String[] col = row.split(",");
                     final String username = String.valueOf(col[headers.get("username")]);
                     final String password = String.valueOf(col[headers.get("password")]);
-                    final User user = userFactory.create(username, password, null);
+                    final User user = userFactory.create(username, password);
                     accounts.put(username, user);
                 }
             }

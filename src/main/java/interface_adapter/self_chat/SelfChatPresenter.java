@@ -33,7 +33,7 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
             for (Message message : outputData.getMessages()) {
 
                 // convert timestamp to LocalTimeDate
-                Instant instant = Instant.ofEpochMilli(message.getTimestamp());
+                Instant instant = Instant.ofEpochMilli(Long.getLong(message.getTimestamp()));
                 ZoneId zoneId = ZoneId.systemDefault();
                 LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");

@@ -31,7 +31,8 @@ public interface Message {
 
     /**
      * returns the timestamp of the message.
+     *
      * @return timestamp of the message
      */
-    long getTimestamp();
+    String getTimestamp();
 }

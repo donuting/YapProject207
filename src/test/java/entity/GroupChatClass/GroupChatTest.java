@@ -78,7 +78,7 @@ public class GroupChatTest {
 
     @Test
     void AddMessageTest1(){
-        CommonMessage message = new CommonMessage("100", "Test Message", 10);
+        CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
         boolean result = group.AddMessage(message);
         assertTrue(result);
         List<Message> messages = group.getMessageHistory();
@@ -87,7 +87,7 @@ public class GroupChatTest {
 
     @Test
     void AddMessageTest2(){
-       CommonMessage message = new CommonMessage("200", "Test Message", 10);
+       CommonMessage message = new CommonMessage("200", "Test Message", 10, "0000");
        boolean result = group.AddMessage(message);
        assertFalse(result);
     }
@@ -100,7 +100,7 @@ public class GroupChatTest {
                 new ArrayList<GroupChat>());
         group.AddMember("200");
         user.blockUser("200");
-        CommonMessage message = new CommonMessage("100", "Test Message", 10);
+        CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
         boolean result = group.AddMessage(message);
         assertFalse(result);
     }
@@ -113,14 +113,14 @@ public class GroupChatTest {
                 new ArrayList<GroupChat>());
         group.AddMember("200");
         newUser.blockUser("100");
-        CommonMessage message = new CommonMessage("100", "Test Message", 10);
+        CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
         boolean result = group.AddMessage(message);
         assertFalse(result);
     }
 
     @Test
     void DeleteMessageTest(){
-        CommonMessage message = new CommonMessage("100", "Test Message", 10);
+        CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
         group.AddMessage(message);
         boolean result = group.DeleteMessage(message);
         assertTrue(result);
@@ -160,7 +160,7 @@ public class GroupChatTest {
     void setMessageHistoryTest(){
         List<Message> messages = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
-            CommonMessage message = new CommonMessage("100", "Test Message"+i, i);
+            CommonMessage message = new CommonMessage("100", "Test Message"+i, i, Integer.toString(i));
             messages.add(message);
         }
         group.setMessageHistory(messages);
