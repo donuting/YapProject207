@@ -9,21 +9,40 @@ import java.util.List;
 public class CommonUserFactory implements UserFactory {
 
     @Override
-    public User create(String name, String password, GroupChat selfChat) {
-        return new CommonUser(name, password, null, "", "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), selfChat);
+    public User create(String name, String password) {
+
+        return new CommonUser(name, password, null,
+                "", "", new ArrayList<String>(),
+                new ArrayList<String>(), new ArrayList<GroupChat>(),
+                new ArrayList<GroupChat>());
+
     }
 
     @Override
-    public User create(String name,
-                       String password,
-                       String ID,
-                       String biography,
-                       String dateOfBirth,
-                       List<String> friendIDs,
-                       List<String> blockedIDs,
-                       List<GroupChat> groupChats,
-                       List<GroupChat> personalChats,
-                       GroupChat selfChat) {
-        return new CommonUser(name, password, ID, biography, dateOfBirth, friendIDs, blockedIDs, groupChats, personalChats, selfChat);
+    public User create(String name, String password,
+                       String ID, String biography,
+                       String dateOfBirth, List<String> friendIDs,
+                       List<String> blockedIDs, List<GroupChat> groupChats,
+                       List<GroupChat> personalChats, GroupChat selfChat) {
+
+        return new CommonUser(name, password,
+                ID, biography, dateOfBirth,
+                friendIDs, blockedIDs, groupChats,
+                personalChats, selfChat);
+
     }
+
+    @Override
+    public User create(String name, String password,
+                       String ID, String biography,
+                       String dateOfBirth, List<String> friendIDs,
+                       List<String> blockedIDs, List<GroupChat> groupChats,
+                       List<GroupChat> personalChats) {
+
+        return new CommonUser(name, password, ID, biography, dateOfBirth,
+                friendIDs, blockedIDs, groupChats, personalChats);
+
+    }
+
+
 }

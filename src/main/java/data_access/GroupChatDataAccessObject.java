@@ -47,7 +47,9 @@ public class GroupChatDataAccessObject {
                     .execute();
             System.out.println(result);
 
-            return groupChatFactory.create(memberIds, chatName, new ArrayList<>(), result.getChannelUrl());
+            GroupChat groupChat = groupChatFactory.create(memberIds, chatName, new ArrayList<>());
+            groupChat.setChannelURL(result.getChannelUrl());
+            return groupChat;
 
         }
         catch (ApiException e) {
@@ -87,7 +89,8 @@ public class GroupChatDataAccessObject {
                 }
             }
             String chatName = result.getName();
-            GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>(), channelUrl);
+            GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
+            groupChat.setChannelURL(channelUrl);
             messageDataAccessObject.loadMessages(groupChat);
             return groupChat;
         }
@@ -128,7 +131,8 @@ public class GroupChatDataAccessObject {
                 }
             }
             String chatName = result.getName();
-            GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>(), channelUrl);
+            GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
+            groupChat.setChannelURL(channelUrl);
             messageDataAccessObject.loadMessages(groupChat);
             return groupChat;
         }
@@ -229,7 +233,8 @@ public class GroupChatDataAccessObject {
         }
         String chatName = sendBirdGroupChannel.getName();
         String channelUrl = sendBirdGroupChannel.getChannelUrl();
-        GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>(), channelUrl);
+        GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
+        groupChat.setChannelURL(channelUrl);
         messageDataAccessObject.loadMessages(groupChat);
         return groupChat;
     }

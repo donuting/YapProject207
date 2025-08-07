@@ -57,7 +57,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
                     Integer messageId = sendBirdMessage.getMessageId();
                     long updatedAt = sendBirdMessage.getUpdatedAt();
 
-                    Message message = messageFactory.create(userId, messageBody, messageId, updatedAt);
+                    Message message = messageFactory.create(userId, messageBody, messageId, Long.toString(updatedAt));
                     messageHistory.add(message);
                 }
             }
@@ -126,7 +126,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
         requestBody.put("user_id", message.GetSenderId());
         requestBody.put("message", message.GetText());
 
-        long createdAt = message.getTimestamp();
+        long createdAt = Long.getLong(message.getTimestamp());
         if (createdAt == 0L) {
             createdAt = System.currentTimeMillis();
         }

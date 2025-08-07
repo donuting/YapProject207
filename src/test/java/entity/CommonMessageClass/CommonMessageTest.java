@@ -30,7 +30,7 @@ public class CommonMessageTest {
 
     @Test
     void getMIDTest(){
-        commonMessage = new CommonMessage("69", "Test Message", 100);
+        commonMessage = new CommonMessage("69", "Test Message", 100, "0000");
         Integer MID = commonMessage.GetMID();
         assertEquals(100, MID);
     }
