@@ -28,14 +28,6 @@ public interface AddFriendUserDataAccessInterface {
      * @return the user with the given ID
      */
     User get(String username);
-//
-//    /**
-//     * Returns the user with the given username and ID, more secure.
-//     * @param username the username to loop up
-//     * @param userID the ID to look up
-//     * @return the user with the given ID and username
-//     */
-//    User getFriendUser(String username, String userID);
 
     /**
      * Add friendship.
@@ -44,4 +36,12 @@ public interface AddFriendUserDataAccessInterface {
      * @return true if friendship was successful
      */
     boolean addFriend(String currentUsername, String friendUsername);
+
+     
+     
+     
+     
+    
+
+
 }

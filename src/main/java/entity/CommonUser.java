@@ -177,7 +177,7 @@ public class CommonUser implements User {
      * @param userId The friend to be added.
      * @return true if successful otherwise false
      */
-    public boolean AddFriend(String userId) {
+    public boolean addFriend(String userId) {
         friendIDs.add(userId);
         return true;
     }
@@ -240,7 +240,7 @@ public class CommonUser implements User {
     public boolean unblockUser(String userId, boolean addAsFriend) {
         boolean unblocked = blockedIDs.remove(userId);
         if (unblocked && addAsFriend) {
-            AddFriend(userId);
+            addFriend(userId);
         }
         return unblocked;
     }
@@ -254,9 +254,19 @@ public class CommonUser implements User {
         return blockedIDs;
     }
 
-    public boolean isBlocked(User user) {
-        return blockedIDs.contains(user.getID());
+    public boolean isBlocked(String userID) {
+        return blockedIDs.contains(userID);
     }
+
+    //VisibleForTesting
+    public List<String> getFriendIDs() {return friendIDs;}
+
+    //VisibleForTesting
+    public List<GroupChat> getGroupChats() {return groupChats;}
+
+    //VisibleForTesting
+    public List<GroupChat> getPersonalChats() {return personalChats;}
+
 
     /**
      * Removes a user from this user's friend list.
