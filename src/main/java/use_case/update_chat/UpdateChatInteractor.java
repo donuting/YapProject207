@@ -50,7 +50,8 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
         Chat previousActiveChat = updateChatDataAccessObject.getActiveChat();
         if (previousActiveChat == null) {
             GroupChatFactory groupChatFactory = new GroupChatFactory();
-            previousActiveChat = groupChatFactory.create(new ArrayList<>(), "", new ArrayList<>(), "");
+            previousActiveChat = groupChatFactory.create(new ArrayList<>(), "", new ArrayList<>());
+            previousActiveChat.setChannelURL("");
         }
 
         // Load the new active chat

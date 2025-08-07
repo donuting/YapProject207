@@ -20,5 +20,5 @@ public interface MessageFactory {
      * @param text the text of the new message
      * @return the new user
      */
-    Message create(String senderId, String text, Integer messageId, long timestamp);
+    Message create(String senderId, String text, Integer messageId, String timestamp);
 }

@@ -33,6 +33,27 @@ public class CommonUser implements User {
                       List<String> friendIDs,
                       List<String> blockedIDs,
                       List<GroupChat> groupChats,
+                      List<GroupChat> personalChats) {
+        this.name = name;
+        this.password = password;
+        this.ID = Objects.requireNonNullElseGet(ID, this::generateID);
+        this.biography = biography;
+        this.dateOfBirth = dateOfBirth;
+        this.friendIDs = friendIDs;
+        this.blockedIDs = blockedIDs;
+        this.groupChats = groupChats;
+        this.personalChats = personalChats;
+        this.selfChat = null;
+    }
+
+    public CommonUser(String name,
+                      String password,
+                      String ID,
+                      String biography,
+                      String dateOfBirth,
+                      List<String> friendIDs,
+                      List<String> blockedIDs,
+                      List<GroupChat> groupChats,
                       List<GroupChat> personalChats,
                       GroupChat selfChat) {
         this.name = name;

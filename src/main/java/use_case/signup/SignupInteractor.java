@@ -15,7 +15,6 @@ public class SignupInteractor implements SignupInputBoundary {
     private final SignupUserDataAccessInterface userDataAccessObject;
     private final SignupOutputBoundary userPresenter;
     private final UserFactory userFactory;
-    private final GroupChatFactory groupChatFactory;
 
     public SignupInteractor(SignupUserDataAccessInterface signupDataAccessInterface,
                             SignupOutputBoundary signupOutputBoundary,
@@ -23,7 +22,6 @@ public class SignupInteractor implements SignupInputBoundary {
         this.userDataAccessObject = signupDataAccessInterface;
         this.userPresenter = signupOutputBoundary;
         this.userFactory = userFactory;
-        this.groupChatFactory = new GroupChatFactory();
     }
 
     @Override
@@ -35,7 +33,7 @@ public class SignupInteractor implements SignupInputBoundary {
             userPresenter.prepareFailView("Passwords don't match.");
         }
         else {
-            final User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), null);
+            final User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword());
 
             // create the new user's self chat
             List<String> memberIds = new ArrayList<>();

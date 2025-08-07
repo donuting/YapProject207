@@ -8,6 +8,13 @@ public class GroupChat implements Chat {
     private List<Message> messageHistory;
     private String channelURL = null; // placeholder
 
+    public GroupChat(List<String> memberIDs, String chatName, List<Message> messageHistory) {
+        this.memberIDs = memberIDs;
+        this.chatName = chatName;
+        this.messageHistory = messageHistory;
+        this.channelURL = "";
+    }
+
     public GroupChat(List<String> memberIDs, String chatName, List<Message> messageHistory, String channelURL) {
         this.memberIDs = memberIDs;
         this.chatName = chatName;
