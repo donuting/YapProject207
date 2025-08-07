@@ -48,7 +48,7 @@ public class GroupChatDataAccessObject {
             System.out.println(result);
 
             GroupChat groupChat = groupChatFactory.create(memberIds, chatName, new ArrayList<>());
-            groupChat.setChannelURL(result.getChannelUrl());
+            groupChat.setChannelUrl(result.getChannelUrl());
             return groupChat;
 
         }
@@ -90,7 +90,7 @@ public class GroupChatDataAccessObject {
             }
             String chatName = result.getName();
             GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
-            groupChat.setChannelURL(channelUrl);
+            groupChat.setChannelUrl(channelUrl);
             messageDataAccessObject.loadMessages(groupChat);
             return groupChat;
         }
@@ -132,7 +132,7 @@ public class GroupChatDataAccessObject {
             }
             String chatName = result.getName();
             GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
-            groupChat.setChannelURL(channelUrl);
+            groupChat.setChannelUrl(channelUrl);
             messageDataAccessObject.loadMessages(groupChat);
             return groupChat;
         }
@@ -234,7 +234,7 @@ public class GroupChatDataAccessObject {
         String chatName = sendBirdGroupChannel.getName();
         String channelUrl = sendBirdGroupChannel.getChannelUrl();
         GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
-        groupChat.setChannelURL(channelUrl);
+        groupChat.setChannelUrl(channelUrl);
         messageDataAccessObject.loadMessages(groupChat);
         return groupChat;
     }

@@ -51,7 +51,7 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
         if (previousActiveChat == null) {
             GroupChatFactory groupChatFactory = new GroupChatFactory();
             previousActiveChat = groupChatFactory.create(new ArrayList<>(), "", new ArrayList<>());
-            previousActiveChat.setChannelURL("");
+            previousActiveChat.setChannelUrl("");
         }
 
         // Load the new active chat
@@ -78,8 +78,8 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
             removedMessages.removeAll(updatedMessages);
 
             // Make a list of new users and a list of removed users.
-            List<String> oldUsers = previousActiveChat.getMemberIDs();
-            List<String> updatedUsers = newActiveChat.getMemberIDs();
+            List<String> oldUsers = previousActiveChat.getMemberIds();
+            List<String> updatedUsers = newActiveChat.getMemberIds();
 
             List<String> newUsers = new ArrayList<>(updatedUsers);
             newUsers.removeAll(oldUsers);
@@ -94,7 +94,7 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
     }
 
     private void checkIfViewingChat(UpdateChatInputData inputData, ScheduledExecutorService updateChatExecutor, ScheduledExecutorService checkIfViewingChatExecutor) {
-        if (!updateChatDataAccessObject.getActiveChat().getChannelURL().equals(inputData.getChannelUrl())) {
+        if (!updateChatDataAccessObject.getActiveChat().getChannelUrl().equals(inputData.getChannelUrl())) {
             updateChatExecutor.shutdownNow();
             checkIfViewingChatExecutor.shutdownNow();
         }

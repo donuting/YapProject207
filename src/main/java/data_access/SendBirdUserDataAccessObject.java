@@ -279,7 +279,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      */
     @Override
     public void saveGroupChat(GroupChat newGroupChat, String username) {
-        pantryUserDataAccessObject.saveGroupChat(username, newGroupChat.getChannelURL());
+        pantryUserDataAccessObject.saveGroupChat(username, newGroupChat.getChannelUrl());
     }
 
     @Override

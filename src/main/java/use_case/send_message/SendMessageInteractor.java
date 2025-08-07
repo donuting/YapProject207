@@ -1,5 +1,6 @@
 package use_case.send_message;
 
+import entity.Chat;
 import entity.Message;
 import entity.MessageFactory;
 
@@ -23,9 +24,13 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     public void execute(SendMessageInputData sendMessageInputData) {
         final Message message = messageFactory.create(sendMessageInputData.getSender().getID(),
                                             sendMessageInputData.getText());
-        boolean result = (userDataAccessObject.sendMessage(message, sendMessageInputData.getChat()) != null);
+        final Chat chat = sendMessageInputData.getChat();
+        boolean result = (userDataAccessObject.sendMessage(message, chat) != null);
 
         if (result) {
+            // Update the in memory chat object
+            chat.addMessage(message);
+
             final SendMessageOutputData sendMessageOutputData = new SendMessageOutputData(sendMessageInputData.getSender(), false,
                                                                                             message, sendMessageInputData.getChat());
             messagePresenter.prepareSuccessSendMessageView(sendMessageOutputData);

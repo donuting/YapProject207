@@ -1,5 +1,7 @@
 package use_case.delete_message;
 
+import entity.Chat;
+
 /**
  * The delete message Interactor.
  */
@@ -15,9 +17,14 @@ public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
 
     @Override
     public void execute(DeleteMessageInputData deleteMessageInputData) {
-        boolean result = messageDataAccessObject.deleteMessage(deleteMessageInputData.getMID(), deleteMessageInputData.getChat());
+        String messageId = deleteMessageInputData.getMID();
+        Chat chat = deleteMessageInputData.getChat();
+        boolean result = messageDataAccessObject.deleteMessage(messageId, chat);
 
         if (result) {
+            // update the in memory chat object
+            chat.deleteMessage(messageId);
+
             final DeleteMessageOutputData deleteMessageOutputData = new DeleteMessageOutputData(null, deleteMessageInputData.getChat(), false);
             messagePresenter.prepareSuccessSendMessageView(deleteMessageOutputData);
         }

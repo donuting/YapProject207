@@ -150,17 +150,17 @@ public class CommonUser implements User {
         friendIDs.forEach(friendIDsJson::add);
         blockedIDs.forEach(blockedIDsJson::add);
         for (GroupChat groupChat : groupChats) {
-            groupChannelURLsJson.add(groupChat.getChannelURL());
+            groupChannelURLsJson.add(groupChat.getChannelUrl());
         }
         for (GroupChat personalChat : personalChats) {
-            personalChannelURLsJson.add(personalChat.getChannelURL());
+            personalChannelURLsJson.add(personalChat.getChannelUrl());
         }
         userData.add("friendIDs", friendIDsJson);
         userData.add ("blockedIDs", blockedIDsJson);
         userData.add("groupChannelURLs", groupChannelURLsJson);
         userData.add("personalChannelURLs", personalChannelURLsJson);
         if (selfChat != null) {
-            userData.addProperty("selfChatURL", selfChat.getChannelURL());
+            userData.addProperty("selfChatURL", selfChat.getChannelUrl());
         } else {
             userData.addProperty("selfChatURL", "");
         }
@@ -219,7 +219,7 @@ public class CommonUser implements User {
     public Chat getChat(String channelURL) {
         //TODO: need to take care of the case when chat not in list
         for (GroupChat chat : groupChats) {
-            if (chat.getChannelURL().equals(channelURL)){
+            if (chat.getChannelUrl().equals(channelURL)){
                 return chat;
             }
         }
@@ -300,7 +300,7 @@ public class CommonUser implements User {
 
             // removes personal chat between the user and the friend
             for (GroupChat personalChat : personalChats) {
-                if (personalChat.HasMember(userId)) {
+                if (personalChat.hasMember(userId)) {
                     personalChats.remove(personalChat);
                 }
             }

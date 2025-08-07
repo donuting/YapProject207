@@ -34,7 +34,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
 
         MessageApi apiInstance = new MessageApi(defaultClient);
         String channelType = "group_channels";
-        String channelUrl = groupChat.getChannelURL();
+        String channelUrl = groupChat.getChannelUrl();
         Long messageTs = System.currentTimeMillis();
         Integer prevLimit = 50; // Loads 50 most recent messages from oldest to newest.
 
@@ -87,7 +87,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
         MessageApi apiInstance = new MessageApi(defaultClient);
         String channelType = "group_channels";
         try {
-            Object result = apiInstance.deleteAMessage(channelType, chat.getChannelURL(), MID)
+            Object result = apiInstance.deleteAMessage(channelType, chat.getChannelUrl(), MID)
                     .apiToken(API_TOKEN)
                     .execute();
             System.out.println(result);
@@ -137,7 +137,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
 
 
         final Request request = new Request.Builder()
-                .url(APPLICATION_ID + "/v3/group_channels/" + chat.getChannelURL() + "/messages")
+                .url(APPLICATION_ID + "/v3/group_channels/" + chat.getChannelUrl() + "/messages")
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Api-Token", API_TOKEN)

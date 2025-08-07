@@ -3,58 +3,64 @@ package entity;
 import java.util.List;
 
 public class GroupChat implements Chat {
-    private List<String> memberIDs;
-    public String chatName;
+    private String chatName;
+    private List<String> memberIds;
     private List<Message> messageHistory;
-    private String channelURL = null; // placeholder
+    private String channelUrl;
 
-    public GroupChat(List<String> memberIDs, String chatName, List<Message> messageHistory) {
-        this.memberIDs = memberIDs;
+    public GroupChat(List<String> memberIds, String chatName, List<Message> messageHistory) {
+        this.memberIds = memberIds;
         this.chatName = chatName;
         this.messageHistory = messageHistory;
-        this.channelURL = "";
+        this.channelUrl = "";
     }
 
-    public GroupChat(List<String> memberIDs, String chatName, List<Message> messageHistory, String channelURL) {
-        this.memberIDs = memberIDs;
+    public GroupChat(List<String> memberIds, String chatName, List<Message> messageHistory, String channelUrl) {
+        this.memberIds = memberIds;
         this.chatName = chatName;
         this.messageHistory = messageHistory;
-        this.channelURL = channelURL;
+        this.channelUrl = channelUrl;
     }
 
     // Todo: move this logic into an interactor so that we can call a DAO. Also avoid creating user objects if we don't need to.
     @Override
-    public boolean AddMember(String userID) {
-        for (String memberID : memberIDs) {
+    public boolean addMember(String userID) {
+        for (String memberID : memberIds) {
             User member = getUserByID(memberID);
             if (member != null) {
-                List<String> blockedIDs = member.getBlockedUserIDs();
-                if (blockedIDs != null && blockedIDs.contains(userID)) {
+                List<String> blockedIds = member.getBlockedUserIDs();
+                if (blockedIds != null && blockedIds.contains(userID)) {
                     return false;
                 }
             }
         }
-        if (!memberIDs.contains(userID)) {
-            memberIDs.add(userID);
+        if (!memberIds.contains(userID)) {
+            memberIds.add(userID);
             return true;
         }
         return false;
     }
 
+    // Todo: rewrite this method
     @Override
-    public boolean AddMessage(Message message){
-            if (message == null) {
-                return false;
-            }
+    public boolean addMessage(Message message) {
+        if (message == null) {
+            return false;
+        }
         String senderID = message.GetSenderId();
-        if (senderID == null) return false;
+        if (senderID == null) {
+            return false;
+        }
 
-        for (String memberID : memberIDs) {
-            if (memberID.equals(senderID)) continue;
+        for (String memberID : memberIds) {
+            if (memberID.equals(senderID)) {
+                continue;
+            }
+            // Todo: getUserByID doesn't work!
             User member = getUserByID(memberID);
             if (member != null) {
-                List<String> blockedIDs = member.getBlockedUserIDs();
-                if (blockedIDs != null && blockedIDs.contains(senderID)) {
+                List<String> blockedIds = member.getBlockedUserIDs();
+                if (blockedIds != null && blockedIds.contains(senderID)) {
                     System.out.println("Sender is blocked.");
                     return false;
                 }
@@ -65,14 +71,18 @@ public class GroupChat implements Chat {
     }
 
     @Override
-    public boolean DeleteMessage(Message message){
-        //TODO: create execution
-        return false;
+    public boolean deleteMessage(String messageId) {
+        for (Message message : messageHistory) {
+            if (message.GetMID().toString().equals(messageId)) {
+                messageHistory.remove(message);
+            }
+        }
+        return true;
     }
 
     @Override
-    public boolean HasMember(String userID){
-        return memberIDs.contains(userID);
+    public boolean hasMember(String userID) {
+        return memberIds.contains(userID);
     }
 
     /**
@@ -80,29 +90,30 @@ public class GroupChat implements Chat {
      * @param user The user to be removed.
      * @return true if successful otherwise false
      */
-    public boolean removeMember(User user){
-        //TODO: create execution
-        return false;
+    public boolean removeMember(User user) {
+        memberIds.remove(user.getID());
+        return true;
     }
 
     /**
-     * sets a name to the chat.
+     * Sets a name to the chat.
+     *
      * @param name The new name of the chat.
      * @return true if successful otherwise false
      */
-    public boolean setChatName(String name){
-        //TODO: create execution
-        return false;
+    public boolean setChatName(String name) {
+        this.chatName = name;
+        return true;
     }
 
-    //TODO: implement method
-    private User getUserByID(String userID) {
+    // TODO: implement method (Note from Herman, it is impossible to implement this without a DAO)
+    private User getUserByID(String userId) {
         return null;
     }
 
     @Override
-    public String getChannelURL() {
-        return channelURL;
+    public String getChannelUrl() {
+        return channelUrl;
     }
 
     @Override
@@ -115,24 +126,14 @@ public class GroupChat implements Chat {
         return messageHistory;
     }
 
-    /**
-     * Returns the name of this chat.
-     *
-     * @return the chat name.
-     */
     @Override
-    public String getName() {
-        return this.chatName;
+    public void setChannelUrl(String channelUrl) {
+        this.channelUrl = channelUrl;
     }
 
     @Override
-    public void setChannelURL(String channelURL) {
-        this.channelURL = channelURL;
-    }
-
-    @Override
-    public List<String> getMemberIDs() {
-        return memberIDs;
+    public List<String> getMemberIds() {
+        return memberIds;
     }
 
     public String getChatName() {
