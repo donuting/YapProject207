@@ -21,6 +21,8 @@ import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.delete_account.DeleteAccountDataAccessInterface;
 import use_case.join_chat.JoinChatDataAccessInterface;
+import use_case.leave_chat.LeaveChatDataAccessInterface;
+import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.remove_friend.RemoveFriendDataAccessInterface;
@@ -40,7 +42,9 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         RemoveFriendDataAccessInterface,
         CreateChatUserDataAccessInterface,
         DeleteAccountDataAccessInterface,
-        JoinChatDataAccessInterface {
+        JoinChatDataAccessInterface,
+        LeaveChatDataAccessInterface,
+        LoadGroupChatsDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -246,6 +250,15 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    @Override
+    public boolean leaveGroupChat(String channelUrl, String userId, String username) {
+        if (groupChatDataAccessObject.leaveGroupChat(channelUrl, userId)) {
+            pantryUserDataAccessObject.leaveChat(username, channelUrl);
+            return true;
+        }
+        return false;
     }
 
     /**

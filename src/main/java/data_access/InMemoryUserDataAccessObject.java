@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entity.Chat;
 import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
@@ -12,9 +13,13 @@ import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.add_friend.AddFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
+import use_case.join_chat.JoinChatDataAccessInterface;
+import use_case.leave_chat.LeaveChatDataAccessInterface;
+import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.update_chat.UpdateChatDataAccessInterface;
 
 /**
  * In-memory implementation of the DAO for storing user data. This implementation does
@@ -27,9 +32,16 @@ public class InMemoryUserDataAccessObject implements
         LogoutUserDataAccessInterface,
         AddBioUserDataAccessInterface,
         AddDOBUserDataAccessInterface,
-        AddFriendUserDataAccessInterface, CreateChatUserDataAccessInterface {
+        AddFriendUserDataAccessInterface,
+        CreateChatUserDataAccessInterface,
+        JoinChatDataAccessInterface,
+        UpdateChatDataAccessInterface,
+        LeaveChatDataAccessInterface,
+        LoadGroupChatsDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
+
+    private User currentUser;
 
     private String currentUsername;
 
@@ -82,7 +94,7 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public void setCurrentUser(User user) {
-
+        this.currentUser = user;
     }
 
     @Override
@@ -142,6 +154,44 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public User getCurrentUser() {
+        return this.currentUser;
+    }
+
+    @Override
+    public boolean leaveGroupChat(String channelUrl, String userId, String username) {
+        return false;
+    }
+
+    @Override
+    public Chat getActiveChat() {
+        return null;
+    }
+
+    /**
+     * Loads a GroupChat object given its channel URL
+     *
+     * @param channelUrl the channel URL.
+     * @return the retrieved group chat.
+     */
+    @Override
+    public GroupChat load(String channelUrl) {
+        return null;
+    }
+
+    @Override
+    public void setActiveChat(Chat newChat) {
+
+    }
+
+    /**
+     * Adds a user to a group chat given its channel URL, and returns the updated group chat.
+     *
+     * @param userId     the user's ID.
+     * @param channelUrl the channel URL.
+     * @return the updated group chat.
+     */
+    @Override
+    public GroupChat addUser(String userId, String channelUrl) {
         return null;
     }
 

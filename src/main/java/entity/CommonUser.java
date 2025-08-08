@@ -212,6 +212,16 @@ public class CommonUser implements User {
     }
 
     /**
+     * Removes a group chat from the user's list of group chats.
+     *
+     * @param channelUrl the URL of the group chat.
+     */
+    @Override
+    public void removeGroupChat(String channelUrl) {
+        groupChats.removeIf(groupChat -> groupChat.getChannelUrl().equals(channelUrl));
+    }
+
+    /**
      * fetchs a personal chat of the user.
      * @param channelURL The URL of the chat needed.
      * @return the chat with the URL provided, null if the chat does not exist

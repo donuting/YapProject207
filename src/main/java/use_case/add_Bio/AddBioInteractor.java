@@ -18,7 +18,7 @@ public class AddBioInteractor implements AddBioInputBoundary {
         String username = addBioInputData.getUsername();
         boolean result = userDataAccessObject.addBio(username, bio);
 
-        if (result) {
+        if (!result) {
             final AddBioOutputData changeBioOutputData = new AddBioOutputData(username, false, bio);
             userPresenter.prepareSuccessAddBioView(changeBioOutputData);
         }

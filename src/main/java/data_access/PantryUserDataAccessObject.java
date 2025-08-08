@@ -213,4 +213,17 @@ public class PantryUserDataAccessObject {
     public void deleteUser(String username) {
         pantry.setInformation(username, null);
     }
+
+    public void leaveChat(String username, String channelUrl) {
+        JsonArray groupChatUrls = getUserDataFromUsername(username).getAsJsonArray(GROUP_CHANNEL_URLS);
+        for (JsonElement groupChatUrl : groupChatUrls) {
+            if (groupChatUrl.getAsString().equals(channelUrl)) {
+                groupChatUrls.remove(groupChatUrl);
+            }
+        }
+        PantryBasket basket = pantry.getBasket(username);
+        JsonObject updateData = new JsonObject();
+        updateData.add(GROUP_CHANNEL_URLS, groupChatUrls);
+        basket.mergeJson(updateData).complete();
+    }
 }
