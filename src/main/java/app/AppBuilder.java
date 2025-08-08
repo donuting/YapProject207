@@ -6,11 +6,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import data_access.*;
+import data_access.InMemorySelfChatUserDataAccessObject;
+import data_access.InMemoryUserDataAccessObject;
+import data_access.GroupChatDataAccessObject;
+import data_access.SendBirdUserDataAccessObject;
+import data_access.MessageDataAccessObject;
 import entity.CommonUserFactory;
 import entity.GroupChatFactory;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
+
 import interface_adapter.add_chat.AddChatController;
 import interface_adapter.add_chat.AddChatPresenter;
 import interface_adapter.add_chat.AddChatViewModel;
@@ -41,6 +46,13 @@ import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.view_group_chats.ViewGroupChatsController;
 import interface_adapter.view_group_chats.ViewGroupChatsPresenter;
 import interface_adapter.view_group_chats.ViewGroupChatsViewModel;
+import interface_adapter.chat.ChatController;
+import interface_adapter.chat.ChatPresenter;
+import interface_adapter.chat.ChatViewModel;
+import interface_adapter.profile.UserProfileController;
+import interface_adapter.profile.UserProfilePresenter;
+import interface_adapter.profile.UserProfileViewModel;
+
 import use_case.add_Bio.AddBioInputBoundary;
 import use_case.add_Bio.AddBioInteractor;
 import use_case.add_DOB.AddDOBInputBoundary;
@@ -72,6 +84,12 @@ import use_case.self_chat.SelfChatOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
+import use_case.send_message.SendMessageInputBoundary;
+import use_case.send_message.SendMessageInteractor;
+import use_case.send_message.SendMessageOutputBoundary;
+import use_case.profile.UserProfileInputBoundary;
+import use_case.profile.UserProfileInteractor;
+import use_case.profile.UserProfileOutputBoundary;
 import view.*;
 
 /**
@@ -87,10 +105,15 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
-    // Todo: Add the DAOs to the App Builder (so far just SendBirdUserDataAccessObject and MessageDataAccessObject)
+    private final boolean USE_SENDBIRD = true; // Set to true to use SendBird, false for in-memory
+
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
-    // private final SendBirdUserDataAccessObject userDataAccessObject = new SendBirdUserDataAccessObject();
-    private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject = new InMemorySelfChatUserDataAccessObject();
+    // To do: Add the DAOs to the App Builder (so far just SendBirdUserDataAccessObject and GroupChatDataAccessObject)
+    private final SendBirdUserDataAccessObject sendBirdUserDataAccessObject = new SendBirdUserDataAccessObject();
+    private final GroupChatDataAccessObject groupChatDataAccessObject = new GroupChatDataAccessObject();
+
+    private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject =
+            new InMemorySelfChatUserDataAccessObject();
     private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
 
     private SignupView signupView;
@@ -112,6 +135,11 @@ public class AppBuilder {
     private AddFriendViewModel addFriendViewModel;
     private SelfChatView selfChatView;
     private SelfChatViewModel selfChatViewModel;
+
+    private ChatView chatView;
+    private ChatViewModel chatViewModel;
+    private UserProfileView userProfileView;
+    private UserProfileViewModel userProfileViewModel;
 
     private ProfileandSettingView profileandSettingView;
     private PandSViewModel profileandSettingViewModel;
@@ -179,17 +207,6 @@ public class AppBuilder {
     }
 
     /**
-     * Adds the View Group Chats View to the application.
-     * @return this builder
-     */
-    public AppBuilder addViewGroupChatsView() {
-        viewGroupChatsViewModel = new ViewGroupChatsViewModel();
-        viewGroupChatsView = new ViewGroupChatsView(viewGroupChatsViewModel);
-        cardPanel.add(viewGroupChatsView, viewGroupChatsView.getViewName());
-        return this;
-    }
-
-    /**
      * Adds the AddChat View to the application.
      * @return this builder
      */
@@ -219,6 +236,28 @@ public class AppBuilder {
         selfChatViewModel = new SelfChatViewModel();
         selfChatView = new SelfChatView(selfChatViewModel);
         cardPanel.add(selfChatView, selfChatView.getViewName());
+        return this;
+    }
+
+    /**
+     * Adds the Chat View to the application.
+     * @return this builder
+     */
+    public AppBuilder addChatView() {
+        chatViewModel = new ChatViewModel();
+        chatView = new ChatView(chatViewModel);
+        cardPanel.add(chatView, chatView.getViewName());
+        return this;
+    }
+
+    /**
+     * Adds the User Profile View to the application.
+     * @return this builder
+     */
+    public AppBuilder addUserProfileView() {
+        userProfileViewModel = new UserProfileViewModel();
+        userProfileView = new UserProfileView(userProfileViewModel);
+        cardPanel.add(userProfileView, userProfileView.getViewName());
         return this;
     }
 
@@ -330,6 +369,43 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the Chat Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addChatUseCase() {
+        final SendMessageOutputBoundary sendMessageOutputBoundary = new ChatPresenter(chatViewModel);
+
+        final SendMessageInputBoundary sendMessageInteractor = new SendMessageInteractor(
+                messageDataAccessObject, sendMessageOutputBoundary, new entity.CommonMessageFactory());
+
+        final ChatController chatController = new ChatController(
+                sendMessageInteractor, viewManagerModel, viewChatsViewModel);
+
+        chatView.setChatController(chatController);
+        return this;
+    }
+
+    /**
+     * Adds the User Profile Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addUserProfileUseCase() {
+        final UserProfileOutputBoundary userProfileOutputBoundary =
+                new UserProfilePresenter(userProfileViewModel);
+
+        // TODO: create a UserProfileDataAccessObject that implements UserProfileDataAccessInterface
+        // This should extend existing user data access object or be a new one
+        final UserProfileInputBoundary userProfileInteractor =
+                new UserProfileInteractor(userDataAccessObject, userProfileOutputBoundary);
+
+        final UserProfileController userProfileController =
+                new UserProfileController(userProfileInteractor, viewManagerModel);
+
+        userProfileView.setUserProfileController(userProfileController);
+        return this;
+    }
+
+    /**
      * Adds the Profile and Settings Use Case to the application.
      * @return this builder
      */
@@ -382,26 +458,11 @@ public class AppBuilder {
         final ViewChatsController viewChatsController = new ViewChatsController(viewManagerModel,
                 addChatViewModel,
                 viewChatsViewModel,
-                selfChatViewModel,
-                viewGroupChatsViewModel);
+                selfChatViewModel);
         viewChatsView.setViewChatsController(viewChatsController);
         return this;
     }
 
-    /**
-     * Adds the View Group Chats Use Case to the application.
-     * @return this builder
-     */
-    public AppBuilder addViewGroupChatsUseCase() {
-        final ViewGroupChatsPresenter viewGroupChatsOutputBoundary = new ViewGroupChatsPresenter(viewGroupChatsViewModel);
-        final JoinChatInputBoundary joinChatInputBoundary = new JoinChatInteractor(userDataAccessObject, viewGroupChatsOutputBoundary);
-        final LeaveChatInputBoundary leaveChatInputBoundary = new LeaveChatInteractor(userDataAccessObject, viewGroupChatsOutputBoundary);
-        final LoadGroupChatsInputBoundary loadGroupChatsInputBoundary = new LoadGroupChatsInteractor(userDataAccessObject, viewGroupChatsOutputBoundary);
-        final ViewGroupChatsController viewGroupChatsController = new ViewGroupChatsController(joinChatInputBoundary,
-                leaveChatInputBoundary, loadGroupChatsInputBoundary, viewManagerModel);
-        viewGroupChatsView.setViewGroupChatsController(viewGroupChatsController);
-        return this;
-    }
     /**
      * Adds the Self Chat Use Case to the application.
      * @return this builder

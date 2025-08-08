@@ -23,6 +23,8 @@ public class Main {
                                             .addViewChatsView()
                                             .addViewGroupChatsView()
                                             .addSelfChatView()
+                                            .addChatView()
+                                            .addUserProfileView()
                                             .addProfileandSettingsView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
@@ -34,6 +36,8 @@ public class Main {
                                             .addAddFriendUseCase()
                                             .addAddChatUseCase()
                                             .addSelfChatUseCase()
+                                            .addChatUseCase()
+                                            .addUserProfileUseCase()
                                             .addProfileandSettingsUseCase()
                                             .build();
 
