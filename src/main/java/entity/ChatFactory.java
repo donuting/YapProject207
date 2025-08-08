@@ -9,10 +9,21 @@ public interface ChatFactory {
     /**
      * Creates a new Chat.
      *
-     * @param memberIDs the list of the IDs of the members of the new chat
-     * @return the new user
+     * @param memberIds the list of the IDs of the members of the new chat.
+     * @param chatName the name of the new chat.
+     * @param messageHistory the message history of the new chat.
+     * @return the new chat
      */
-    Chat create(List<String> memberIDs, String chatName, List<Message> messageHistory);
+    Chat create(List<String> memberIds, String chatName, List<Message> messageHistory);
 
-    Chat create(List<String> memberIDs, String chatName, List<Message> messageHistory, String channelURL);
+    /**
+     * Creates a new Chat.
+     *
+     * @param memberIds the list of the IDs of the members of the new chat.
+     * @param chatName the name of the new chat.
+     * @param messageHistory the message history of the new chat.
+     * @param channelUrl the URL of the new chat.
+     * @return the new chat
+     */
+    Chat create(List<String> memberIds, String chatName, List<Message> messageHistory, String channelUrl);
 }

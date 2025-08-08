@@ -13,4 +13,10 @@ public interface DeleteMessageDataAccessInterface {
      * @param chat the chat in which the message was sent.
      */
     boolean deleteMessage(String MID, Chat chat);
+
+    /**
+     * Gets the active group chat the user is viewing.
+     * @return the active group chat
+     */
+    Chat getActiveGroupChat();
 }

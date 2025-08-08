@@ -158,6 +158,7 @@ public class UserProfileView extends JPanel implements ActionListener, PropertyC
             setFieldsEditable(true);
         } else if (evt.getSource().equals(saveButton)) {
             if (userProfileController != null) {
+                String oldUsername = userProfileViewModel.getState().getUsername();
                 String username = usernameField.getText().trim();
                 String bio = bioField.getText().trim();
                 String dob = dobField.getText().trim();
@@ -173,7 +174,7 @@ public class UserProfileView extends JPanel implements ActionListener, PropertyC
                     return;
                 }
 
-                userProfileController.saveProfile(username, bio, dob);
+                userProfileController.saveProfile(oldUsername, username, bio, dob);
                 setFieldsEditable(false);
             }
         }

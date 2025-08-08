@@ -44,6 +44,21 @@ public interface User {
      */
     void addGroupChat(GroupChat groupChat);
 
+    /**
+     * Removes a group chat from the user's list of group chats.
+     * @param channelUrl the URL of the group chat.
+     */
+    void removeGroupChat(String channelUrl);
+
+    /**
+     * Returns a list of channel URLs corresponding to group chats the user is in.
+     */
+    List<GroupChat> getGroupChats();
+
+    /**
+     * Returns a list of channel URLs corresponding to personal chats the user is in.
+     */
+    List<GroupChat> getPersonalChats();
 
     /**
      * Adds a bio to the user.

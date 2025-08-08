@@ -36,12 +36,4 @@ public interface AddFriendUserDataAccessInterface {
      * @return true if friendship was successful
      */
     boolean addFriend(String currentUsername, String friendUsername);
-
-     
-     
-     
-     
-    
-
-
 }

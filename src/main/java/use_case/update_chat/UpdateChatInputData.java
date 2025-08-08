@@ -1,7 +1,7 @@
 package use_case.update_chat;
 
 /**
- * Input data for the Update Chat use case.
+ * The input data for the Update Chat Use Case.
  */
 public class UpdateChatInputData {
     private final String channelUrl;
@@ -9,8 +9,7 @@ public class UpdateChatInputData {
     public UpdateChatInputData(String channelUrl) {
         this.channelUrl = channelUrl;
     }
-
-    public String getChannelUrl() {
+     public String getChannelUrl() {
         return channelUrl;
-    }
+     }
 }

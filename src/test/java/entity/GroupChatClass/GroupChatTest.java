@@ -28,8 +28,8 @@ public class GroupChatTest {
     }
 
     @Test
-    void getChannelURLTest(){
-        assertEquals("chat.com", group.getChannelURL());
+    void getChannelUrlTest(){
+        assertEquals("chat.com", group.getChannelUrl());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class GroupChatTest {
 
     @Test
     void getMembersTest(){
-        List<String> memberIDs = group.getMemberIDs();
+        List<String> memberIDs = group.getMemberIds();
         assert memberIDs.size() == 1;
         assert memberIDs.contains("100");
     }
@@ -50,92 +50,92 @@ public class GroupChatTest {
     }
 
     @Test
-    void AddMemberTest1(){
+    void addMemberTest1(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
-        boolean result = group.AddMember("200");
+        boolean result = group.addMember("200");
         assertTrue(result);
-        List<String> memberIDs = group.getMemberIDs();
+        List<String> memberIDs = group.getMemberIds();
         assert memberIDs.contains("200");
-        result = group.AddMember("200");
+        result = group.addMember("200");
         assertFalse(result);
     }
 
     @Test
-    void AddMemberTest2(){
+    void addMemberTest2(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
         user.blockUser("200");
-        boolean result = group.AddMember("200");
+        boolean result = group.addMember("200");
         assertFalse(result);
-        List<String> memberIDs = group.getMemberIDs();
+        List<String> memberIDs = group.getMemberIds();
         assert !memberIDs.contains("200");
     }
 
     @Test
-    void AddMessageTest1(){
+    void addMessageTest1(){
         CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
-        boolean result = group.AddMessage(message);
+        boolean result = group.addMessage(message);
         assertTrue(result);
         List<Message> messages = group.getMessageHistory();
         assert  messages.contains(message);
     }
 
     @Test
-    void AddMessageTest2(){
+    void addMessageTest2(){
        CommonMessage message = new CommonMessage("200", "Test Message", 10, "0000");
-       boolean result = group.AddMessage(message);
+       boolean result = group.addMessage(message);
        assertFalse(result);
     }
 
     @Test
-    void AddMessageTest3(){
+    void addMessageTest3(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
-        group.AddMember("200");
+        group.addMember("200");
         user.blockUser("200");
         CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
-        boolean result = group.AddMessage(message);
+        boolean result = group.addMessage(message);
         assertFalse(result);
     }
 
     @Test
-    void AddMessageTest4(){
+    void addMessageTest4(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
-        group.AddMember("200");
+        group.addMember("200");
         newUser.blockUser("100");
         CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
-        boolean result = group.AddMessage(message);
+        boolean result = group.addMessage(message);
         assertFalse(result);
     }
 
     @Test
-    void DeleteMessageTest(){
+    void deleteMessageTest(){
         CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
-        group.AddMessage(message);
-        boolean result = group.DeleteMessage(message);
+        group.addMessage(message);
+        boolean result = group.deleteMessage(message.GetMID().toString());
         assertTrue(result);
     }
 
     @Test
-    void HasMemberTest(){
-        assertTrue(group.HasMember("100"));
+    void hasMemberTest(){
+        assertTrue(group.hasMember("100"));
     }
 
     @Test
     void removeMemberTest1(){
         boolean result = group.removeMember(user);
         assertTrue(result);
-        List<String> memberIDs = group.getMemberIDs();
+        List<String> memberIDs = group.getMemberIds();
         assert memberIDs.isEmpty();
     }
 
@@ -169,9 +169,9 @@ public class GroupChatTest {
     }
 
     @Test
-    void setChannelURLTest(){
-        group.setChannelURL("channel.com");
-        assert "channel.com".equals(group.getChannelURL());
+    void setChannelUrlTest(){
+        group.setChannelUrl("channel.com");
+        assert "channel.com".equals(group.getChannelUrl());
     }
 
 

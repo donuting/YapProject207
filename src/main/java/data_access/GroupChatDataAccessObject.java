@@ -3,6 +3,8 @@ package data_access;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.openapitools.client.model.*;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
@@ -48,7 +50,7 @@ public class GroupChatDataAccessObject {
             System.out.println(result);
 
             GroupChat groupChat = groupChatFactory.create(memberIds, chatName, new ArrayList<>());
-            groupChat.setChannelURL(result.getChannelUrl());
+            groupChat.setChannelUrl(result.getChannelUrl());
             return groupChat;
 
         }
@@ -90,7 +92,7 @@ public class GroupChatDataAccessObject {
             }
             String chatName = result.getName();
             GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
-            groupChat.setChannelURL(channelUrl);
+            groupChat.setChannelUrl(channelUrl);
             messageDataAccessObject.loadMessages(groupChat);
             return groupChat;
         }
@@ -109,7 +111,7 @@ public class GroupChatDataAccessObject {
      * @param channelUrl the URL of the chat.
      * @param userId the ID of the user.
      */
-    public GroupChat addUser(String channelUrl, String userId) {
+    public GroupChat addUser(String userId, String channelUrl) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath(APPLICATION_ID);
 
@@ -132,7 +134,7 @@ public class GroupChatDataAccessObject {
             }
             String chatName = result.getName();
             GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
-            groupChat.setChannelURL(channelUrl);
+            groupChat.setChannelUrl(channelUrl);
             messageDataAccessObject.loadMessages(groupChat);
             return groupChat;
         }
@@ -144,6 +146,31 @@ public class GroupChatDataAccessObject {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean leaveGroupChat(String channelUrl, String userId) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath(APPLICATION_ID);
+
+        GroupChannelApi apiInstance = new GroupChannelApi(defaultClient);
+        List<String> userIds = new ArrayList<>();
+        userIds.add(userId);
+        LeaveAChannelRequest leaveAChannelRequest = new LeaveAChannelRequest().userIds(userIds);
+        try {
+            Object result = apiInstance.leaveAChannel(channelUrl)
+                    .apiToken(API_TOKEN)
+                    .leaveAChannelRequest(leaveAChannelRequest)
+                    .execute();
+            System.out.println(result);
+            return true;
+        } catch (ApiException e) {
+            System.err.println("Exception when calling GroupChannelApi#leaveAChannel");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
@@ -218,23 +245,23 @@ public class GroupChatDataAccessObject {
     }
 
     /**
-     * Creates a GroupChat object given a SendBirdGroupChannel object.
+     * Creates a GroupChat object given a JSONObject.
      * Used when loading GroupChat objects when logging in.
-     * @param sendBirdGroupChannel the SendBird object corresponding to a group chat in SendBird.
+     * @param groupChatJson the JSON object corresponding to a group chat in SendBird.
      * @return the GroupChat Object, or null if it doesn't exist.
      */
-    public GroupChat getGroupChat(SendbirdGroupChannel sendBirdGroupChannel) {
-        List<SendbirdMember> members = sendBirdGroupChannel.getMembers();
+    public GroupChat getGroupChat(JSONObject groupChatJson) {
+        JSONArray members = groupChatJson.getJSONArray("members");
         List<String> memberIds = new ArrayList<>();
         if (members != null) {
-            for (SendbirdMember member : members) {
-                memberIds.add(member.getUserId());
+            for (Object member : members) {
+                memberIds.add(((JSONObject) member).getString("user_id"));
             }
         }
-        String chatName = sendBirdGroupChannel.getName();
-        String channelUrl = sendBirdGroupChannel.getChannelUrl();
+        String chatName = groupChatJson.getString("name");
+        String channelUrl = groupChatJson.getString("channel_url");
         GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
-        groupChat.setChannelURL(channelUrl);
+        groupChat.setChannelUrl(channelUrl);
         messageDataAccessObject.loadMessages(groupChat);
         return groupChat;
     }

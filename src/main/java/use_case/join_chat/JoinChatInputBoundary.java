@@ -9,9 +9,4 @@ public interface JoinChatInputBoundary {
      * @param inputData The input data for this use case.
      */
     void execute(JoinChatInputData inputData);
-
-    /**
-     * Switches the view to return to the list of chats
-     */
-    void switchToChatsView();
 }

@@ -1,9 +1,11 @@
 package data_access;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entity.Chat;
 import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
@@ -12,9 +14,13 @@ import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.add_friend.AddFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
+import use_case.join_chat.JoinChatDataAccessInterface;
+import use_case.leave_chat.LeaveChatDataAccessInterface;
+import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.update_chat.UpdateChatDataAccessInterface;
 import use_case.profile.UserProfileDataAccessInterface; // ADD THIS IMPORT
 
 /**
@@ -30,10 +36,13 @@ public class InMemoryUserDataAccessObject implements
         AddDOBUserDataAccessInterface,
         AddFriendUserDataAccessInterface,
         CreateChatUserDataAccessInterface,
+        JoinChatDataAccessInterface,
+        UpdateChatDataAccessInterface,
+        LeaveChatDataAccessInterface,
+        LoadGroupChatsDataAccessInterface,
         UserProfileDataAccessInterface { // ADD THIS INTERFACE
 
     private final Map<String, User> users = new HashMap<>();
-
     private String currentUsername;
     private User currentUser; // ADD THIS FIELD
 
@@ -162,7 +171,46 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public User getCurrentUser() {
-        return this.currentUser; // IMPLEMENT THIS
+        return this.currentUser;
+    }
+
+    @Override
+    public boolean leaveGroupChat(String channelUrl, String userId, String username) {
+        return false;
+    }
+
+    @Override
+    public GroupChat getActiveGroupChat() {
+        return null;
+    }
+
+    /**
+     * Loads a GroupChat object given its channel URL
+     *
+     * @param channelUrl the channel URL.
+     * @return the retrieved group chat.
+     */
+    @Override
+    public GroupChat load(String channelUrl) {
+        return null;
+    }
+
+    @Override
+    public void setActiveGroupChat(GroupChat newChat) {
+
+    }
+
+    /**
+     * Adds a user to a group chat given its channel URL, and returns the updated group chat.
+     *
+     * @param userId     the user's ID.
+     * @param channelUrl the channel URL.
+     * @return the updated group chat.
+     */
+    @Override
+    public GroupChat addUser(String userId, String channelUrl) {
+        return null;
+        // IMPLEMENT THIS
     }
 
     /**
@@ -179,57 +227,39 @@ public class InMemoryUserDataAccessObject implements
     // ========== NEW METHODS FOR UserProfileDataAccessInterface ==========
 
     @Override
-    public void updateUsername(String userId, String username) {
-        // Since you're using username as the key, this is more complex
-        // You might need to use the user's ID instead, or handle this differently
-        User user = findUserById(userId);
-        if (user != null) {
+    public String saveProfile(String oldUsername, String username, String bio, String dateOfBirth) {
+        if (users.containsKey(oldUsername)) {
+            User user = users.get(oldUsername);
             // Remove old entry
             users.remove(user.getName());
-            // Update username
+            // Update user data
             user.setName(username);
+            user.EditBiography(bio);
+            user.EditDOB(dateOfBirth);
             // Add back with new key
             users.put(username, user);
 
             // Update current username if it's the current user
-            if (currentUser != null && currentUser.getID().equals(userId)) {
+            if (currentUser != null && currentUser.getName().equals(username)) {
                 currentUsername = username;
             }
+
+            return user.getID();
         }
+        return null;
     }
 
     @Override
-    public void updateBio(String userId, String bio) {
-        User user = findUserById(userId);
-        if (user != null) {
-            user.EditBiography(bio);
+    public List<String> loadProfile(String username) {
+        if (users.containsKey(username)) {
+            User user = users.get(username);
+            List<String> userProfile = new ArrayList<>();
+            userProfile.add(user.getID());
+            userProfile.add(user.getBio());
+            userProfile.add(user.getDOB());
+            return userProfile;
         }
-    }
-
-    @Override
-    public void updateDateOfBirth(String userId, String dateOfBirth) {
-        User user = findUserById(userId);
-        if (user != null) {
-            user.EditDOB(dateOfBirth);
-        }
-    }
-
-    @Override
-    public String getUsername(String userId) {
-        User user = findUserById(userId);
-        return user != null ? user.getName() : "";
-    }
-
-    @Override
-    public String getBio(String userId) {
-        User user = findUserById(userId);
-        return user != null ? user.getBio() : "";
-    }
-
-    @Override
-    public String getDateOfBirth(String userId) {
-        User user = findUserById(userId);
-        return user != null ? user.getDOB() : "";
+        return null;
     }
 
     /**

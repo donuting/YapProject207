@@ -15,4 +15,16 @@ public interface SendMessageDataAccessInterface {
      * @param chat the chat in which the message will be sent
      */
     Message sendMessage(Message message, Chat chat);
+
+    /**
+     * Gets the current user of the app.
+     * @return the current user.
+     */
+    User getCurrentUser();
+
+    /**
+     * Gets the active group chat the user is viewing.
+     * @return the active group chat
+     */
+    Chat getActiveGroupChat();
 }

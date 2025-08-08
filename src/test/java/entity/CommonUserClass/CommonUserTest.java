@@ -121,7 +121,7 @@ public class CommonUserTest {
         List<GroupChat> groups = user.getGroupChats();
         assert !groups.isEmpty();
         GroupChat group = groups.get(0);
-        List<String> membersID = group.getMemberIDs();
+        List<String> membersID = group.getMemberIds();
         assert membersID.contains(friend.getID());
         assert membersID.contains(user.getID());
     }
@@ -138,14 +138,14 @@ public class CommonUserTest {
 
     @Test
     void getChatTest1() {
-        Chat groupChat = user.getChat(group.getChannelURL());
+        Chat groupChat = user.getChat(group.getChannelUrl());
         assert groupChat == null;
     }
 
     @Test
     void getChatTest2() {
         user.addGroupChat(group);
-        Chat groupChat = user.getChat(group.getChannelURL());
+        Chat groupChat = user.getChat(group.getChannelUrl());
         assertEquals(group, groupChat);
     }
 

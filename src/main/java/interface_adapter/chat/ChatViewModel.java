@@ -23,26 +23,17 @@ public class ChatViewModel extends ViewModel<ChatState> {
     }
 
     /**
-     * Sets the current chat being viewed.
-     * @param chat the GroupChat object
-     */
-    public void setCurrentChat(GroupChat chat) {
-        ChatState currentState = getState();
-        currentState.setCurrentChat(chat);
-        currentState.setChatName(chat.getName());
-        currentState.setMessages(chat.getMessageHistory());
-        firePropertyChanged();
-    }
-
-    /**
      * Adds a new message to the current chat.
      * @param message the message to add
      */
     public void addMessage(Message message) {
         ChatState currentState = getState();
-        List<Message> messages = new ArrayList<>(currentState.getMessages());
+        List<Message> messages = currentState.getMessages();
+        List<Message> messagesSentByUser = currentState.getMessagesSentByUser();
         messages.add(message);
+        messagesSentByUser.add(message);
         currentState.setMessages(messages);
+        currentState.setMessagesSentByUser(messagesSentByUser);
         firePropertyChanged();
     }
 
@@ -52,6 +43,51 @@ public class ChatViewModel extends ViewModel<ChatState> {
     public void clearMessageInput() {
         ChatState currentState = getState();
         currentState.setCurrentMessage("");
+        firePropertyChanged();
+    }
+
+    /**
+     * Removes a message from the current chat.
+     * @param messageId the ID of the message to remove
+     */
+    public void deleteMessage(String messageId) {
+        ChatState currentState = getState();
+        List<Message> messages = currentState.getMessages();
+        List<Message> messagesSentByUser = currentState.getMessagesSentByUser();
+        for (Message message : messages) {
+            if (message.GetMID().toString().equals(messageId)) {
+                messagesSentByUser.remove(message);
+            }
+        }
+        for (Message message : messagesSentByUser) {
+            if (message.GetMID().toString().equals(messageId)) {
+                messagesSentByUser.remove(message);
+            }
+        }
+        currentState.setMessages(messages);
+        currentState.setMessagesSentByUser(messagesSentByUser);
+        currentState.setNeedsUpdate(true);
+        // Wait for the current updater to stop running before causing it to run again.
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        firePropertyChanged();
+    }
+
+    public void setMessagesAndUsernames(String currentUserId, List<Message> messages, List<String> usernames) {
+        ChatState currentState = getState();
+        currentState.setMessages(messages);
+        currentState.setUsernames(usernames);
+        currentState.setNeedsUpdate(false);
+        List<Message> messagesSentByUser = new ArrayList<>();
+        for (Message message : messages) {
+            if (message.GetSenderId().equals(currentUserId)) {
+                messagesSentByUser.add(message);
+            }
+        }
+        currentState.setMessagesSentByUser(messagesSentByUser);
         firePropertyChanged();
     }
 }

@@ -9,30 +9,36 @@ import java.util.ArrayList;
  * The State information representing the logged-in user.
  */
 public class ChatState {
-    private GroupChat currentChat = null;
+    private String currentChannelUrl = "";
     private String chatName = "";
     private List<Message> messages = new ArrayList<>();
+    private List<Message> messagesSentByUser = new ArrayList<>();
+    private List<String> usernames = new ArrayList<>();
     private String currentMessage = "";
     private String error = null;
+    private boolean needsUpdate = false;
 
     public ChatState(ChatState copy) {
-        this.currentChat = copy.currentChat;
+        this.currentChannelUrl = copy.currentChannelUrl;
         this.chatName = copy.chatName;
         this.messages = new ArrayList<>(copy.messages);
+        this.messagesSentByUser = new ArrayList<>(copy.messagesSentByUser);
+        this.usernames = new ArrayList<>(copy.usernames);
         this.currentMessage = copy.currentMessage;
         this.error = copy.error;
+        this.needsUpdate = copy.needsUpdate;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
     public ChatState() {
     }
 
-    public GroupChat getCurrentChat() {
-        return currentChat;
+    public String getCurrentChannelUrl() {
+        return currentChannelUrl;
     }
 
-    public void setCurrentChat(GroupChat currentChat) {
-        this.currentChat = currentChat;
+    public void setCurrentChannelUrl(String currentChannelUrl) {
+        this.currentChannelUrl = currentChannelUrl;
     }
 
     public String getChatName() {
@@ -51,6 +57,22 @@ public class ChatState {
         this.messages = messages;
     }
 
+    public List<Message> getMessagesSentByUser() {
+        return messagesSentByUser;
+    }
+
+    public void setMessagesSentByUser(List<Message> messagesSentByUser) {
+        this.messagesSentByUser = messagesSentByUser;
+    }
+
+    public List<String> getUsernames() {
+        return usernames;
+    }
+
+    public void setUsernames(List<String> usernames) {
+        this.usernames = usernames;
+    }
+
     public String getCurrentMessage() {
         return currentMessage;
     }
@@ -66,4 +88,13 @@ public class ChatState {
     public void setError(String error) {
         this.error = error;
     }
+
+    public boolean getNeedsUpdate() {
+        return needsUpdate;
+    }
+
+    public void setNeedsUpdate(boolean needsUpdate) {
+        this.needsUpdate = needsUpdate;
+    }
+
 }

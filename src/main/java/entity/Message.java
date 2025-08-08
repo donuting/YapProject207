@@ -35,4 +35,11 @@ public interface Message {
      * @return timestamp of the message
      */
     String getTimestamp();
+
+    /**
+     * Sets the timestamp of the message.
+     *
+     * @param  timestamp of the message
+     */
+    void setTimestamp(String timestamp);
 }

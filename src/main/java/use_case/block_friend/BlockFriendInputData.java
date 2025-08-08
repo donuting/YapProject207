@@ -6,7 +6,7 @@ package use_case.block_friend;
 public class BlockFriendInputData {
     private final String blockedUsername;
 
-    public BlockFriendInputData(String currentUsername, String blockedUsername) {;
+    public BlockFriendInputData(String blockedUsername) {;
         this.blockedUsername = blockedUsername;
     }
 

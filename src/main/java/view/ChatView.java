@@ -14,7 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The View for when the user is in a chat.
@@ -26,11 +29,18 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
     private final JLabel chatNameLabel;
     private final JPanel messagesPanel;
+    private final JPanel usersPanel;
     private final JScrollPane messagesScrollPane;
+    private final JScrollPane usersScrollPane;
+
+    // A list of message IDs corresponding to messages in this chat.
+    private final List<Integer> messages = new ArrayList<>();
+
+    // A map from a JButton to the message ID of the message it corresponds to.
+    private final Map<JButton, Integer> deleteMessageButtons = new HashMap<>();
     private final JTextArea messageInputField;
     private final JButton sendButton;
     private final JButton backButton;
-    private final JButton chatProfileButton;
 
     private ChatController chatController;
 
@@ -55,13 +65,14 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         chatNameLabel = new JLabel("Chat", SwingConstants.CENTER);
         chatNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
 
-        // Chat profile button
-        chatProfileButton = new JButton(ChatViewModel.CHAT_PROFILE_BUTTON_LABEL);
-        chatProfileButton.addActionListener(this);
-
         topPanel.add(backButton, BorderLayout.WEST);
         topPanel.add(chatNameLabel, BorderLayout.CENTER);
-        topPanel.add(chatProfileButton, BorderLayout.EAST);
+
+        // Center panel with message display and users display
+
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        centerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        centerPanel.setBackground(Color.WHITE);
 
         // Messages panel (scrollable)
         messagesPanel = new JPanel();
@@ -72,6 +83,21 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         messagesScrollPane = new JScrollPane(messagesPanel);
         messagesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messagesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messagesScrollPane.setPreferredSize(new Dimension(400, 400));
+
+        // Users panel (scrollable)
+        usersPanel = new JPanel();
+        usersPanel.setLayout(new BoxLayout(usersPanel, BoxLayout.Y_AXIS));
+        usersPanel.setBackground(Color.WHITE);
+        usersPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        usersScrollPane = new JScrollPane(usersPanel);
+        usersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        usersScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        usersScrollPane.setPreferredSize(new Dimension(100, 400));
+
+        centerPanel.add(usersScrollPane);
+        centerPanel.add(messagesScrollPane);
 
         // Bottom panel with message input and send button
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -96,7 +122,7 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
         // Add all components to main panel
         this.add(topPanel, BorderLayout.NORTH);
-        this.add(messagesScrollPane, BorderLayout.CENTER);
+        this.add(centerPanel, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
     }
 
@@ -108,23 +134,18 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         System.out.println("Click " + evt.getActionCommand());
 
         if (evt.getSource().equals(sendButton)) {
-            final ChatState currentState = chatViewModel.getState();
             final String text = messageInputField.getText();
 
-            if (currentState.getCurrentChat() != null && !text.trim().isEmpty()) {
-                // Get the current user ID (you may need to adjust this based on your user management)
-                User sender = null; // TODO: somehow bring sender
-                Chat chat = currentState.getCurrentChat();
-
-                chatController.execute(sender, text, chat);
-
+            if (!text.trim().isEmpty()) {
+                // The current chat and user are stored in memory, so all we need to input is the text.
+                chatController.sendMessage(text);
                 messageInputField.setText(""); // Clear the input field
             }
         } else if (evt.getSource().equals(backButton)) {
             chatController.switchToViewChatsView();
-        } else if (evt.getSource().equals(chatProfileButton)) {
-            // TODO: Implement chat profile functionality
-            JOptionPane.showMessageDialog(this, "Chat Profile functionality to be implemented");
+        } else if (deleteMessageButtons.containsKey(evt.getSource())) {
+            Integer messageId = deleteMessageButtons.get(evt.getSource());
+            chatController.deleteMessage(messageId);
         }
     }
 
@@ -135,19 +156,60 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     private void updateChatDisplay(ChatState state) {
+        // Check if the chat is being actively updated, if not then start actively updating
+        if (chatController != null) {
+            if (state.getNeedsUpdate()) {
+                // Clear the memory and messages before loading messages
+                messages.clear();
+                deleteMessageButtons.clear();
+                messagesPanel.removeAll();
+                state.setMessages(new ArrayList<>());
+                state.setMessagesSentByUser(new ArrayList<>());
+                state.setUsernames(new ArrayList<>());
+                chatController.updateChat(state.getCurrentChannelUrl());
+            }
+        }
+
         // Update chat name
         if (state.getChatName() != null) {
             chatNameLabel.setText(state.getChatName());
         }
 
         // Update messages
-        messagesPanel.removeAll();
-        List<Message> messages = state.getMessages();
+        List<Message> updatedMessages = state.getMessages();
+        List<Integer> messageIdsSentByUser = new ArrayList<>();
+        for (Message message : state.getMessagesSentByUser()) {
+            messageIdsSentByUser.add(message.GetMID());
+        }
 
-        for (Message message : messages) {
-            JPanel messagePanel = createMessagePanel(message);
-            messagesPanel.add(messagePanel);
-            messagesPanel.add(Box.createVerticalStrut(5)); // Add spacing between messages
+        for (Message message : updatedMessages) {
+            // if the message is new
+            if (!messages.contains(message.GetMID())) {
+                JPanel messagePanel = createMessagePanel(message);
+
+                // if the user sent the message, add a delete message button
+                if (messageIdsSentByUser.contains(message.GetMID())) {
+                    JButton deleteButton = new JButton("Delete Message");
+                    deleteButton.addActionListener(this);
+                    messagePanel.add(deleteButton);
+
+                    // Save the delete message button
+                    deleteMessageButtons.put(deleteButton, message.GetMID());
+                }
+                // Save the message ID
+                messages.add(message.GetMID());
+
+                messagesPanel.add(messagePanel);
+                messagesPanel.add(Box.createVerticalStrut(5)); // Add spacing between messages
+            }
+        }
+
+        // Update members of the chat
+        usersPanel.removeAll();
+        for (String username : state.getUsernames()) {
+            JButton usernameButton = new JButton(username);
+            usernameButton.addActionListener(this);
+            usersPanel.add(usernameButton);
         }
 
         // Show error if any
@@ -157,6 +219,8 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
         messagesPanel.revalidate();
         messagesPanel.repaint();
+        usersPanel.revalidate();
+        usersPanel.repaint();
 
         // Scroll to bottom
         SwingUtilities.invokeLater(() -> {

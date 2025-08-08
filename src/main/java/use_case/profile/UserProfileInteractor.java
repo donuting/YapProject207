@@ -1,12 +1,13 @@
 package use_case.profile;
 
+import java.util.List;
+
 /**
  * The User Profile Interactor.
  */
 public class UserProfileInteractor implements UserProfileInputBoundary {
     private final UserProfileDataAccessInterface userDataAccessObject;
     private final UserProfileOutputBoundary userProfilePresenter;
-    private String currentUserId;
 
     public UserProfileInteractor(UserProfileDataAccessInterface userDataAccessInterface,
                                  UserProfileOutputBoundary userProfileOutputBoundary) {
@@ -14,33 +15,29 @@ public class UserProfileInteractor implements UserProfileInputBoundary {
         this.userProfilePresenter = userProfileOutputBoundary;
     }
 
-    public void setCurrentUserId(String userId) {
-        this.currentUserId = userId;
-    }
-
     @Override
     public void saveProfile(UserProfileInputData userProfileInputData) {
         try {
-            if (currentUserId == null) {
-                userProfilePresenter.presentError("No user logged in");
-                return;
-            }
-
             // Validate input
             if (userProfileInputData.getUsername() == null || userProfileInputData.getUsername().trim().isEmpty()) {
                 userProfilePresenter.presentError("Username cannot be empty");
                 return;
             }
+            String oldUsername = userProfileInputData.getOldUsername().trim();
+            String username = userProfileInputData.getUsername().trim();
+            String bio = userProfileInputData.getBio();
+            String dateOfBirth = userProfileInputData.getDateOfBirth();
 
             // Update user profile
-            userDataAccessObject.updateUsername(currentUserId, userProfileInputData.getUsername().trim());
-            userDataAccessObject.updateBio(currentUserId, userProfileInputData.getBio());
-            userDataAccessObject.updateDateOfBirth(currentUserId, userProfileInputData.getDateOfBirth());
+            String userId = userDataAccessObject.saveProfile(oldUsername, username, bio, dateOfBirth);
+            if (userId != null || !userId.trim().isEmpty()) {
+                userProfilePresenter.presentError("This user doesn't exist");
+            }
 
             // Create output data
             UserProfileOutputData outputData = new UserProfileOutputData(
                     userProfileInputData.getUsername().trim(),
-                    currentUserId,
+                    userId,
                     userProfileInputData.getBio(),
                     userProfileInputData.getDateOfBirth(),
                     true,
@@ -55,14 +52,18 @@ public class UserProfileInteractor implements UserProfileInputBoundary {
     }
 
     @Override
-    public void loadProfile(String userId) {
+    public void loadProfile(String username) {
         try {
-            this.currentUserId = userId;
-
             // Load user profile data
-            String username = userDataAccessObject.getUsername(userId);
-            String bio = userDataAccessObject.getBio(userId);
-            String dateOfBirth = userDataAccessObject.getDateOfBirth(userId);
+            List<String> userData = userDataAccessObject.loadProfile(username);
+            if (userData == null) {
+                userProfilePresenter.presentError("This user doesn't exist");
+                return;
+            }
+
+            String userId = userData.get(0);
+            String bio = userData.get(1);
+            String dateOfBirth = userData.get(2);
 
             UserProfileOutputData outputData = new UserProfileOutputData(
                     username,
