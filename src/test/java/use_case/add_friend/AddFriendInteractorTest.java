@@ -205,7 +205,7 @@ public class AddFriendInteractorTest {
     }
 
     @Test
-    // Your user name is incorrect
+    // Your username is incorrect
     void AddFriendFailureTest6() {
         dataAccess.save(user);
         dataAccess.save(friend);
