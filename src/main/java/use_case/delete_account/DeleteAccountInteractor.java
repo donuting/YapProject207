@@ -4,7 +4,8 @@ public class DeleteAccountInteractor implements DeleteAccountInputBoundary {
     private final DeleteAccountDataAccessInterface accountDeletionDataAccessObject;
     private final DeleteAccountOutputBoundary presenter;
 
-    public DeleteAccountInteractor(DeleteAccountDataAccessInterface accountDeletionDataAccessObject, DeleteAccountOutputBoundary presenter) {
+    public DeleteAccountInteractor(DeleteAccountDataAccessInterface accountDeletionDataAccessObject,
+                                   DeleteAccountOutputBoundary presenter) {
         this.accountDeletionDataAccessObject = accountDeletionDataAccessObject;
         this.presenter = presenter;
     }
