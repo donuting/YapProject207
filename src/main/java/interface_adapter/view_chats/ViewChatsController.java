@@ -66,6 +66,7 @@ public class ViewChatsController {
 
         // Updates the list of group chats
         viewGroupChatsState.setNeedsGroupChatInfo(true);
+        viewGroupChatsViewModel.setState(viewGroupChatsState);
         viewGroupChatsViewModel.firePropertyChanged();
 
         // Navigate to the view group chats screen

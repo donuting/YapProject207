@@ -1,7 +1,7 @@
 package use_case.update_chat;
 
 import entity.Chat;
-import entity.GroupChatFactory;
+import entity.GroupChat;
 import entity.Message;
 
 import java.util.ArrayList;
@@ -24,20 +24,20 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
 
     /**
      * Execute the Update Chat use case.
-     *
-     * @param inputData The input data for this use case.
      */
     @Override
-    public void execute(UpdateChatInputData inputData) {
+    public void execute() {
+        String channelUrl = updateChatDataAccessObject.getActiveGroupChat().getChannelUrl();
+
         ScheduledExecutorService updateChatExecutor = Executors.newSingleThreadScheduledExecutor();
         ScheduledExecutorService checkIfViewingChatExecutor = Executors.newSingleThreadScheduledExecutor();
 
         // Check if viewing this chat every 1 second, with 3-second initial delay so that the chat is updated at least once.
-        Runnable checkIfViewingChatRunnable = () -> checkIfViewingChat(inputData, updateChatExecutor, checkIfViewingChatExecutor);
+        Runnable checkIfViewingChatRunnable = () -> checkIfViewingChat(channelUrl, updateChatExecutor, checkIfViewingChatExecutor);
         checkIfViewingChatExecutor.scheduleAtFixedRate(checkIfViewingChatRunnable, 3, 1, TimeUnit.SECONDS);
 
         // Update this chat every 2 seconds
-        Runnable updateChatRunnable = () -> updateChat(inputData);
+        Runnable updateChatRunnable = () -> updateChat(channelUrl);
         updateChatExecutor.scheduleAtFixedRate(updateChatRunnable, 0, 2, TimeUnit.SECONDS);
 
         // Time users out after 20 minutes
@@ -45,67 +45,36 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
         updateChatExecutor.schedule(updateChatExecutor::shutdownNow, 1200, TimeUnit.SECONDS);
     }
 
-    private void updateChat(UpdateChatInputData inputData) {
-        // Load the previous active chat
-        Chat previousActiveChat = updateChatDataAccessObject.getActiveChat();
-        if (previousActiveChat == null) {
-            GroupChatFactory groupChatFactory = new GroupChatFactory();
-            previousActiveChat = groupChatFactory.create(new ArrayList<>(), "", new ArrayList<>());
-            previousActiveChat.setChannelUrl("");
-        }
-
+    private void updateChat(String channelUrl) {
         // Load the new active chat
-        String channelUrl = inputData.getChannelUrl();
-        Chat newActiveChat = updateChatDataAccessObject.load(channelUrl);
+        GroupChat newActiveChat = updateChatDataAccessObject.load(channelUrl);
 
         // Check that the chat exists
         if (newActiveChat == null) {
-            UpdateChatOutputData outputData = new UpdateChatOutputData(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false);
-            presenter.prepareFailView("chat not found", outputData);
+            UpdateChatOutputData outputData = new UpdateChatOutputData(new ArrayList<>(), new ArrayList<>(), false);
+            presenter.updateChatPrepareFailView("chat not found", outputData);
         }
         else {
             // Save the new chat object in the DAO
-            updateChatDataAccessObject.setActiveChat(newActiveChat);
+            updateChatDataAccessObject.setActiveGroupChat(newActiveChat);
 
-            // Make a list of new messages and a list of deleted messages.
-            List<Message> oldMessages = previousActiveChat.getMessageHistory();
+            // Make a list of new messages
             List<Message> updatedMessages = newActiveChat.getMessageHistory();
 
-            List<Message> newMessages = new ArrayList<>(updatedMessages);
-            newMessages.removeAll(oldMessages);
-
-            List<Message> removedMessages = new ArrayList<>(oldMessages);
-            removedMessages.removeAll(updatedMessages);
-
-            // Make a list of new users and a list of removed users.
-            List<String> oldUsers = previousActiveChat.getMemberIds();
+            // Make a list of users
             List<String> updatedUsers = newActiveChat.getMemberIds();
 
-            List<String> newUsers = new ArrayList<>(updatedUsers);
-            newUsers.removeAll(oldUsers);
-
-            List<String> removedUsers = new ArrayList<>(oldUsers);
-            removedUsers.removeAll(updatedUsers);
-
             // Send output data to the presenter
-            UpdateChatOutputData outputData = new UpdateChatOutputData(newMessages, removedMessages, newUsers, removedUsers, true);
-            presenter.prepareSuccessView(outputData);
+            UpdateChatOutputData outputData = new UpdateChatOutputData(updatedMessages, updatedUsers, true);
+            presenter.updateChatPrepareSuccessView(outputData);
         }
     }
 
-    private void checkIfViewingChat(UpdateChatInputData inputData, ScheduledExecutorService updateChatExecutor, ScheduledExecutorService checkIfViewingChatExecutor) {
-        if (!updateChatDataAccessObject.getActiveChat().getChannelUrl().equals(inputData.getChannelUrl())) {
+    private void checkIfViewingChat(String channelUrl, ScheduledExecutorService updateChatExecutor, ScheduledExecutorService checkIfViewingChatExecutor) {
+        if (!updateChatDataAccessObject.getActiveGroupChat().getChannelUrl().equals(channelUrl)) {
             updateChatExecutor.shutdownNow();
             checkIfViewingChatExecutor.shutdownNow();
         }
-    }
-
-    /**
-     * Switches the view so that the chat is shown.
-     */
-    @Override
-    public void switchToChatView() {
-        presenter.switchToChatView();
     }
 
     /**
@@ -114,7 +83,7 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
     @Override
     public void leaveChatView() {
         // Set the current chat to null in the DAO
-        updateChatDataAccessObject.setActiveChat(null);
+        updateChatDataAccessObject.setActiveGroupChat(null);
 
         presenter.leaveChatView();
     }

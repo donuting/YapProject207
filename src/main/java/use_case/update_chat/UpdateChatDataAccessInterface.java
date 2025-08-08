@@ -1,14 +1,14 @@
 package use_case.update_chat;
 
-import entity.Chat;
+import entity.GroupChat;
 
 /**
  * The DAO for the Update Chat use case.
  */
 public interface UpdateChatDataAccessInterface {
-    Chat getActiveChat();
+    GroupChat getActiveGroupChat();
 
-    Chat load(String channelUrl);
+    GroupChat load(String channelUrl);
 
-    void setActiveChat(Chat newChat);
+    void setActiveGroupChat(GroupChat newChat);
 }

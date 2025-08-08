@@ -1,8 +1,13 @@
 package data_access;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openapitools.client.model.*;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
@@ -20,6 +25,8 @@ import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.delete_account.DeleteAccountDataAccessInterface;
+import use_case.delete_message.DeleteMessageDataAccessInterface;
+import use_case.delete_message.DeleteMessageInputBoundary;
 import use_case.join_chat.JoinChatDataAccessInterface;
 import use_case.leave_chat.LeaveChatDataAccessInterface;
 import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
@@ -27,7 +34,9 @@ import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.profile.UserProfileDataAccessInterface;
 import use_case.remove_friend.RemoveFriendDataAccessInterface;
+import use_case.send_message.SendMessageDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.update_chat.UpdateChatDataAccessInterface;
 
 /**
  * The DAO for user data.
@@ -46,12 +55,16 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         JoinChatDataAccessInterface,
         LeaveChatDataAccessInterface,
         LoadGroupChatsDataAccessInterface,
-        UserProfileDataAccessInterface {
+        UserProfileDataAccessInterface,
+        SendMessageDataAccessInterface,
+        DeleteMessageDataAccessInterface,
+        UpdateChatDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
     private final UserFactory userFactory;
     private final GroupChatDataAccessObject groupChatDataAccessObject;
+    private final MessageDataAccessObject messageDataAccessObject;
     private User currentUser = null;
     private GroupChat currentSelfChat = null;
     private final PantryUserDataAccessObject pantryUserDataAccessObject = new PantryUserDataAccessObject();
@@ -59,6 +72,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     public SendBirdUserDataAccessObject() {
         this.userFactory = new CommonUserFactory();
         this.groupChatDataAccessObject = new GroupChatDataAccessObject();
+        this.messageDataAccessObject = new MessageDataAccessObject();
     }
 
     /**
@@ -89,10 +103,10 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
             String password = jsonData.get("password").getAsString();
             String biography = jsonData.get("biography").getAsString();
             String dateOfBirth = jsonData.get("dateOfBirth").getAsString();
-            List<String> friendIds = convertJsonArrayToList(jsonData.getAsJsonArray("friendIds"));
-            List<String> blockedIds = convertJsonArrayToList(jsonData.getAsJsonArray("blockedIds"));
-            List<String> groupChannelUrls = convertJsonArrayToList(jsonData.getAsJsonArray("groupChannelUrls"));
-            List<String> personalChannelUrls = convertJsonArrayToList(jsonData.getAsJsonArray("personalChannelUrls"));
+            List<String> friendIds = convertJsonArrayToList(jsonData.getAsJsonArray("friendIDs"));
+            List<String> blockedIds = convertJsonArrayToList(jsonData.getAsJsonArray("blockedIDs"));
+            List<String> groupChannelUrls = convertJsonArrayToList(jsonData.getAsJsonArray("groupChannelURLs"));
+            List<String> personalChannelUrls = convertJsonArrayToList(jsonData.getAsJsonArray("personalChannelURLs"));
             String selfChatUrl = jsonData.get("selfChatURL").getAsString();
 
             // Get channel URLs
@@ -100,45 +114,101 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
             defaultClient.setBasePath(APPLICATION_ID);
             UserApi apiInstance = new UserApi(defaultClient);
 
+            // The below code is a different implementation of this method,  the
+            // library we are using is bugged and prevents us from loading group chat objects.
+            // This implementation instead uses OkHttp
+
+            final OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+
+            final Request request = new Request.Builder()
+                    .url(APPLICATION_ID + "/v3/users/" + userId + "/my_group_channels?"
+                            + "userId=" + userId
+                            + "&show_empty=true"
+                            + "&show_member=true")
+                    .get()
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Api-Token", API_TOKEN)
+                    .build();
             try {
-                ListMyGroupChannelsResponse result = apiInstance.listMyGroupChannels(userId)
-                        .apiToken(API_TOKEN)
-                        .showMember(true)
-                        .execute();
-
-                System.out.println(result);
-
-                // Create GroupChat and PersonalChat objects
-                List<GroupChat> groupChats = new ArrayList<>();
-                List<GroupChat> personalChats = new ArrayList<>();
-                GroupChat selfChat = null;
-                List<SendbirdGroupChannel> channels = result.getChannels();
-                if (channels != null) {
-                    for (SendbirdGroupChannel sendBirdGroupChannel : channels) {
-                        String channelUrl = sendBirdGroupChannel.getChannelUrl();
-                        if (groupChannelUrls.contains(channelUrl)) {
-                            groupChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
-                        }
-                        else if (personalChannelUrls.contains(channelUrl)) {
-                            personalChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
-                        }
-                        else if (selfChatUrl.equals(channelUrl)) {
-                            selfChat = groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel);
+                final Response response = client.newCall(request).execute();
+                final JSONObject responseBody = new JSONObject(response.body().string());
+                if (response.code() == 200) {
+                    // Create GroupChat and PersonalChat objects
+                    List<GroupChat> groupChats = new ArrayList<>();
+                    List<GroupChat> personalChats = new ArrayList<>();
+                    GroupChat selfChat = null;
+                    JSONArray channels = (JSONArray) responseBody.get("channels");
+                    if (channels != null) {
+                        for (Object channel : channels) {
+                            String channelUrl = ((JSONObject) channel).get("channel_url").toString();
+                            if (groupChannelUrls.contains(channelUrl)) {
+                                groupChats.add(groupChatDataAccessObject.getGroupChat(((JSONObject) channel)));
+                            }
+                            else if (personalChannelUrls.contains(channelUrl)) {
+                                personalChats.add(groupChatDataAccessObject.getGroupChat(((JSONObject) channel)));
+                            }
+                            else if (selfChatUrl.equals(channelUrl)) {
+                                selfChat = groupChatDataAccessObject.getGroupChat(((JSONObject) channel));
+                            }
                         }
                     }
+                    // Initialize the user
+                    return userFactory.create(username, password, userId, biography,
+                            dateOfBirth, friendIds, blockedIds, groupChats, personalChats, selfChat);
+                }
+                else {
+                    System.out.println(response.code());
+                    System.out.println(response.body().string());
+                    throw new RuntimeException(responseBody.getString("message"));
                 }
 
-                // Initialize the user
-                return userFactory.create(username, password, userId, biography,
-                        dateOfBirth, friendIds, blockedIds, groupChats, personalChats, selfChat);
+            } catch (IOException | JSONException ex) {
+                return null;
             }
-            catch (ApiException e) {
-                System.err.println("Exception when calling GroupChannelApi#gcListChannels");
-                System.err.println("Status code: " + e.getCode());
-                System.err.println("Reason: " + e.getResponseBody());
-                System.err.println("Response headers: " + e.getResponseHeaders());
-                e.printStackTrace();
-            }
+
+
+
+//            try {
+//                ListMyGroupChannelsResponse result = apiInstance.listMyGroupChannels(userId)
+//                        .apiToken(API_TOKEN)
+//                        .showEmpty(true)
+//                        .showMember(true)
+//                        .execute();
+//
+//                System.out.println(result);
+//
+//                // Create GroupChat and PersonalChat objects
+//                List<GroupChat> groupChats = new ArrayList<>();
+//                List<GroupChat> personalChats = new ArrayList<>();
+//                GroupChat selfChat = null;
+//                List<SendbirdGroupChannel> channels = result.getChannels();
+//                if (channels != null) {
+//                    for (SendbirdGroupChannel sendBirdGroupChannel : channels) {
+//                        String channelUrl = sendBirdGroupChannel.getChannelUrl();
+//                        if (groupChannelUrls.contains(channelUrl)) {
+//                            groupChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
+//                        }
+//                        else if (personalChannelUrls.contains(channelUrl)) {
+//                            personalChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
+//                        }
+//                        else if (selfChatUrl.equals(channelUrl)) {
+//                            selfChat = groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel);
+//                        }
+//                    }
+//                }
+//
+//                // Initialize the user
+//                return userFactory.create(username, password, userId, biography,
+//                        dateOfBirth, friendIds, blockedIds, groupChats, personalChats, selfChat);
+//            }
+//            catch (ApiException e) {
+//                System.err.println("Exception when calling GroupChannelApi#gcListChannels");
+//                System.err.println("Status code: " + e.getCode());
+//                System.err.println("Reason: " + e.getResponseBody());
+//                System.err.println("Response headers: " + e.getResponseHeaders());
+//                e.printStackTrace();
+
         }
         return null;
     }
@@ -249,9 +319,31 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         return groupChatDataAccessObject.create(memberIds, chatName, groupChatFactory);
     }
 
+    /**
+     * sends a message in a chat.
+     *
+     * @param message the message to be sent
+     * @param chat    the chat in which the message will be sent
+     */
+    @Override
+    public Message sendMessage(Message message, Chat chat) {
+        return messageDataAccessObject.sendMessage(message, chat);
+    }
+
     @Override
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    /**
+     * Updates the system to delete a message from a chat.
+     *
+     * @param MID  the ID of the message to be deleted.
+     * @param chat the chat in which the message was sent.
+     */
+    @Override
+    public boolean deleteMessage(String MID, Chat chat) {
+        return messageDataAccessObject.deleteMessage(MID, chat);
     }
 
     @Override
@@ -263,6 +355,11 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         return false;
     }
 
+    @Override
+    public GroupChat getActiveGroupChat() {
+        return groupChatDataAccessObject.getActiveGroupChat();
+    }
+
     /**
      * Loads a GroupChat object given its channel URL
      *
@@ -272,6 +369,11 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public GroupChat load(String channelUrl) {
         return groupChatDataAccessObject.load(channelUrl);
+    }
+
+    @Override
+    public void setActiveGroupChat(GroupChat newChat) {
+        groupChatDataAccessObject.setActiveGroupChat(newChat);
     }
 
     /**

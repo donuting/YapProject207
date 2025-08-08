@@ -180,7 +180,7 @@ public class InMemoryUserDataAccessObject implements
     }
 
     @Override
-    public Chat getActiveChat() {
+    public GroupChat getActiveGroupChat() {
         return null;
     }
 
@@ -196,7 +196,7 @@ public class InMemoryUserDataAccessObject implements
     }
 
     @Override
-    public void setActiveChat(Chat newChat) {
+    public void setActiveGroupChat(GroupChat newChat) {
 
     }
 

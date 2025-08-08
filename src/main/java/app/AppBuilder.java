@@ -66,6 +66,8 @@ import use_case.change_password.ChangePasswordOutputBoundary;
 import use_case.create_chat.CreateChatInputBoundary;
 import use_case.create_chat.CreateChatInteractor;
 import use_case.create_chat.CreateChatOutputBoundary;
+import use_case.delete_message.DeleteMessageInputBoundary;
+import use_case.delete_message.DeleteMessageInteractor;
 import use_case.join_chat.JoinChatInputBoundary;
 import use_case.join_chat.JoinChatInteractor;
 import use_case.leave_chat.LeaveChatInputBoundary;
@@ -90,6 +92,8 @@ import use_case.send_message.SendMessageOutputBoundary;
 import use_case.profile.UserProfileInputBoundary;
 import use_case.profile.UserProfileInteractor;
 import use_case.profile.UserProfileOutputBoundary;
+import use_case.update_chat.UpdateChatInputBoundary;
+import use_case.update_chat.UpdateChatInteractor;
 import view.*;
 
 /**
@@ -212,7 +216,7 @@ public class AppBuilder {
     public AppBuilder addViewGroupChatsView() {
         viewGroupChatsViewModel = new ViewGroupChatsViewModel();
         viewGroupChatsView = new ViewGroupChatsView(viewGroupChatsViewModel);
-        cardPanel.add(viewChatsView, viewChatsView.getViewName());
+        cardPanel.add(viewGroupChatsView, viewGroupChatsView.getViewName());
         return this;
     }
 
@@ -383,13 +387,19 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addChatUseCase() {
-        final SendMessageOutputBoundary sendMessageOutputBoundary = new ChatPresenter(chatViewModel);
+        final ChatPresenter chatPresenter = new ChatPresenter(viewManagerModel, chatViewModel);
+
+        final DeleteMessageInputBoundary deleteMessageInteractor = new DeleteMessageInteractor(
+                userDataAccessObject, chatPresenter);
 
         final SendMessageInputBoundary sendMessageInteractor = new SendMessageInteractor(
-                messageDataAccessObject, sendMessageOutputBoundary, new entity.CommonMessageFactory());
+                userDataAccessObject, chatPresenter, new entity.CommonMessageFactory());
+
+        final UpdateChatInputBoundary updateChatInteractor = new UpdateChatInteractor(
+                userDataAccessObject, chatPresenter);
 
         final ChatController chatController = new ChatController(
-                sendMessageInteractor, viewManagerModel, viewChatsViewModel);
+                sendMessageInteractor, deleteMessageInteractor, updateChatInteractor, viewManagerModel, viewChatsViewModel);
 
         chatView.setChatController(chatController);
         return this;
@@ -486,7 +496,7 @@ public class AppBuilder {
         final LoadGroupChatsInputBoundary loadGroupChatsInputBoundary =
                 new LoadGroupChatsInteractor(userDataAccessObject, viewGroupChatsPresenter);
         final ViewGroupChatsController viewGroupChatsController =
-                new ViewGroupChatsController(joinChatInputBoundary, leaveChatInputBoundary, loadGroupChatsInputBoundary, viewManagerModel);
+                new ViewGroupChatsController(joinChatInputBoundary, leaveChatInputBoundary, loadGroupChatsInputBoundary, chatViewModel, viewManagerModel);
         viewGroupChatsView.setViewGroupChatsController(viewGroupChatsController);
         return this;
     }

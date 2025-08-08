@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class PantryUserDataAccessObject {
 
-    private static final int CACHE_TIME = 500;
+    private static final int CACHE_TIME = 1000;
     private static final String API_TOKEN = "0d4b194b-2f55-4c9e-8dee-a00d3ecf3cc9";
     private static final String USER_ID = "userId";
     private static final String USERNAME = "username";

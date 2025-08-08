@@ -1,24 +1,16 @@
 package use_case.delete_message;
 
-import entity.Chat;
-
 /**
  * The input data for the delete message Use Case.
  */
 public class DeleteMessageInputData {
-    private final String MID;
-    private final Chat chat;
+    private final String messageId;
 
-    public DeleteMessageInputData(String MID, Chat chat) {
-        this.MID = MID;
-        this.chat = chat;
+    public DeleteMessageInputData(String messageId) {
+        this.messageId = messageId;
     }
 
-    public String getMID() {
-        return MID;
-    }
-
-    public Chat getChat() {
-        return chat;
+    public String getMessageId() {
+        return messageId;
     }
 }

@@ -112,7 +112,7 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
                 newGroupChatPanel.setFont(new Font("Arial", Font.PLAIN, 14));
                 newGroupChatPanel.setBackground(new Color(248, 248, 248));
                 newGroupChatPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                newGroupChatPanel.setPreferredSize(new Dimension(400, 100));
+                newGroupChatPanel.setPreferredSize(new Dimension(800, 100));
                 newGroupChatPanel.add(newViewGroupChatButton);
                 newGroupChatPanel.add(newRemoveGroupChatButton);
 

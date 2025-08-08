@@ -5,17 +5,13 @@ import entity.Message;
 import java.util.List;
 
 public class UpdateChatOutputData {
-    private final List<Message> newMessages;
-    private final List<Message> removedMessages;
-    private final List<String> newUsers;
-    private final List<String> removedUsers;
+    private final List<Message> messages;
+    private final List<String> usernames;
     private final boolean success;
 
-    public UpdateChatOutputData(List<Message> newMessages, List<Message> removedMessages, List<String> newUsers, List<String> removedUsers, boolean success) {
-        this.newMessages = newMessages;
-        this.removedMessages = removedMessages;
-        this.newUsers = newUsers;
-        this.removedUsers = removedUsers;
+    public UpdateChatOutputData(List<Message> messages, List<String> usernames, boolean success) {
+        this.messages = messages;
+        this.usernames = usernames;
         this.success = success;
     }
 
@@ -23,19 +19,11 @@ public class UpdateChatOutputData {
         return success;
     }
 
-    public List<String> getNewUsers() {
-        return newUsers;
+    public List<Message> getMessages() {
+        return messages;
     }
 
-    public List<Message> getNewMessages() {
-        return newMessages;
-    }
-
-    public List<String> getRemovedUsers() {
-        return removedUsers;
-    }
-
-    public List<Message> getRemovedMessages() {
-        return removedMessages;
+    public List<String> getUsernames() {
+        return usernames;
     }
 }

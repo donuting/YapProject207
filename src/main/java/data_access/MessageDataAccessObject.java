@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageDataAccessObject implements SendMessageDataAccessInterface, DeleteMessageDataAccessInterface {
+public class MessageDataAccessObject {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -79,7 +79,6 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
      * @param MID  the ID of the message to be deleted.
      * @param chat the chat in which the message was sent.
      */
-    @Override
     public boolean deleteMessage(String MID, Chat chat) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath(APPLICATION_ID);
@@ -108,7 +107,6 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
      * @param message the message to be sent
      * @param chat the chat in which the message will be sent
      */
-    @Override
     public Message sendMessage(Message message, Chat chat) {
 
         // The below code is a different implementation of this method,  the
@@ -134,7 +132,6 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
         requestBody.put("updated_at", createdAt);
 
         final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
-
 
         final Request request = new Request.Builder()
                 .url(APPLICATION_ID + "/v3/group_channels/" + chat.getChannelUrl() + "/messages")

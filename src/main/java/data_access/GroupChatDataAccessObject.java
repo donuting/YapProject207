@@ -3,6 +3,8 @@ package data_access;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.openapitools.client.model.*;
 import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
@@ -243,21 +245,21 @@ public class GroupChatDataAccessObject {
     }
 
     /**
-     * Creates a GroupChat object given a SendBirdGroupChannel object.
+     * Creates a GroupChat object given a JSONObject.
      * Used when loading GroupChat objects when logging in.
-     * @param sendBirdGroupChannel the SendBird object corresponding to a group chat in SendBird.
+     * @param groupChatJson the JSON object corresponding to a group chat in SendBird.
      * @return the GroupChat Object, or null if it doesn't exist.
      */
-    public GroupChat getGroupChat(SendbirdGroupChannel sendBirdGroupChannel) {
-        List<SendbirdMember> members = sendBirdGroupChannel.getMembers();
+    public GroupChat getGroupChat(JSONObject groupChatJson) {
+        JSONArray members = groupChatJson.getJSONArray("members");
         List<String> memberIds = new ArrayList<>();
         if (members != null) {
-            for (SendbirdMember member : members) {
-                memberIds.add(member.getUserId());
+            for (Object member : members) {
+                memberIds.add(((JSONObject) member).getString("user_id"));
             }
         }
-        String chatName = sendBirdGroupChannel.getName();
-        String channelUrl = sendBirdGroupChannel.getChannelUrl();
+        String chatName = groupChatJson.getString("name");
+        String channelUrl = groupChatJson.getString("channel_url");
         GroupChat groupChat = new GroupChatFactory().create(memberIds, chatName, new ArrayList<>());
         groupChat.setChannelUrl(channelUrl);
         messageDataAccessObject.loadMessages(groupChat);

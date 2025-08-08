@@ -17,20 +17,20 @@ public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
 
     @Override
     public void execute(DeleteMessageInputData deleteMessageInputData) {
-        String messageId = deleteMessageInputData.getMID();
-        Chat chat = deleteMessageInputData.getChat();
+        String messageId = deleteMessageInputData.getMessageId();
+        Chat chat = messageDataAccessObject.getActiveGroupChat();
         boolean result = messageDataAccessObject.deleteMessage(messageId, chat);
 
         if (result) {
             // update the in memory chat object
             chat.deleteMessage(messageId);
 
-            final DeleteMessageOutputData deleteMessageOutputData = new DeleteMessageOutputData(null, deleteMessageInputData.getChat(), false);
-            messagePresenter.prepareSuccessSendMessageView(deleteMessageOutputData);
+            final DeleteMessageOutputData deleteMessageOutputData = new DeleteMessageOutputData(deleteMessageInputData.getMessageId(), false);
+            messagePresenter.prepareSuccessDeleteMessageView(deleteMessageOutputData);
         }
         else {
-            final DeleteMessageOutputData deleteMessageOutputData = new DeleteMessageOutputData(deleteMessageInputData.getMID() ,deleteMessageInputData.getChat(), true);
-            messagePresenter.prepareFailSendMessageView("delete Message Failed", deleteMessageOutputData);
+            final DeleteMessageOutputData deleteMessageOutputData = new DeleteMessageOutputData(null, true);
+            messagePresenter.prepareFailDeleteMessageView("delete Message Failed", deleteMessageOutputData);
         }
 
 
