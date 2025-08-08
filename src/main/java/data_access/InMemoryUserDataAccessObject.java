@@ -15,6 +15,7 @@ import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.profile.UserProfileDataAccessInterface; // ADD THIS IMPORT
 
 /**
  * In-memory implementation of the DAO for storing user data. This implementation does
@@ -27,11 +28,14 @@ public class InMemoryUserDataAccessObject implements
         LogoutUserDataAccessInterface,
         AddBioUserDataAccessInterface,
         AddDOBUserDataAccessInterface,
-        AddFriendUserDataAccessInterface, CreateChatUserDataAccessInterface {
+        AddFriendUserDataAccessInterface,
+        CreateChatUserDataAccessInterface,
+        UserProfileDataAccessInterface { // ADD THIS INTERFACE
 
     private final Map<String, User> users = new HashMap<>();
 
     private String currentUsername;
+    private User currentUser; // ADD THIS FIELD
 
     @Override
     public boolean existsByName(String identifier) {
@@ -62,12 +66,17 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public void changePassword(String username , String password) {
         // Replace the old entry with the new password
-
+        User user = users.get(username);
+        if (user != null) {
+            // You'll need to implement this in your User implementation
+            // For now, this is a placeholder
+        }
     }
 
     @Override
     public void setCurrentUsername(String name) {
         this.currentUsername = name;
+        this.currentUser = users.get(name); // UPDATE CURRENT USER TOO
     }
 
     @Override
@@ -82,7 +91,10 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public void setCurrentUser(User user) {
-
+        this.currentUser = user;
+        if (user != null) {
+            this.currentUsername = user.getName();
+        }
     }
 
     @Override
@@ -98,6 +110,10 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public boolean addBio(String username, String bio) {
+        User user = users.get(username);
+        if (user != null) {
+            return user.EditBiography(bio); // USE EXISTING USER METHOD
+        }
         return false;
     }
 
@@ -109,6 +125,10 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public boolean addDOB(String username, String dob) {
+        User user = users.get(username);
+        if (user != null) {
+            return user.EditDOB(dob); // USE EXISTING USER METHOD
+        }
         return false;
     }
 
@@ -142,7 +162,7 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public User getCurrentUser() {
-        return null;
+        return this.currentUser; // IMPLEMENT THIS
     }
 
     /**
@@ -154,5 +174,72 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public void saveGroupChat(GroupChat newGroupChat, String username) {
 
+    }
+
+    // ========== NEW METHODS FOR UserProfileDataAccessInterface ==========
+
+    @Override
+    public void updateUsername(String userId, String username) {
+        // Since you're using username as the key, this is more complex
+        // You might need to use the user's ID instead, or handle this differently
+        User user = findUserById(userId);
+        if (user != null) {
+            // Remove old entry
+            users.remove(user.getName());
+            // Update username
+            user.setName(username);
+            // Add back with new key
+            users.put(username, user);
+
+            // Update current username if it's the current user
+            if (currentUser != null && currentUser.getID().equals(userId)) {
+                currentUsername = username;
+            }
+        }
+    }
+
+    @Override
+    public void updateBio(String userId, String bio) {
+        User user = findUserById(userId);
+        if (user != null) {
+            user.EditBiography(bio);
+        }
+    }
+
+    @Override
+    public void updateDateOfBirth(String userId, String dateOfBirth) {
+        User user = findUserById(userId);
+        if (user != null) {
+            user.EditDOB(dateOfBirth);
+        }
+    }
+
+    @Override
+    public String getUsername(String userId) {
+        User user = findUserById(userId);
+        return user != null ? user.getName() : "";
+    }
+
+    @Override
+    public String getBio(String userId) {
+        User user = findUserById(userId);
+        return user != null ? user.getBio() : "";
+    }
+
+    @Override
+    public String getDateOfBirth(String userId) {
+        User user = findUserById(userId);
+        return user != null ? user.getDOB() : "";
+    }
+
+    /**
+     * Helper method to find a user by their ID rather than username.
+     * This is important because usernames can change, but IDs should be stable.
+     */
+    private User findUserById(String userId) {
+        return users.values().stream()
+                .filter(user -> user.getID().equals(userId))
+                .findFirst()
+                .orElse(null);
     }
 }
