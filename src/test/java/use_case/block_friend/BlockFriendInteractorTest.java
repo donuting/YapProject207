@@ -25,7 +25,6 @@ public class BlockFriendInteractorTest {
         friend = userFactory.create("Friend", "Password2");
         dataAccess.save(user);
         dataAccess.save(friend);
-        // set the current user so interactor.getCurrentUser() returns a non-null user
         dataAccess.setCurrentUser(user);
     }
 
@@ -45,7 +44,6 @@ public class BlockFriendInteractorTest {
                 fail("Block friend use case should succeed");
             }
         };
-        // pass the InMemoryUserDataAccessObject directly (it now implements the methods the interactor uses)
         BlockFriendInteractor interactor = new BlockFriendInteractor(dataAccess, successPresenter);
         interactor.execute(inputData);
     }
@@ -71,8 +69,7 @@ public class BlockFriendInteractorTest {
 
     @Test
     void blockFriendFailUserDoesNotExistTest() {
-        // make current user a username that doesn't exist in storage
-        dataAccess.setCurrentUser(null); // simulate no current user
+        dataAccess.setCurrentUser(null); 
         BlockFriendInputData inputData = new BlockFriendInputData("NonExistentUser", friend.getName());
         BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
             @Override
