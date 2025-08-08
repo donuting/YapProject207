@@ -1,48 +1,24 @@
 package use_case.profile;
 
+import java.util.List;
+
 /**
  * Data Access Interface for User Profile operations.
  */
 public interface UserProfileDataAccessInterface {
     /**
-     * Updates the username for the given user ID.
-     * @param userId the user ID
-     * @param username the new username
+     * Updates the username, bio and date of birth for the given user ID.
+     * @param username the new username.
+     * @param bio the new bio.
+     * @param dateOfBirth the new date of birth.
+     * @return the saved user's ID, or null if the user doesn't exist
      */
-    void updateUsername(String userId, String username);
+    String saveProfile(String oldUsername, String username, String bio, String dateOfBirth);
 
     /**
-     * Updates the bio for the given user ID.
-     * @param userId the user ID
-     * @param bio the new bio
+     * Gets user profile data for a user given their username.
+     * @param username the user's name
+     * @return a list containing the user's ID, bio, and date of birth as strings, or null if the user doesn't exist
      */
-    void updateBio(String userId, String bio);
-
-    /**
-     * Updates the date of birth for the given user ID.
-     * @param userId the user ID
-     * @param dateOfBirth the new date of birth
-     */
-    void updateDateOfBirth(String userId, String dateOfBirth);
-
-    /**
-     * Gets the username for the given user ID.
-     * @param userId the user ID
-     * @return the username
-     */
-    String getUsername(String userId);
-
-    /**
-     * Gets the bio for the given user ID.
-     * @param userId the user ID
-     * @return the bio
-     */
-    String getBio(String userId);
-
-    /**
-     * Gets the date of birth for the given user ID.
-     * @param userId the user ID
-     * @return the date of birth
-     */
-    String getDateOfBirth(String userId);
+    List<String> loadProfile(String username);
 }

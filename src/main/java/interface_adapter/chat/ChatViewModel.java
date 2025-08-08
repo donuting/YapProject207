@@ -29,7 +29,7 @@ public class ChatViewModel extends ViewModel<ChatState> {
     public void setCurrentChat(GroupChat chat) {
         ChatState currentState = getState();
         currentState.setCurrentChat(chat);
-        currentState.setChatName(chat.getName());
+        currentState.setChatName(chat.getChatName());
         currentState.setMessages(chat.getMessageHistory());
         firePropertyChanged();
     }

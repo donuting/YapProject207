@@ -24,17 +24,17 @@ public class UserProfileController {
      * @param bio the new bio
      * @param dateOfBirth the new date of birth
      */
-    public void saveProfile(String username, String bio, String dateOfBirth) {
-        final UserProfileInputData userProfileInputData = new UserProfileInputData(username, bio, dateOfBirth);
+    public void saveProfile(String oldUsername, String username, String bio, String dateOfBirth) {
+        final UserProfileInputData userProfileInputData = new UserProfileInputData(oldUsername, username, bio, dateOfBirth);
         userProfileUseCaseInteractor.saveProfile(userProfileInputData);
     }
 
     /**
      * Executes the "load profile" Use Case.
-     * @param userId the user ID whose profile to load
+     * @param username the username whose profile to load
      */
-    public void loadProfile(String userId) {
-        userProfileUseCaseInteractor.loadProfile(userId);
+    public void loadProfile(String username) {
+        userProfileUseCaseInteractor.loadProfile(username);
     }
 
     /**

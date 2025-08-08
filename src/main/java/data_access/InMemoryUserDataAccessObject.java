@@ -1,5 +1,6 @@
 package data_access;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +39,10 @@ public class InMemoryUserDataAccessObject implements
         JoinChatDataAccessInterface,
         UpdateChatDataAccessInterface,
         LeaveChatDataAccessInterface,
-        LoadGroupChatsDataAccessInterface {
-        AddFriendUserDataAccessInterface,
-        CreateChatUserDataAccessInterface,
+        LoadGroupChatsDataAccessInterface,
         UserProfileDataAccessInterface { // ADD THIS INTERFACE
 
     private final Map<String, User> users = new HashMap<>();
-
     private String currentUsername;
     private User currentUser; // ADD THIS FIELD
 
@@ -212,7 +210,7 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public GroupChat addUser(String userId, String channelUrl) {
         return null;
-        return this.currentUser; // IMPLEMENT THIS
+        // IMPLEMENT THIS
     }
 
     /**
@@ -229,57 +227,39 @@ public class InMemoryUserDataAccessObject implements
     // ========== NEW METHODS FOR UserProfileDataAccessInterface ==========
 
     @Override
-    public void updateUsername(String userId, String username) {
-        // Since you're using username as the key, this is more complex
-        // You might need to use the user's ID instead, or handle this differently
-        User user = findUserById(userId);
-        if (user != null) {
+    public String saveProfile(String oldUsername, String username, String bio, String dateOfBirth) {
+        if (users.containsKey(oldUsername)) {
+            User user = users.get(oldUsername);
             // Remove old entry
             users.remove(user.getName());
-            // Update username
+            // Update user data
             user.setName(username);
+            user.EditBiography(bio);
+            user.EditDOB(dateOfBirth);
             // Add back with new key
             users.put(username, user);
 
             // Update current username if it's the current user
-            if (currentUser != null && currentUser.getID().equals(userId)) {
+            if (currentUser != null && currentUser.getName().equals(username)) {
                 currentUsername = username;
             }
+
+            return user.getID();
         }
+        return null;
     }
 
     @Override
-    public void updateBio(String userId, String bio) {
-        User user = findUserById(userId);
-        if (user != null) {
-            user.EditBiography(bio);
+    public List<String> loadProfile(String username) {
+        if (users.containsKey(username)) {
+            User user = users.get(username);
+            List<String> userProfile = new ArrayList<>();
+            userProfile.add(user.getID());
+            userProfile.add(user.getBio());
+            userProfile.add(user.getDOB());
+            return userProfile;
         }
-    }
-
-    @Override
-    public void updateDateOfBirth(String userId, String dateOfBirth) {
-        User user = findUserById(userId);
-        if (user != null) {
-            user.EditDOB(dateOfBirth);
-        }
-    }
-
-    @Override
-    public String getUsername(String userId) {
-        User user = findUserById(userId);
-        return user != null ? user.getName() : "";
-    }
-
-    @Override
-    public String getBio(String userId) {
-        User user = findUserById(userId);
-        return user != null ? user.getBio() : "";
-    }
-
-    @Override
-    public String getDateOfBirth(String userId) {
-        User user = findUserById(userId);
-        return user != null ? user.getDOB() : "";
+        return null;
     }
 
     /**

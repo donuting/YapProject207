@@ -25,6 +25,7 @@ import use_case.leave_chat.LeaveChatDataAccessInterface;
 import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
+import use_case.profile.UserProfileDataAccessInterface;
 import use_case.remove_friend.RemoveFriendDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
@@ -44,7 +45,8 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         DeleteAccountDataAccessInterface,
         JoinChatDataAccessInterface,
         LeaveChatDataAccessInterface,
-        LoadGroupChatsDataAccessInterface {
+        LoadGroupChatsDataAccessInterface,
+        UserProfileDataAccessInterface {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -503,5 +505,57 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * Updates the username, bio and date of birth for the given user ID.
+     *
+     * @param username    the new username.
+     * @param bio         the new bio.
+     * @param dateOfBirth the new date of birth.
+     * @return the saved user's ID.
+     */
+    @Override
+    public String saveProfile(String oldUsername, String username, String bio, String dateOfBirth) {
+        if (existsByName(oldUsername)) {
+            // Updates the user in Pantry
+            String userId = pantryUserDataAccessObject.saveProfile(oldUsername, username, bio, dateOfBirth);
+
+            // Updates the user in SendBird
+            ApiClient defaultClient = Configuration.getDefaultApiClient();
+            defaultClient.setBasePath(APPLICATION_ID);
+
+            UserApi apiInstance = new UserApi(defaultClient);
+            UpdateAUserRequest updateAUserRequest = new UpdateAUserRequest().nickname(username);
+            try {
+                SendbirdUser result = apiInstance.updateAUser(userId)
+                        .apiToken(API_TOKEN)
+                        .updateAUserRequest(updateAUserRequest)
+                        .execute();
+                System.out.println(result);
+                return userId;
+            } catch (ApiException e) {
+                System.err.println("Exception when calling UserApi#updateAUser");
+                System.err.println("Status code: " + e.getCode());
+                System.err.println("Reason: " + e.getResponseBody());
+                System.err.println("Response headers: " + e.getResponseHeaders());
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets user profile data for a user given their username.
+     *
+     * @param username the user's name
+     * @return a list containing the user's ID, bio, and date of birth as strings
+     */
+    @Override
+    public List<String> loadProfile(String username) {
+        if (existsByName(username)) {
+            return pantryUserDataAccessObject.loadProfile(username);
+        }
+        return null;
     }
 }

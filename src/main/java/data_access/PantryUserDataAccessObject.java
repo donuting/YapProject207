@@ -6,6 +6,9 @@ import com.google.gson.JsonObject;
 import endercrypt.library.jpantry.JPantry;
 import endercrypt.library.jpantry.PantryBasket;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The DAO for accessing user data in Pantry. This is user to store data of users in this app.
  * See <a href="https://github.com/EnderCrypt/JPantry?tab=readme-ov-file">...</a>
@@ -211,9 +214,16 @@ public class PantryUserDataAccessObject {
      * @param username the name of the user to be deleted.
      */
     public void deleteUser(String username) {
-        pantry.setInformation(username, null);
+        PantryBasket basket = pantry.getBasket(username);
+        basket.deleteJson().complete();
     }
 
+    /**
+     * Allows a user to leave a group chat, and updates that information in Pantry
+     *
+     * @param username the name of the user
+     * @param channelUrl the URL of the group chat
+     */
     public void leaveChat(String username, String channelUrl) {
         JsonArray groupChatUrls = getUserDataFromUsername(username).getAsJsonArray(GROUP_CHANNEL_URLS);
         for (JsonElement groupChatUrl : groupChatUrls) {
@@ -225,5 +235,39 @@ public class PantryUserDataAccessObject {
         JsonObject updateData = new JsonObject();
         updateData.add(GROUP_CHANNEL_URLS, groupChatUrls);
         basket.mergeJson(updateData).complete();
+    }
+
+    /**
+     * Saves the profile of a user.
+     *
+     * @param oldUsername the old username of the user
+     * @param username the new username of the user
+     * @param bio the new bio
+     * @param dateOfBirth the new date of birth
+     * @return the ID of the updated user
+     */
+    public String saveProfile(String oldUsername, String username, String bio, String dateOfBirth) {
+        JsonObject userData = getUserDataFromUsername(oldUsername);
+        userData.addProperty(USERNAME, username);
+        userData.addProperty(BIOGRAPHY, bio);
+        userData.addProperty(DATE_OF_BIRTH, dateOfBirth);
+        save(userData);
+        deleteUser(oldUsername);
+        return userData.get(USER_ID).getAsString();
+    }
+
+    /**
+     * Gets user profile data for a user given their username.
+     *
+     * @param username the user's name
+     * @return a list containing the user's ID, bio, and date of birth as strings
+     */
+    public List<String> loadProfile(String username) {
+        JsonObject userData = getUserDataFromUsername(username);
+        List<String> profileData = new ArrayList<>();
+        profileData.add(userData.get(USER_ID).getAsString());
+        profileData.add(userData.get(BIOGRAPHY).getAsString());
+        profileData.add(userData.get(DATE_OF_BIRTH).getAsString());
+        return profileData;
     }
 }

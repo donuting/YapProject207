@@ -12,8 +12,8 @@ public interface UserProfileInputBoundary {
 
     /**
      * Executes the load profile use case.
-     * @param userId the user ID
+     * @param username the user's name
      */
-    void loadProfile(String userId);
+    void loadProfile(String username);
 }
 
