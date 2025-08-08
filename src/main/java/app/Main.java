@@ -22,6 +22,8 @@ public class Main {
                                             .addMainMenuView()
                                             .addViewChatsView()
                                             .addSelfChatView()
+                                            .addChatView()
+                                            .addUserProfileView()
                                             .addProfileandSettingsView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
@@ -32,6 +34,8 @@ public class Main {
                                             .addAddFriendUseCase()
                                             .addAddChatUseCase()
                                             .addSelfChatUseCase()
+                                            .addChatUseCase()
+                                            .addUserProfileUseCase()
                                             .addProfileandSettingsUseCase()
                                             .build();
 
