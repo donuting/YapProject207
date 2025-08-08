@@ -48,6 +48,7 @@ public class ViewGroupChatsPresenter implements JoinChatOutputBoundary,
     public void joinChatPrepareFailView(String errorMessage, JoinChatOutputData outputData) {
         final ViewGroupChatsState viewGroupChatsState = viewGroupChatsViewModel.getState();
         viewGroupChatsState.setErrorMessage(errorMessage);
+        viewGroupChatsState.setNeedsGroupChatInfo(false);
         viewGroupChatsViewModel.setState(viewGroupChatsState);
         viewGroupChatsViewModel.firePropertyChanged();
     }
@@ -62,6 +63,7 @@ public class ViewGroupChatsPresenter implements JoinChatOutputBoundary,
     public void leaveChatPrepareFailView(String errorMessage, LeaveChatOutputData outputData) {
         final ViewGroupChatsState viewGroupChatsState = viewGroupChatsViewModel.getState();
         viewGroupChatsState.setErrorMessage(errorMessage);
+        viewGroupChatsState.setNeedsGroupChatInfo(false);
         viewGroupChatsViewModel.setState(viewGroupChatsState);
         viewGroupChatsViewModel.firePropertyChanged();
     }

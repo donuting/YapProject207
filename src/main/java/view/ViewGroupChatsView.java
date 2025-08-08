@@ -86,9 +86,6 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
     }
 
     private void updateGroupChatDisplay() {
-        viewGroupChatsController.loadGroupChats();
-
-
         // Load group chat info from state object into the display
         Map<String, String> channelInfo = viewGroupChatsViewModel.getState().getChannelInfo();
         for (Map.Entry<String, String> channelData: channelInfo.entrySet()) {
@@ -115,6 +112,9 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
                 viewGroupChatsPanel.add(newGroupChatPanel);
             }
         }
+
+        viewGroupChatsPanel.revalidate();
+        viewGroupChatsPanel.repaint();
     }
 
     private JButton addActionListener(JButton jButton) {
@@ -171,7 +171,12 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
 
         // Check whether the chats need to be updated, and if so, update them
         if (viewGroupChatsController != null && state.getNeedsGroupChatInfo()) {
+            viewGroupChatButtons.clear();
+            removeGroupChatButtons.clear();
+            viewGroupChatsPanel.removeAll();
+            viewGroupChatsController.loadGroupChats();
             updateGroupChatDisplay();
+            state.setNeedsGroupChatInfo(false);
         }
 
         // Handle any error messages

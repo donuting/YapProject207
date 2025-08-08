@@ -35,10 +35,15 @@ public class JoinChatInteractor implements JoinChatInputBoundary {
             } else {
                 GroupChat updatedChat = joinChatDataAccessInterface.addUser(currentUser.getID(), channelUrl);
                 if (updatedChat == null) {
+
+
                     JoinChatOutputData outputData = new JoinChatOutputData(null);
                     presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
                 }
+                // Save the chat to the user
+                joinChatDataAccessInterface.saveGroupChat(updatedChat, currentUser.getName());
                 currentUser.addGroupChat(updatedChat);
+
                 JoinChatOutputData outputData = new JoinChatOutputData(updatedChat);
                 presenter.joinChatPrepareSuccessView(outputData);
             }
