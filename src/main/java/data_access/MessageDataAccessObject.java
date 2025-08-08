@@ -10,12 +10,13 @@ import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.Configuration;
 import org.sendbird.client.api.MessageApi;
-import use_case.delete_message.DeleteMessageDataAccessInterface;
-import use_case.send_message.SendMessageDataAccessInterface;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MessageDataAccessObject {
 
@@ -55,9 +56,13 @@ public class MessageDataAccessObject {
                     String userId = sendBirdMessage.getUser().getUserId();
                     String messageBody = sendBirdMessage.getMessage();
                     Integer messageId = sendBirdMessage.getMessageId();
-                    long updatedAt = sendBirdMessage.getUpdatedAt();
+                    long updatedAt = sendBirdMessage.getCreatedAt();
+                    Date date = new Date(updatedAt);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-                    Message message = messageFactory.create(userId, messageBody, messageId, Long.toString(updatedAt));
+
+                    Message message = messageFactory.create(userId, messageBody, messageId, sdf.format(date));
                     messageHistory.add(message);
                 }
             }
@@ -124,10 +129,7 @@ public class MessageDataAccessObject {
         requestBody.put("user_id", message.GetSenderId());
         requestBody.put("message", message.GetText());
 
-        long createdAt = Long.getLong(message.getTimestamp());
-        if (createdAt == 0L) {
-            createdAt = System.currentTimeMillis();
-        }
+        long createdAt = System.currentTimeMillis();
         requestBody.put("created_at", createdAt);
         requestBody.put("updated_at", createdAt);
 
@@ -147,6 +149,12 @@ public class MessageDataAccessObject {
             if (response.code() == 200) {
                 Integer messageId = (int) responseBody.getLong("message_id");
                 message.SetMID(messageId);
+
+                Date date = new Date(createdAt);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                message.setTimestamp(sdf.format(date));
+
                 return message;
             }
             else {

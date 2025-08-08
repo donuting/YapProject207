@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupChat implements Chat {
@@ -72,11 +73,13 @@ public class GroupChat implements Chat {
 
     @Override
     public boolean deleteMessage(String messageId) {
+        List<Message> newMessageHistory = new ArrayList<Message>();
         for (Message message : messageHistory) {
-            if (message.GetMID().toString().equals(messageId)) {
-                messageHistory.remove(message);
+            if (!message.GetMID().toString().equals(messageId)) {
+                newMessageHistory.add(message);
             }
         }
+        messageHistory = newMessageHistory;
         return true;
     }
 
@@ -134,6 +137,16 @@ public class GroupChat implements Chat {
     @Override
     public List<String> getMemberIds() {
         return memberIds;
+    }
+
+    /**
+     * Sets the member IDs of the chat's members.
+     *
+     * @param memberIds the member IDs.
+     */
+    @Override
+    public void setMemberIds(List<String> memberIds) {
+        this.memberIds = memberIds;
     }
 
     public String getChatName() {

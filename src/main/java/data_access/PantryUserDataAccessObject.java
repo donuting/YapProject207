@@ -226,14 +226,15 @@ public class PantryUserDataAccessObject {
      */
     public void leaveChat(String username, String channelUrl) {
         JsonArray groupChatUrls = getUserDataFromUsername(username).getAsJsonArray(GROUP_CHANNEL_URLS);
+        JsonArray updatedGroupChatUrls = new JsonArray();
         for (JsonElement groupChatUrl : groupChatUrls) {
-            if (groupChatUrl.getAsString().equals(channelUrl)) {
-                groupChatUrls.remove(groupChatUrl);
+            if (!groupChatUrl.getAsString().equals(channelUrl)) {
+                updatedGroupChatUrls.add(groupChatUrl);
             }
         }
         PantryBasket basket = pantry.getBasket(username);
         JsonObject updateData = new JsonObject();
-        updateData.add(GROUP_CHANNEL_URLS, groupChatUrls);
+        updateData.add(GROUP_CHANNEL_URLS, updatedGroupChatUrls);
         basket.mergeJson(updateData).complete();
     }
 

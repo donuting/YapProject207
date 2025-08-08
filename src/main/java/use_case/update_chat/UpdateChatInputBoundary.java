@@ -7,7 +7,7 @@ public interface UpdateChatInputBoundary {
     /**
      * Execute the Update Chat use case.
      */
-    void execute();
+    void execute(UpdateChatInputData updateChatInputData);
 
     /**
      * Switches the view to return to the list of chats

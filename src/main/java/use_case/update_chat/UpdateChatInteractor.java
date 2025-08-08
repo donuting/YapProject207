@@ -1,8 +1,8 @@
 package use_case.update_chat;
 
-import entity.Chat;
 import entity.GroupChat;
 import entity.Message;
+import entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,52 +26,70 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
      * Execute the Update Chat use case.
      */
     @Override
-    public void execute() {
-        String channelUrl = updateChatDataAccessObject.getActiveGroupChat().getChannelUrl();
+    public void execute(UpdateChatInputData updateChatInputData) {
+        User currentUser = updateChatDataAccessObject.getCurrentUser();
+        String channelUrl = updateChatInputData.getChannelUrl();
+
+        // Set to viewing this chat
+        for (GroupChat groupChat : currentUser.getGroupChats()) {
+            if (groupChat.getChannelUrl().equals(channelUrl)) {
+                updateChatDataAccessObject.setActiveGroupChat(groupChat);
+            }
+        }
+        for (GroupChat personalChat : currentUser.getPersonalChats()) {
+            if (personalChat.getChannelUrl().equals(channelUrl)) {
+                updateChatDataAccessObject.setActiveGroupChat(personalChat);
+            }
+        }
 
         ScheduledExecutorService updateChatExecutor = Executors.newSingleThreadScheduledExecutor();
         ScheduledExecutorService checkIfViewingChatExecutor = Executors.newSingleThreadScheduledExecutor();
 
-        // Check if viewing this chat every 1 second, with 3-second initial delay so that the chat is updated at least once.
+        // Check if viewing this chat every 0.5 seconds, with 2-second initial delay so that the chat is updated at least once.
         Runnable checkIfViewingChatRunnable = () -> checkIfViewingChat(channelUrl, updateChatExecutor, checkIfViewingChatExecutor);
-        checkIfViewingChatExecutor.scheduleAtFixedRate(checkIfViewingChatRunnable, 3, 1, TimeUnit.SECONDS);
+        checkIfViewingChatExecutor.scheduleAtFixedRate(checkIfViewingChatRunnable, 2000L, 500L, TimeUnit.MILLISECONDS);
 
-        // Update this chat every 2 seconds
+        // Update this chat every 4 seconds
         Runnable updateChatRunnable = () -> updateChat(channelUrl);
-        updateChatExecutor.scheduleAtFixedRate(updateChatRunnable, 0, 2, TimeUnit.SECONDS);
+        updateChatExecutor.scheduleAtFixedRate(updateChatRunnable, 0L, 4L, TimeUnit.SECONDS);
 
         // Time users out after 20 minutes
-        checkIfViewingChatExecutor.schedule(checkIfViewingChatExecutor::shutdownNow, 1200, TimeUnit.SECONDS);
-        updateChatExecutor.schedule(updateChatExecutor::shutdownNow, 1200, TimeUnit.SECONDS);
+        checkIfViewingChatExecutor.schedule(checkIfViewingChatExecutor::shutdownNow, 1200L, TimeUnit.SECONDS);
+        updateChatExecutor.schedule(updateChatExecutor::shutdownNow, 1200L, TimeUnit.SECONDS);
     }
 
     private void updateChat(String channelUrl) {
         // Load the new active chat
-        GroupChat newActiveChat = updateChatDataAccessObject.load(channelUrl);
+        GroupChat updatedChat = updateChatDataAccessObject.load(channelUrl);
 
         // Check that the chat exists
-        if (newActiveChat == null) {
-            UpdateChatOutputData outputData = new UpdateChatOutputData(new ArrayList<>(), new ArrayList<>(), false);
+        if (updatedChat == null) {
+            UpdateChatOutputData outputData = new UpdateChatOutputData(null, new ArrayList<>(), new ArrayList<>(), false);
             presenter.updateChatPrepareFailView("chat not found", outputData);
         }
         else {
-            // Save the new chat object in the DAO
-            updateChatDataAccessObject.setActiveGroupChat(newActiveChat);
+            // Update the new chat object in the DAO
+            GroupChat activeChat = updateChatDataAccessObject.getActiveGroupChat();
+            activeChat.setChatName(updatedChat.getChatName());
+            activeChat.setMessageHistory(updatedChat.getMessageHistory());
+            activeChat.setMemberIds(updatedChat.getMemberIds());
 
             // Make a list of new messages
-            List<Message> updatedMessages = newActiveChat.getMessageHistory();
+            List<Message> updatedMessages = updatedChat.getMessageHistory();
 
             // Make a list of users
-            List<String> updatedUsers = newActiveChat.getMemberIds();
+            List<String> updatedUsers = updatedChat.getMemberIds();
 
             // Send output data to the presenter
-            UpdateChatOutputData outputData = new UpdateChatOutputData(updatedMessages, updatedUsers, true);
+            String currentUserId = updateChatDataAccessObject.getCurrentUser().getID();
+            UpdateChatOutputData outputData = new UpdateChatOutputData(currentUserId, updatedMessages, updatedUsers, true);
             presenter.updateChatPrepareSuccessView(outputData);
         }
     }
 
     private void checkIfViewingChat(String channelUrl, ScheduledExecutorService updateChatExecutor, ScheduledExecutorService checkIfViewingChatExecutor) {
-        if (!updateChatDataAccessObject.getActiveGroupChat().getChannelUrl().equals(channelUrl)) {
+        if (updateChatDataAccessObject.getActiveGroupChat() == null ||
+                !updateChatDataAccessObject.getActiveGroupChat().getChannelUrl().equals(channelUrl)) {
             updateChatExecutor.shutdownNow();
             checkIfViewingChatExecutor.shutdownNow();
         }

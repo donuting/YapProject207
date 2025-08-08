@@ -54,6 +54,16 @@ public class CommonMessage implements Message {
     }
 
     /**
+     * Sets the timestamp of the message.
+     *
+     * @param timestamp of the message
+     */
+    @Override
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    /**
      * generates an ID for the Message.
      * @return generated ID.
      */

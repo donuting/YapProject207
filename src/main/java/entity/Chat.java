@@ -48,6 +48,12 @@ public interface Chat {
     List<String> getMemberIds();
 
     /**
+     * Sets the member IDs of the chat's members.
+     * @param memberIds the member IDs.
+     */
+    void setMemberIds(List<String> memberIds);
+
+    /**
      * Returns the URL of the channel associated with the chat.
      * @return the channel URL.
      */

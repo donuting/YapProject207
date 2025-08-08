@@ -70,7 +70,7 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
         // Center panel with message display and users display
 
-        JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         centerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         centerPanel.setBackground(Color.WHITE);
 
@@ -83,6 +83,7 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         messagesScrollPane = new JScrollPane(messagesPanel);
         messagesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messagesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messagesScrollPane.setPreferredSize(new Dimension(400, 400));
 
         // Users panel (scrollable)
         usersPanel = new JPanel();
@@ -90,12 +91,13 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         usersPanel.setBackground(Color.WHITE);
         usersPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        usersScrollPane = new JScrollPane(messagesPanel);
-        usersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        usersScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        usersScrollPane = new JScrollPane(usersPanel);
+        usersScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        usersScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        usersScrollPane.setPreferredSize(new Dimension(100, 400));
 
-        centerPanel.add(usersScrollPane, BorderLayout.WEST);
-        centerPanel.add(messagesScrollPane, BorderLayout.CENTER);
+        centerPanel.add(usersScrollPane);
+        centerPanel.add(messagesScrollPane);
 
         // Bottom panel with message input and send button
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -157,7 +159,14 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         // Check if the chat is being actively updated, if not then start actively updating
         if (chatController != null) {
             if (state.getNeedsUpdate()) {
-                chatController.updateChat();
+                // Clear the memory and messages before loading messages
+                messages.clear();
+                deleteMessageButtons.clear();
+                messagesPanel.removeAll();
+                state.setMessages(new ArrayList<>());
+                state.setMessagesSentByUser(new ArrayList<>());
+                state.setUsernames(new ArrayList<>());
+                chatController.updateChat(state.getCurrentChannelUrl());
             }
         }
 
@@ -181,18 +190,27 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
                 // if the user sent the message, add a delete message button
                 if (messageIdsSentByUser.contains(message.GetMID())) {
                     JButton deleteButton = new JButton("Delete Message");
+                    deleteButton.addActionListener(this);
                     messagePanel.add(deleteButton);
 
                     // Save the delete message button
                     deleteMessageButtons.put(deleteButton, message.GetMID());
                 }
+                // Save the message ID
+                messages.add(message.GetMID());
+
                 messagesPanel.add(messagePanel);
                 messagesPanel.add(Box.createVerticalStrut(5)); // Add spacing between messages
             }
         }
 
         // Update members of the chat
-        // Todo: Update members of the chat
+        usersPanel.removeAll();
+        for (String username : state.getUsernames()) {
+            JButton usernameButton = new JButton(username);
+            usernameButton.addActionListener(this);
+            usersPanel.add(usernameButton);
+        }
 
         // Show error if any
         if (state.getError() != null) {
@@ -201,6 +219,8 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
         messagesPanel.revalidate();
         messagesPanel.repaint();
+        usersPanel.revalidate();
+        usersPanel.repaint();
 
         // Scroll to bottom
         SwingUtilities.invokeLater(() -> {

@@ -71,8 +71,10 @@ public class CommonUser implements User {
     // Necessary methods
 
     private String generateID() {
-        java.util.Random rng = new java.util.Random();
-        return Integer.toString(rng.nextInt(1000000));
+        return this.name;
+        // Alternative implementation
+        // java.util.Random rng = new java.util.Random();
+        // return Integer.toString(rng.nextInt(1000000));
     }
 
     @Override

@@ -7,6 +7,7 @@ import use_case.delete_message.DeleteMessageInputData;
 import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInputData;
 import use_case.update_chat.UpdateChatInputBoundary;
+import use_case.update_chat.UpdateChatInputData;
 
 /**
  * The controller for the Chat Use Case.
@@ -53,7 +54,11 @@ public class ChatController {
         deleteMessageUseCaseInteractor.execute(deleteMessageInputData);
     }
 
-    public void updateChat() {
-        updateChatInputUseCaseInteractor.execute();
+    /**
+     * Executes the "update chat" Use Case.
+     */
+    public void updateChat(String channelUrl) {
+        UpdateChatInputData updateChatInputData = new UpdateChatInputData(channelUrl);
+        updateChatInputUseCaseInteractor.execute(updateChatInputData);
     }
 }

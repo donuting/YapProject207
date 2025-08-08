@@ -56,6 +56,11 @@ public interface User {
     List<GroupChat> getGroupChats();
 
     /**
+     * Returns a list of channel URLs corresponding to personal chats the user is in.
+     */
+    List<GroupChat> getPersonalChats();
+
+    /**
      * Adds a bio to the user.
      * @param bio The bio to be added.
      * @return true if successful otherwise false

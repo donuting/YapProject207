@@ -26,7 +26,6 @@ import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.delete_account.DeleteAccountDataAccessInterface;
 import use_case.delete_message.DeleteMessageDataAccessInterface;
-import use_case.delete_message.DeleteMessageInputBoundary;
 import use_case.join_chat.JoinChatDataAccessInterface;
 import use_case.leave_chat.LeaveChatDataAccessInterface;
 import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
@@ -116,14 +115,14 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
 
             // The below code is a different implementation of this method,  the
             // library we are using is bugged and prevents us from loading group chat objects.
-            // This implementation instead uses OkHttp
+            // This implementation instead uses OkHttp.
 
             final OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
 
             final Request request = new Request.Builder()
-                    .url(APPLICATION_ID + "/v3/users/" + userId + "/my_group_channels?"
-                            + "userId=" + userId
+                    .url(APPLICATION_ID + "/v3/users/" + userId + "/my_group_channels"
+                            + "?user_id=" + userId
                             + "&show_empty=true"
                             + "&show_member=true")
                     .get()

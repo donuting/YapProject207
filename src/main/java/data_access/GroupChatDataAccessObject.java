@@ -111,7 +111,7 @@ public class GroupChatDataAccessObject {
      * @param channelUrl the URL of the chat.
      * @param userId the ID of the user.
      */
-    public GroupChat addUser(String channelUrl, String userId) {
+    public GroupChat addUser(String userId, String channelUrl) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath(APPLICATION_ID);
 

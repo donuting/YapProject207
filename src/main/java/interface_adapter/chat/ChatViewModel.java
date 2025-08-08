@@ -66,13 +66,28 @@ public class ChatViewModel extends ViewModel<ChatState> {
         }
         currentState.setMessages(messages);
         currentState.setMessagesSentByUser(messagesSentByUser);
+        currentState.setNeedsUpdate(true);
+        // Wait for the current updater to stop running before causing it to run again.
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         firePropertyChanged();
     }
 
-    public void setMessagesAndUsernames(List<Message> messages, List<String> usernames) {
+    public void setMessagesAndUsernames(String currentUserId, List<Message> messages, List<String> usernames) {
         ChatState currentState = getState();
         currentState.setMessages(messages);
         currentState.setUsernames(usernames);
+        currentState.setNeedsUpdate(false);
+        List<Message> messagesSentByUser = new ArrayList<>();
+        for (Message message : messages) {
+            if (message.GetSenderId().equals(currentUserId)) {
+                messagesSentByUser.add(message);
+            }
+        }
+        currentState.setMessagesSentByUser(messagesSentByUser);
         firePropertyChanged();
     }
 }

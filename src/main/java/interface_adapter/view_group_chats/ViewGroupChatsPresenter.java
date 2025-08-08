@@ -31,6 +31,7 @@ public class ViewGroupChatsPresenter implements JoinChatOutputBoundary,
         Map<String, String> channelInfo = viewGroupChatsState.getChannelInfo();
         channelInfo.put(groupChat.getChannelUrl(), groupChat.getChatName());
         viewGroupChatsState.setChannelInfo(channelInfo);
+        viewGroupChatsState.setNeedsGroupChatInfo(true);
 
         // Update the view model
         viewGroupChatsViewModel.setState(viewGroupChatsState);
@@ -77,6 +78,7 @@ public class ViewGroupChatsPresenter implements JoinChatOutputBoundary,
         Map<String, String> channelInfo = viewGroupChatsState.getChannelInfo();
         channelInfo.remove(outputData.getChannelUrl());
         viewGroupChatsState.setChannelInfo(channelInfo);
+        viewGroupChatsState.setNeedsGroupChatInfo(true);
 
         // Update the view model
         viewGroupChatsViewModel.setState(viewGroupChatsState);

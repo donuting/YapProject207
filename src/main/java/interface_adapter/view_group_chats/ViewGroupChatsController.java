@@ -57,10 +57,11 @@ public class ViewGroupChatsController {
      * Executes the View Chat Use Case.
      * @param channelUrl the URL of the channel to be viewed.
      */
-    public void switchToViewChat(String channelUrl) {
-        // Update the active chat's channel URL
+    public void switchToViewChat(String channelUrl, String chatName) {
+        // Update the active chat's channel URL and name
         ChatState chatState = chatViewModel.getState();
         chatState.setCurrentChannelUrl(channelUrl);
+        chatState.setChatName(chatName);
 
         // Updates the active chat's messages
         chatState.setNeedsUpdate(true);

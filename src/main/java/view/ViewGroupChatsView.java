@@ -59,9 +59,6 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
         this.add(joinChatButton);
         this.add(backToMenuButton);
         this.add(viewGroupChatsScrollPane, BorderLayout.SOUTH);
-
-        // Update Group Chat Display
-        updateGroupChatDisplay();
     }
 
     private JButton setButtonProperties(JButton button) {
@@ -73,33 +70,31 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
     }
 
     private JButton setViewGroupChatButtonProperties(JButton button) {
-        button.setAlignmentX(Component.LEFT_ALIGNMENT);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setPreferredSize(new Dimension(400, 40));
+        button.setMaximumSize(new Dimension(400, 40));
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        return button;
+    }
+
+    private JButton setDeleteGroupChatButtonProperties(JButton button) {
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setPreferredSize(new Dimension(200, 40));
         button.setMaximumSize(new Dimension(200, 40));
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         return button;
     }
 
-    private JButton setDeleteGroupChatButtonProperties(JButton button) {
-        button.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        button.setPreferredSize(new Dimension(40, 40));
-        button.setMaximumSize(new Dimension(40, 40));
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
-        return button;
-    }
-
     private void updateGroupChatDisplay() {
-        // Check whether the state object needs to be updated, and if so, update it
-        if (viewGroupChatsController != null && viewGroupChatsViewModel.getState().getNeedsGroupChatInfo()) {
-                viewGroupChatsController.loadGroupChats();
-        }
+        viewGroupChatsController.loadGroupChats();
+
 
         // Load group chat info from state object into the display
         Map<String, String> channelInfo = viewGroupChatsViewModel.getState().getChannelInfo();
         for (Map.Entry<String, String> channelData: channelInfo.entrySet()) {
             String channelUrl = channelData.getKey();
-            String channelName = channelInfo.get(channelData.getValue());
-            if (!viewGroupChatButtons.containsKey(channelUrl)) {
+            String channelName = channelData.getValue();
+            if (!viewGroupChatButtons.containsValue(channelUrl)) {
                 // Create Buttons
                 JButton newViewGroupChatButton = addActionListener(setViewGroupChatButtonProperties(new JButton(channelName)));
                 viewGroupChatButtons.put(newViewGroupChatButton, channelUrl);
@@ -108,11 +103,11 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
 
                 // Add them to a new JPanel
                 JPanel newGroupChatPanel = new JPanel();
-                newGroupChatPanel.setLayout(new BoxLayout(newGroupChatPanel, FlowLayout.RIGHT));
+                newGroupChatPanel.setLayout(new BoxLayout(newGroupChatPanel, FlowLayout.CENTER));
                 newGroupChatPanel.setFont(new Font("Arial", Font.PLAIN, 14));
                 newGroupChatPanel.setBackground(new Color(248, 248, 248));
                 newGroupChatPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                newGroupChatPanel.setPreferredSize(new Dimension(800, 100));
+                newGroupChatPanel.setPreferredSize(new Dimension(400, 100));
                 newGroupChatPanel.add(newViewGroupChatButton);
                 newGroupChatPanel.add(newRemoveGroupChatButton);
 
@@ -140,7 +135,9 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
             } else if (e.getSource().equals(joinChatButton)) {
                 handleJoinChat();
             } else if (viewGroupChatButtons.containsKey(e.getSource())) {
-                handleViewChat(viewGroupChatButtons.get(e.getSource()));
+                String channelUrl = viewGroupChatButtons.get(e.getSource());
+                String chatName = viewGroupChatsViewModel.getState().getChannelInfo().get(channelUrl);
+                handleViewChat(channelUrl, chatName);
             } else if (removeGroupChatButtons.containsKey(e.getSource())) {
                 handleDeleteChat(removeGroupChatButtons.get(e.getSource()));
             }
@@ -151,8 +148,8 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
         viewGroupChatsController.leaveChat(channelUrl);
     }
 
-    private void handleViewChat(String channelUrl) {
-        viewGroupChatsController.switchToViewChat(channelUrl);
+    private void handleViewChat(String channelUrl, String chatName) {
+        viewGroupChatsController.switchToViewChat(channelUrl, chatName);
     }
 
     private void handleJoinChat() {
@@ -171,7 +168,11 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final ViewGroupChatsState state = (ViewGroupChatsState) evt.getNewValue();
-        updateGroupChatDisplay();
+
+        // Check whether the chats need to be updated, and if so, update them
+        if (viewGroupChatsController != null && state.getNeedsGroupChatInfo()) {
+            updateGroupChatDisplay();
+        }
 
         // Handle any error messages
         if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {

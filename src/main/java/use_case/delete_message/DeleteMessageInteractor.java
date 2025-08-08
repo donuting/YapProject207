@@ -14,7 +14,6 @@ public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
         this.messagePresenter = userPresenter;
     }
 
-
     @Override
     public void execute(DeleteMessageInputData deleteMessageInputData) {
         String messageId = deleteMessageInputData.getMessageId();
