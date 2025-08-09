@@ -78,6 +78,8 @@ public interface User {
 
     String getBio();
 
+    List<String> getFriendIDs();
+
     /**
      * Adds the user to this user's friend list.
      * @param userID user to be added
