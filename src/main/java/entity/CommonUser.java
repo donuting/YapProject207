@@ -71,8 +71,10 @@ public class CommonUser implements User {
     // Necessary methods
 
     private String generateID() {
-        java.util.Random rng = new java.util.Random();
-        return Integer.toString(rng.nextInt(1000000));
+        return this.name;
+        // Alternative implementation
+        // java.util.Random rng = new java.util.Random();
+        // return Integer.toString(rng.nextInt(1000000));
     }
 
     @Override
@@ -150,17 +152,17 @@ public class CommonUser implements User {
         friendIDs.forEach(friendIDsJson::add);
         blockedIDs.forEach(blockedIDsJson::add);
         for (GroupChat groupChat : groupChats) {
-            groupChannelURLsJson.add(groupChat.getChannelURL());
+            groupChannelURLsJson.add(groupChat.getChannelUrl());
         }
         for (GroupChat personalChat : personalChats) {
-            personalChannelURLsJson.add(personalChat.getChannelURL());
+            personalChannelURLsJson.add(personalChat.getChannelUrl());
         }
         userData.add("friendIDs", friendIDsJson);
         userData.add ("blockedIDs", blockedIDsJson);
         userData.add("groupChannelURLs", groupChannelURLsJson);
         userData.add("personalChannelURLs", personalChannelURLsJson);
         if (selfChat != null) {
-            userData.addProperty("selfChatURL", selfChat.getChannelURL());
+            userData.addProperty("selfChatURL", selfChat.getChannelUrl());
         } else {
             userData.addProperty("selfChatURL", "");
         }
@@ -212,6 +214,16 @@ public class CommonUser implements User {
     }
 
     /**
+     * Removes a group chat from the user's list of group chats.
+     *
+     * @param channelUrl the URL of the group chat.
+     */
+    @Override
+    public void removeGroupChat(String channelUrl) {
+        groupChats.removeIf(groupChat -> groupChat.getChannelUrl().equals(channelUrl));
+    }
+
+    /**
      * fetchs a personal chat of the user.
      * @param channelURL The URL of the chat needed.
      * @return the chat with the URL provided, null if the chat does not exist
@@ -219,7 +231,7 @@ public class CommonUser implements User {
     public Chat getChat(String channelURL) {
         //TODO: need to take care of the case when chat not in list
         for (GroupChat chat : groupChats) {
-            if (chat.getChannelURL().equals(channelURL)){
+            if (chat.getChannelUrl().equals(channelURL)){
                 return chat;
             }
         }
@@ -300,7 +312,7 @@ public class CommonUser implements User {
 
             // removes personal chat between the user and the friend
             for (GroupChat personalChat : personalChats) {
-                if (personalChat.HasMember(userId)) {
+                if (personalChat.hasMember(userId)) {
                     personalChats.remove(personalChat);
                 }
             }

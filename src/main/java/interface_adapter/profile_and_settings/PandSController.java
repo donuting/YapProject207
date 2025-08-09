@@ -49,7 +49,7 @@ public class PandSController {
     public void addBio(String bio) {
         String username = pandSViewModel.getState().getUsername();
         String password = pandSViewModel.getState().getChangePasswordText();
-        AddBioInputData inputData = new AddBioInputData(bio,username,password);
+        AddBioInputData inputData = new AddBioInputData(username, bio, password);
         addBioInputBoundary.execute(inputData);
 
     }
@@ -61,7 +61,7 @@ public class PandSController {
     public void addDOB(String DOB) {
         String username = pandSViewModel.getState().getUsername();
         String password = pandSViewModel.getState().getChangePasswordText();
-        AddDOBInputData inputData = new AddDOBInputData(DOB,username,password);
+        AddDOBInputData inputData = new AddDOBInputData(DOB, username, password);
         addDOBInputBoundary.execute(inputData);
 
     }

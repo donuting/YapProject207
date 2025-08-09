@@ -21,7 +21,10 @@ public class Main {
                                             .addFriendView()
                                             .addMainMenuView()
                                             .addViewChatsView()
+                                            .addViewGroupChatsView()
                                             .addSelfChatView()
+                                            .addChatView()
+                                            .addUserProfileView()
                                             .addProfileandSettingsView()
                                             .addSignupUseCase()
                                             .addLoginUseCase()
@@ -29,9 +32,12 @@ public class Main {
                                             .addLogoutUseCase()
                                             .addMainMenuUseCase()
                                             .addViewChatsUseCase()
+                                            .addViewGroupChatsUseCase()
                                             .addAddFriendUseCase()
                                             .addAddChatUseCase()
                                             .addSelfChatUseCase()
+                                            .addChatUseCase()
+                                            .addUserProfileUseCase()
                                             .addProfileandSettingsUseCase()
                                             .build();
 

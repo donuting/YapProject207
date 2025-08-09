@@ -28,4 +28,11 @@ public interface JoinChatDataAccessInterface {
      * @return the updated group chat.
      */
     GroupChat addUser(String userId, String channelUrl);
+
+    /**
+     * Adds a group chat to a user's list of group chats
+     * @param chat the group chat.
+     * @param name the user's username
+     */
+    void saveGroupChat(GroupChat chat, String name);
 }

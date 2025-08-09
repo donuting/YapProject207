@@ -23,6 +23,7 @@ public class ViewChatsView extends JPanel implements ActionListener, PropertyCha
     private final JLabel usernameLabel;
     private final JButton selfChatButton;
     private final JButton addChatButton;
+    private final JButton viewGroupChatsButton;
     private final JButton backToMenuButton;
 
     private ViewChatsController viewChatsController;
@@ -47,16 +48,19 @@ public class ViewChatsView extends JPanel implements ActionListener, PropertyCha
         selfChatButton = new JButton("Self Chat");
         addChatButton = new JButton("Add Chat");
         backToMenuButton = new JButton("Back to Menu");
+        viewGroupChatsButton = new JButton("View Group Chats");
 
         // Set button properties
         setButtonProperties(selfChatButton);
         setButtonProperties(addChatButton);
         setButtonProperties(backToMenuButton);
+        setButtonProperties(viewGroupChatsButton);
 
         // Add action listeners
         selfChatButton.addActionListener(this);
         addChatButton.addActionListener(this);
         backToMenuButton.addActionListener(this);
+        viewGroupChatsButton.addActionListener(this);
 
         // Layout components
         this.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -67,6 +71,8 @@ public class ViewChatsView extends JPanel implements ActionListener, PropertyCha
         this.add(selfChatButton);
         this.add(Box.createRigidArea(new Dimension(0, 10)));
         this.add(addChatButton);
+        this.add(Box.createRigidArea(new Dimension(0, 10)));
+        this.add(viewGroupChatsButton);
         this.add(Box.createRigidArea(new Dimension(0, 10)));
         this.add(backToMenuButton);
         this.add(Box.createVerticalGlue());
@@ -88,6 +94,8 @@ public class ViewChatsView extends JPanel implements ActionListener, PropertyCha
                 viewChatsController.openAddChat();
             } else if (evt.getSource().equals(backToMenuButton)) {
                 viewChatsController.backToMenu();
+            } else if (evt.getSource().equals(viewGroupChatsButton)) {
+                viewChatsController.openGroupChats();
             }
         }
     }
