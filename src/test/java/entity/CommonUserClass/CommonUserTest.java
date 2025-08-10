@@ -94,12 +94,13 @@ public class CommonUserTest {
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
+        // AddFriendInteractor covers both sides...
         user.addFriend(friend.getID());
+        friend.addFriend(user.getID());
         List<String> friends = user.getFriendIDs();
         assert friends.contains(friend.getID());
         friends = friend.getFriendIDs();
         assert friends.contains(user.getID());
-        List<GroupChat> groups = user.getGroupChats();
     }
 
     @Test

@@ -56,6 +56,16 @@ public class InMemoryUserDataAccessObject implements
     }
 
     @Override
+    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+        User user = users.get(currentUsername);
+        User friend = users.get(friendUsername);
+        if (user.getFriendIDs().contains(friend.getID())) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void save(User user) {
         users.put(user.getName(), user);
     }
@@ -74,6 +84,11 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public User get(String username) {
         return users.get(username);
+    }
+
+    @Override
+    public boolean addFriend(String currentUsername, String friendUsername) {
+        return false;
     }
 
     @Override
@@ -145,15 +160,15 @@ public class InMemoryUserDataAccessObject implements
         return false;
     }
 
-    @Override
-    public boolean alreadyFriend(String currentUsername, String friendUsername) {
-        return false;
-    }
-
-    @Override
-    public boolean addFriend(String currentUsername, String friendUsername) {
-        return false;
-    }
+//    @Override
+//    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean addFriend(String currentUsername, String friendUsername) {
+//        return false;
+//    }
 
     /**
      * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.

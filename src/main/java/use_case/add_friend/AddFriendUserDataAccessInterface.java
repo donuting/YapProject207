@@ -1,6 +1,10 @@
 package use_case.add_friend;
 
+import entity.GroupChat;
+import entity.GroupChatFactory;
 import entity.User;
+
+import java.util.List;
 
 /**
  * DAO for the AddFriend Use Case.
@@ -36,4 +40,16 @@ public interface AddFriendUserDataAccessInterface {
      * @return true if friendship was successful
      */
     boolean addFriend(String currentUsername, String friendUsername);
+
+    /**
+     * Creates the chat between the two friends when added.
+     *
+     * @return
+     */
+    GroupChat create(List<String> memberIds, String chatName, GroupChatFactory groupChatFactory);
+
+    /**
+     *
+     */
+    void saveGroupChat(GroupChat newGroupChat, String username);
 }
