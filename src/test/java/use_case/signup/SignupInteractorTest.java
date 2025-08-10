@@ -15,7 +15,7 @@ class SignupInteractorTest {
     @Test
     void successTest() {
         SignupInputData inputData = new SignupInputData("Paul", "password", "password");
-        SignupUserDataAccessInterface userRepository = new InMemoryUserDataAccessObject();
+        InMemoryUserDataAccessObject userRepository = new InMemoryUserDataAccessObject();
 
         // This creates a successPresenter that tests whether the test case is as we expect.
         SignupOutputBoundary successPresenter = new SignupOutputBoundary() {
@@ -24,6 +24,8 @@ class SignupInteractorTest {
                 // 2 things to check: the output data is correct, and the user has been created in the DAO.
                 assertEquals("Paul", user.getUsername());
                 assertTrue(userRepository.existsByName("Paul"));
+                User newUser = userRepository.get("Paul");
+                assertNotNull(newUser.getSelfChat());
             }
 
             @Override
