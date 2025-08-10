@@ -9,7 +9,7 @@ import java.util.List;
 public class CommonUserFactory implements UserFactory {
 
     @Override
-    public User create(String name, String password) {
+    public CommonUser create(String name, String password) {
 
         return new CommonUser(name, password, null,
                 "", "", new ArrayList<String>(),
@@ -19,7 +19,7 @@ public class CommonUserFactory implements UserFactory {
     }
 
     @Override
-    public User create(String name, String password,
+    public CommonUser create(String name, String password,
                        String ID, String biography,
                        String dateOfBirth, List<String> friendIDs,
                        List<String> blockedIDs, List<GroupChat> groupChats,
@@ -33,7 +33,7 @@ public class CommonUserFactory implements UserFactory {
     }
 
     @Override
-    public User create(String name, String password,
+    public CommonUser create(String name, String password,
                        String ID, String biography,
                        String dateOfBirth, List<String> friendIDs,
                        List<String> blockedIDs, List<GroupChat> groupChats,

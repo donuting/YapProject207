@@ -1,22 +1,23 @@
 package use_case.add_friend;
 
 import data_access.InMemoryUserDataAccessObject;
+import data_access.SendBirdUserDataAccessObject;
 import entity.CommonUser;
 import entity.CommonUserFactory;
 import entity.GroupChat;
-import entity.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddFriendInteractorTest {
 
-    private User user;
-    private User friend;
+    private CommonUser user;
+    private CommonUser friend;
     private InMemoryUserDataAccessObject dataAccess;
 
     @BeforeEach
@@ -28,17 +29,18 @@ public class AddFriendInteractorTest {
     }
 
     @Test
-    // a case that works
+    // Success Case
     void AddFriendSuccessTest() {
         dataAccess.save(user);
         dataAccess.save(friend);
         AddFriendInputData inputData = new AddFriendInputData(user.getName(), friend.getName(), friend.getID());
-        AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
+        AddFriendOutputBoundary successPresenter = new AddFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(AddFriendOutputData outputData) {
                 assertEquals(friend.getName(), outputData.getFriendUsername());
                 assertTrue(outputData.isSuccess());
-                assertEquals("Friend has been added!", outputData.getSuccessMessage());
+                assertEquals(friend.getName() + " has been added!", outputData.getSuccessMessage());
+
             }
 
             @Override
@@ -52,8 +54,9 @@ public class AddFriendInteractorTest {
                 fail("WTF, this is not supposed to happen");
             }
         };
-        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, sucessPresenter);
+        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, successPresenter);
         addFriendInteractor.execute(inputData);
+
     }
 
     @Test
@@ -80,6 +83,10 @@ public class AddFriendInteractorTest {
         };
         AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, failPresenter);
         addFriendInteractor.execute(inputData);
+        assert user.getFriendIDs().isEmpty();
+        assert friend.getFriendIDs().isEmpty();
+        assert user.getGroupChats().isEmpty();
+        assert friend.getGroupChats().isEmpty();
     }
 
     @Test
@@ -92,7 +99,7 @@ public class AddFriendInteractorTest {
         dataAccess.save(commonUser);
         dataAccess.save(commonFriend);
         AddFriendInputData inputData = new AddFriendInputData(commonUser.getName(), commonFriend.getName(), commonFriend.getID());
-        AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
+        AddFriendOutputBoundary successPresenter = new AddFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(AddFriendOutputData outputData) {
                 fail("Interactor does not check if potential friend is blocked");
@@ -100,7 +107,7 @@ public class AddFriendInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("You are already friends with " + commonFriend.getName(), errorMessage);
+                assertEquals(commonFriend.getName() + " is blocked", errorMessage);
 
             }
 
@@ -109,7 +116,7 @@ public class AddFriendInteractorTest {
                 fail("WTF, this is not supposed to happen");
             }
         };
-        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, sucessPresenter);
+        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, successPresenter);
         addFriendInteractor.execute(inputData);
     }
 
@@ -122,7 +129,7 @@ public class AddFriendInteractorTest {
         dataAccess.save(commonUser);
         dataAccess.save(commonFriend);
         AddFriendInputData inputData = new AddFriendInputData(commonUser.getName(), commonFriend.getName(), commonFriend.getID());
-        AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
+        AddFriendOutputBoundary successPresenter = new AddFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(AddFriendOutputData outputData) {
                 fail("Interactor does not check if users are already friends");
@@ -139,7 +146,7 @@ public class AddFriendInteractorTest {
                 fail("WTF, this is not supposed to happen");
             }
         };
-        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, sucessPresenter);
+        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, successPresenter);
         addFriendInteractor.execute(inputData);
     }
 
@@ -149,15 +156,15 @@ public class AddFriendInteractorTest {
         dataAccess.save(user);
         dataAccess.save(friend);
         AddFriendInputData inputData = new AddFriendInputData(user.getName(), user.getName(), user.getID());
-        AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
+        AddFriendOutputBoundary successPresenter = new AddFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(AddFriendOutputData outputData) {
-                fail("Interactor does not check if users are already friends");
+                fail("Interactor does not check if users are already friends ");
             }
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("You cannot add yourself as a friend", errorMessage);
+                assertEquals("You cannot add yourself as a friend (friend ID must be different from yours)", errorMessage);
 
             }
 
@@ -166,13 +173,13 @@ public class AddFriendInteractorTest {
                 fail("WTF, this is not supposed to happen");
             }
         };
-        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, sucessPresenter);
+        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, successPresenter);
         addFriendInteractor.execute(inputData);
 
     }
 
     @Test
-    // Friend's username and Id do not match
+    // Friend's username and ID do not match
     void AddFriendFailureTest5() {
         CommonUser friend2 = new CommonUser("Friends2", "Password1", "-1",
                 "Bio", "20250823", new ArrayList<String>(),
@@ -182,7 +189,7 @@ public class AddFriendInteractorTest {
         dataAccess.save(friend);
         dataAccess.save(friend2);
         AddFriendInputData inputData = new AddFriendInputData(user.getName(), friend2.getName(), friend.getID());
-        AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
+        AddFriendOutputBoundary successPresenter = new AddFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(AddFriendOutputData outputData) {
                 fail("Interactor does not check if the friend.username and friend.UID match");
@@ -190,7 +197,7 @@ public class AddFriendInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("Friend's ID and Username do not match", errorMessage);
+                assertEquals("User " + friend2.getName() + " does not exist", errorMessage);
 
             }
 
@@ -199,18 +206,18 @@ public class AddFriendInteractorTest {
                 fail("WTF, this is not supposed to happen");
             }
         };
-        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, sucessPresenter);
+        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, successPresenter);
         addFriendInteractor.execute(inputData);
 
     }
 
     @Test
-    // Your user name is incorrect
+    // Your username is incorrect
     void AddFriendFailureTest6() {
         dataAccess.save(user);
         dataAccess.save(friend);
         AddFriendInputData inputData = new AddFriendInputData("Incorrect Name", friend.getName(), friend.getID());
-        AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
+        AddFriendOutputBoundary successPresenter = new AddFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(AddFriendOutputData outputData) {
                 fail("Interactor does not make sure the data entered is correct");
@@ -218,7 +225,7 @@ public class AddFriendInteractorTest {
 
             @Override
             public void prepareFailView(String errorMessage) {
-                assertEquals("Incorrect Username entered", errorMessage);
+                assertEquals("Your account name is incorrect", errorMessage);
 
             }
 
@@ -227,7 +234,7 @@ public class AddFriendInteractorTest {
                 fail("WTF, this is not supposed to happen");
             }
         };
-        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, sucessPresenter);
+        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, successPresenter);
         addFriendInteractor.execute(inputData);
 
     }
