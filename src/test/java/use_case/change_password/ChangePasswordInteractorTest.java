@@ -44,6 +44,7 @@ public class ChangePasswordInteractorTest {
         ChangePasswordInputBoundary changePasswordInteractor =
                 new ChangePasswordInteractor(dataAccess,sucessPresenter, userFactory);
         changePasswordInteractor.execute(inputData);
+        assertEquals("Password2", user.getPassword());
     }
 
     @Test
@@ -66,7 +67,7 @@ public class ChangePasswordInteractorTest {
         ChangePasswordInputBoundary changePasswordInteractor =
                 new ChangePasswordInteractor(dataAccess,failPresenter, userFactory);
         changePasswordInteractor.execute(inputData);
-
+        assertEquals("Password1", user.getPassword());
     }
 
     @Test
@@ -89,7 +90,7 @@ public class ChangePasswordInteractorTest {
         ChangePasswordInputBoundary changePasswordInteractor =
                 new ChangePasswordInteractor(dataAccess,failPresenter, userFactory);
         changePasswordInteractor.execute(inputData);
-
+        assertEquals("Password1", user.getPassword());
     }
 
     @Test
@@ -112,6 +113,7 @@ public class ChangePasswordInteractorTest {
         ChangePasswordInputBoundary changePasswordInteractor =
                 new ChangePasswordInteractor(dataAccess,failPresenter, userFactory);
         changePasswordInteractor.execute(inputData);
+        assertEquals("Password1", user.getPassword());
     }
 
     @Test
@@ -134,6 +136,7 @@ public class ChangePasswordInteractorTest {
         ChangePasswordInputBoundary changePasswordInteractor =
                 new ChangePasswordInteractor(dataAccess,failPresenter, userFactory);
         changePasswordInteractor.execute(inputData);
+        assertEquals("Password1", user.getPassword());
     }
 
     @AfterEach

@@ -31,16 +31,19 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests getName()
     void getNameTest() {
         assertEquals("User", user.getName());
     }
 
     @Test
+    //tests getPassword()
     void getPasswordTest() {
         assertEquals("Password1", user.getPassword());
     }
 
     @Test
+    // tests setPassword
     void setPasswordSuccessTest1() {
         String output = user.setPassword("Password2");
         assertEquals("Successfully set password.", output);
@@ -49,39 +52,25 @@ public class CommonUserTest {
     }
 
     @Test
-    void setPasswordFailTest1() {
-        String output = user.setPassword("password2");
-        assertEquals("Password must contain at least one digit, one uppercase letter, and one lowercase letter.",
-                output);
-        assertNotEquals("password2", user.getPassword());
-        assertEquals("Password1", user.getPassword());
-    }
-
-    @Test
-    void setPasswordFailTest2() {
-        String output = user.setPassword("Password");
-        assertEquals("Password must contain at least one digit, one uppercase letter, and one lowercase letter.",
-                output);
-        assertNotEquals("Password", user.getPassword());
-        assertEquals("Password1", user.getPassword());
-    }
-
-    @Test
+    // tests getID
     void getIdTest() {
         assertEquals("100", user.getID());
     }
 
     @Test
+    // tests getBio
     void getBioTest() {
         assertEquals("Bio", user.getBio());
     }
 
     @Test
+    // tests getDOB
     void getDOBTest() {
         assertEquals("20250823", user.getDOB());
     }
 
     @Test
+    // tests setBIo
     void setBioTest(){
         String oldBio = user.getBio();
         user.EditBiography("New Bio");
@@ -90,6 +79,7 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests setDOB
     void setDOBTest(){
         String oldDOB = user.getDOB();
         user.EditDOB("20250803");
@@ -98,6 +88,7 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests AddFriend()
     void addFriendTest() {
         CommonUser friend = new CommonUser("Friend", "Password1", "002",
                 "Bio", "20250823", new ArrayList<String>(),
@@ -112,10 +103,8 @@ public class CommonUserTest {
         assert friends.contains(user.getID());
     }
 
-    /*
-     * assumes that GroupChatDataAccessObject.create works
-     */
     @Test
+    // tests addGroupChat()
     void addGroupChatTest() {
         user.addGroupChat(group);
         List<GroupChat> groupChats = user.getGroupChats();
@@ -123,12 +112,14 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests getChat
     void getChatTest1() {
         Chat groupChat = user.getChat(group.getChannelUrl());
         assert groupChat == null;
     }
 
     @Test
+    // tests getChat if chat not in list
     void getChatTest2() {
         user.addGroupChat(group);
         Chat groupChat = user.getChat(group.getChannelUrl());
@@ -136,12 +127,14 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests blockUser if user is not friend
     void blockUserTest1() {
         boolean result = user.blockUser("001");
         assertFalse(result);
     }
 
     @Test
+    // tests blockUser
     void blockUserTest2() {
         user.addFriend("001");
         boolean result = user.blockUser("001");
@@ -151,12 +144,14 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests unblock user if user is not friend
     void unblockUserTest1() {
         boolean result = user.unblockUser("001", false);
         assertFalse(result);
     }
 
     @Test
+    // tests unblock user if user is not blocked
     void unblockUserTest2() {
         user.addFriend("001");
         boolean result = user.unblockUser("001", true);
@@ -164,6 +159,7 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests unblock user
     void unblockUserTest3() {
         user.addFriend("001");
         user.blockUser("001");
@@ -172,18 +168,21 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests getBlockedUser
     void getBlockedUsersTest() {
         List<String> blocked = user.getBlockedUserIDs();
         assert blocked.isEmpty();
     }
 
     @Test
+    // tests isBlocked() if user is not bloced
     void isBlockedTest1() {
         boolean result = user.isBlocked("001");
         assertFalse(result);
     }
 
     @Test
+    // tests isBlocked
     void isBlockedTest2() {
         user.addFriend("001");
         user.blockUser("001");
@@ -192,6 +191,7 @@ public class CommonUserTest {
     }
 
     @Test
+    // tests createUserData
      void createUserDataTest(){
         JsonObject userData = new JsonObject();
         userData.addProperty("username", "User");

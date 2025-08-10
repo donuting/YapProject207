@@ -12,8 +12,10 @@ import entity.User;
 import use_case.add_Bio.AddBioUserDataAccessInterface;
 import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.add_friend.AddFriendUserDataAccessInterface;
+import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
+import use_case.delete_account.DeleteAccountDataAccessInterface;
 import use_case.join_chat.JoinChatDataAccessInterface;
 import use_case.leave_chat.LeaveChatDataAccessInterface;
 import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
@@ -34,6 +36,8 @@ public class InMemoryUserDataAccessObject implements
         LogoutUserDataAccessInterface,
         AddBioUserDataAccessInterface,
         AddDOBUserDataAccessInterface,
+        BlockFriendUserDataAccessInterface,
+        DeleteAccountDataAccessInterface,
         AddFriendUserDataAccessInterface,
         CreateChatUserDataAccessInterface,
         JoinChatDataAccessInterface,
@@ -286,5 +290,48 @@ public class InMemoryUserDataAccessObject implements
                 .filter(user -> user.getID().equals(userId))
                 .findFirst()
                 .orElse(null);
+    }
+          
+    /**
+     * Delete user by id and username. Return true only if a stored user with the given id
+     * exists and its name matches the provided username.
+     * @param userId   the unique id of the user
+     * @param username the username expected for the user
+     * @return true if deletion succeeded
+     */
+    @Override
+    public boolean deleteUserById(String userId, String username) {
+        if (userId == null || username == null) return false;
+        for (Map.Entry<String, User> entry : users.entrySet()) {
+            User u = entry.getValue();
+            if (u != null && userId.equals(u.getID()) && username.equals(u.getName())) {
+                users.remove(entry.getKey());
+                if (username.equals(this.currentUsername)) {
+                    this.currentUsername = null;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Blocks a user for the current user.
+     * @param currentUsername The username of the user who wants to block someone.
+     * @param blockedUsername The username of the user to be blocked.
+     * @return The ID of the blocked user if successful, otherwise null.
+     */
+    @Override
+    public String blockFriend(String currentUsername, String blockedUsername) {
+        User currentUser = users.get(currentUsername);
+        User blockedUser = users.get(blockedUsername);
+        if (currentUser == null || blockedUser == null) {
+            return null;
+        }
+        boolean success = currentUser.blockUser(blockedUser.getID());
+        if (success) {
+            return blockedUser.getID();
+        }
+        return null;
     }
 }

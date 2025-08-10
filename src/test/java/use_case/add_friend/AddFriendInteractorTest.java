@@ -5,19 +5,19 @@ import data_access.SendBirdUserDataAccessObject;
 import entity.CommonUser;
 import entity.CommonUserFactory;
 import entity.GroupChat;
-import entity.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddFriendInteractorTest {
 
-    private User user;
-    private User friend;
+    private CommonUser user;
+    private CommonUser friend;
     private InMemoryUserDataAccessObject dataAccess;
 
     @BeforeEach
@@ -29,7 +29,7 @@ public class AddFriendInteractorTest {
     }
 
     @Test
-    // a case that works
+    // Success Case
     void AddFriendSuccessTest() {
         dataAccess.save(user);
         dataAccess.save(friend);
@@ -40,6 +40,7 @@ public class AddFriendInteractorTest {
                 assertEquals(friend.getName(), outputData.getFriendUsername());
                 assertTrue(outputData.isSuccess());
                 assertEquals(friend.getName() + " has been added!", outputData.getSuccessMessage());
+
             }
 
             @Override
@@ -55,6 +56,7 @@ public class AddFriendInteractorTest {
         };
         AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, successPresenter);
         addFriendInteractor.execute(inputData);
+
     }
 
     @Test
@@ -81,6 +83,10 @@ public class AddFriendInteractorTest {
         };
         AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, failPresenter);
         addFriendInteractor.execute(inputData);
+        assert user.getFriendIDs().isEmpty();
+        assert friend.getFriendIDs().isEmpty();
+        assert user.getGroupChats().isEmpty();
+        assert friend.getGroupChats().isEmpty();
     }
 
     @Test
