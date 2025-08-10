@@ -1,6 +1,7 @@
 package use_case.add_friend;
 
 import data_access.InMemoryUserDataAccessObject;
+import data_access.SendBirdUserDataAccessObject;
 import entity.CommonUser;
 import entity.CommonUserFactory;
 import entity.GroupChat;
@@ -17,14 +18,14 @@ public class AddFriendInteractorTest {
 
     private CommonUser user;
     private CommonUser friend;
-    private InMemoryUserDataAccessObject dataAccess;
+    private SendBirdUserDataAccessObject dataAccess;
 
     @BeforeEach
     void setUp() {
         CommonUserFactory factory = new CommonUserFactory();
         user = factory.create("User", "Password1");
         friend = factory.create("Friend", "Password2");
-        dataAccess = new InMemoryUserDataAccessObject();
+        dataAccess = new SendBirdUserDataAccessObject();
     }
 
     @Test
@@ -48,6 +49,7 @@ public class AddFriendInteractorTest {
                 assert groupChat.hasMember(user.getID());
                 List<GroupChat> friendChats = friend.getGroupChats();
                 assertEquals(friendChats.get(0), groupChat);
+                assertEquals(dataAccess.load(groupChat.getChannelUrl()), groupChat);;
             }
 
             @Override
@@ -250,6 +252,10 @@ public class AddFriendInteractorTest {
 
     @AfterEach
     void tearDown() {
+        GroupChat groupChat = user.getGroupChats().get(0);
+        dataAccess.deleteGroupChat(groupChat);
+        dataAccess.deleteUserById(user.getID(), user.getName());
+        dataAccess.deleteUserById(friend.getID(), friend.getName());
         user = null;
         friend = null;
         dataAccess = null;
