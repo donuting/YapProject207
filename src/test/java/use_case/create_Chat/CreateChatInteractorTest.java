@@ -43,8 +43,8 @@ public class CreateChatInteractorTest {
                 assertEquals(1, groupChats.size());
                 GroupChat groupChat = groupChats.get(0);
                 assertEquals("User's self chat", groupChat.getChatName());
-                assert groupChat.getMemberIDs().contains("100");
-                assertEquals(1, groupChat.getMemberIDs().size());
+                assert groupChat.getMemberIds().contains("100");
+                assertEquals(1, groupChat.getMemberIds().size());
             }
 
             @Override

@@ -113,7 +113,7 @@ public class CommonUserTest {
     @Test
     // tests getChat
     void getChatTest1() {
-        Chat groupChat = user.getChat(group.getChannelURL());
+        Chat groupChat = user.getChat(group.getChannelUrl());
         assert groupChat == null;
     }
 
@@ -121,7 +121,7 @@ public class CommonUserTest {
     // tests getChat if chat not in list
     void getChatTest2() {
         user.addGroupChat(group);
-        Chat groupChat = user.getChat(group.getChannelURL());
+        Chat groupChat = user.getChat(group.getChannelUrl());
         assertEquals(group, groupChat);
     }
 

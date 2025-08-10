@@ -37,7 +37,7 @@ public class BlockFriendsInteractorTest {
         friend.addFriend(user.getID());
         dataAccess.save(user);
         dataAccess.save(friend);
-        BlockFriendInputData inputData = new BlockFriendInputData(user.getName(), friend.getName());
+        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary presenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {
@@ -66,7 +66,7 @@ public class BlockFriendsInteractorTest {
     void blockFriendsInteractorFailTest1() {
         dataAccess.save(user);
         dataAccess.save(friend);
-        BlockFriendInputData inputData = new BlockFriendInputData(user.getName(), friend.getName());
+        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary presenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {
@@ -95,7 +95,7 @@ public class BlockFriendsInteractorTest {
     // blocked user does not exist
     void blockFriendsInteractorFailTest2() {
         dataAccess.save(user);
-        BlockFriendInputData inputData = new BlockFriendInputData(user.getName(), friend.getName());
+        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary presenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {
@@ -118,7 +118,7 @@ public class BlockFriendsInteractorTest {
     // Trying to block yourself
     void blockFriendsInteractorFailTest3() {
         dataAccess.save(user);
-        BlockFriendInputData inputData = new BlockFriendInputData(user.getName(), friend.getName());
+        BlockFriendInputData inputData = new BlockFriendInputData(user.getName());
         BlockFriendOutputBoundary presenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {
@@ -151,7 +151,7 @@ public class BlockFriendsInteractorTest {
         user.blockUser(friend.getID());
         dataAccess.save(user);
         dataAccess.save(friend);
-        BlockFriendInputData inputData = new BlockFriendInputData(user.getName(), friend.getName());
+        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary presenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {

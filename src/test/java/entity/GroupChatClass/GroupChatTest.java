@@ -30,8 +30,6 @@ public class GroupChatTest {
     @Test
     // tests getChannelURL method
     void getChannelURLTest(){
-        assertEquals("chat.com", group.getChannelURL());
-    void getChannelUrlTest(){
         assertEquals("chat.com", group.getChannelUrl());
     }
 
@@ -57,7 +55,6 @@ public class GroupChatTest {
 
     @Test
     // tests if addMember adds the member ID to memberIDs
-    void AddMemberTest1(){
     void addMemberTest1(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),

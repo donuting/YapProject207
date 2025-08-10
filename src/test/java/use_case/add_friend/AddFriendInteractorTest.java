@@ -44,8 +44,8 @@ public class AddFriendInteractorTest {
                 List<GroupChat> userChats = user.getGroupChats();
                 assert userChats.size() == 1;
                 GroupChat groupChat = userChats.get(0);
-                assert groupChat.HasMember(friend.getID());
-                assert groupChat.HasMember(user.getID());
+                assert groupChat.hasMember(friend.getID());
+                assert groupChat.hasMember(user.getID());
                 List<GroupChat> friendChats = friend.getGroupChats();
                 assertEquals(friendChats.get(0), groupChat);
             }
