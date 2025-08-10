@@ -25,31 +25,28 @@ public class JoinChatInteractor implements JoinChatInputBoundary {
         User currentUser = joinChatDataAccessInterface.getCurrentUser();
         if (currentUser == null) {
             JoinChatOutputData outputData = new JoinChatOutputData(null);
-            presenter.prepareFailView("This user doesn't exist", outputData);
+            presenter.joinChatPrepareFailView("This user doesn't exist", outputData);
         } else {
             String channelUrl = inputData.getChannelUrl();
             GroupChat groupChat = joinChatDataAccessInterface.load(channelUrl);
             if (groupChat == null) {
                 JoinChatOutputData outputData = new JoinChatOutputData(null);
-                presenter.prepareFailView("This chat doesn't exist", outputData);
+                presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
             } else {
                 GroupChat updatedChat = joinChatDataAccessInterface.addUser(currentUser.getID(), channelUrl);
                 if (updatedChat == null) {
+
+
                     JoinChatOutputData outputData = new JoinChatOutputData(null);
-                    presenter.prepareFailView("This chat doesn't exist", outputData);
+                    presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
                 }
+                // Save the chat to the user
+                joinChatDataAccessInterface.saveGroupChat(updatedChat, currentUser.getName());
                 currentUser.addGroupChat(updatedChat);
+
                 JoinChatOutputData outputData = new JoinChatOutputData(updatedChat);
-                presenter.prepareSuccessView(outputData);
+                presenter.joinChatPrepareSuccessView(outputData);
             }
         }
-    }
-
-    /**
-     * Switches the view to return to the list of chats
-     */
-    @Override
-    public void switchToChatsView() {
-        presenter.switchToChatsView();
     }
 }

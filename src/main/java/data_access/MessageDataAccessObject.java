@@ -10,14 +10,15 @@ import org.sendbird.client.ApiClient;
 import org.sendbird.client.ApiException;
 import org.sendbird.client.Configuration;
 import org.sendbird.client.api.MessageApi;
-import use_case.delete_message.DeleteMessageDataAccessInterface;
-import use_case.send_message.SendMessageDataAccessInterface;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
-public class MessageDataAccessObject implements SendMessageDataAccessInterface, DeleteMessageDataAccessInterface {
+public class MessageDataAccessObject {
 
     private static final String API_TOKEN = "7836d8100957f700df15d54313b455766090ea9f";
     private static final String APPLICATION_ID = "https://api-17448E6A-5733-470D-BCE0-7A4460C94A11.sendbird.com";
@@ -34,7 +35,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
 
         MessageApi apiInstance = new MessageApi(defaultClient);
         String channelType = "group_channels";
-        String channelUrl = groupChat.getChannelURL();
+        String channelUrl = groupChat.getChannelUrl();
         Long messageTs = System.currentTimeMillis();
         Integer prevLimit = 50; // Loads 50 most recent messages from oldest to newest.
 
@@ -55,9 +56,13 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
                     String userId = sendBirdMessage.getUser().getUserId();
                     String messageBody = sendBirdMessage.getMessage();
                     Integer messageId = sendBirdMessage.getMessageId();
-                    long updatedAt = sendBirdMessage.getUpdatedAt();
+                    long updatedAt = sendBirdMessage.getCreatedAt();
+                    Date date = new Date(updatedAt);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-                    Message message = messageFactory.create(userId, messageBody, messageId, Long.toString(updatedAt));
+
+                    Message message = messageFactory.create(userId, messageBody, messageId, sdf.format(date));
                     messageHistory.add(message);
                 }
             }
@@ -79,7 +84,6 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
      * @param MID  the ID of the message to be deleted.
      * @param chat the chat in which the message was sent.
      */
-    @Override
     public boolean deleteMessage(String MID, Chat chat) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath(APPLICATION_ID);
@@ -87,7 +91,7 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
         MessageApi apiInstance = new MessageApi(defaultClient);
         String channelType = "group_channels";
         try {
-            Object result = apiInstance.deleteAMessage(channelType, chat.getChannelURL(), MID)
+            Object result = apiInstance.deleteAMessage(channelType, chat.getChannelUrl(), MID)
                     .apiToken(API_TOKEN)
                     .execute();
             System.out.println(result);
@@ -108,7 +112,6 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
      * @param message the message to be sent
      * @param chat the chat in which the message will be sent
      */
-    @Override
     public Message sendMessage(Message message, Chat chat) {
 
         // The below code is a different implementation of this method,  the
@@ -126,18 +129,14 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
         requestBody.put("user_id", message.GetSenderId());
         requestBody.put("message", message.GetText());
 
-        long createdAt = Long.getLong(message.getTimestamp());
-        if (createdAt == 0L) {
-            createdAt = System.currentTimeMillis();
-        }
+        long createdAt = System.currentTimeMillis();
         requestBody.put("created_at", createdAt);
         requestBody.put("updated_at", createdAt);
 
         final RequestBody body = RequestBody.create(requestBody.toString(), mediaType);
 
-
         final Request request = new Request.Builder()
-                .url(APPLICATION_ID + "/v3/group_channels/" + chat.getChannelURL() + "/messages")
+                .url(APPLICATION_ID + "/v3/group_channels/" + chat.getChannelUrl() + "/messages")
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Api-Token", API_TOKEN)
@@ -150,6 +149,12 @@ public class MessageDataAccessObject implements SendMessageDataAccessInterface, 
             if (response.code() == 200) {
                 Integer messageId = (int) responseBody.getLong("message_id");
                 message.SetMID(messageId);
+
+                Date date = new Date(createdAt);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                message.setTimestamp(sdf.format(date));
+
                 return message;
             }
             else {

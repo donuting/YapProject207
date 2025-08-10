@@ -6,14 +6,8 @@ package use_case.update_chat;
 public interface UpdateChatInputBoundary {
     /**
      * Execute the Update Chat use case.
-     * @param inputData The input data for this use case.
      */
-    void execute(UpdateChatInputData inputData);
-
-    /**
-     * Switches the view so that the chat is shown.
-     */
-    void switchToChatView();
+    void execute(UpdateChatInputData updateChatInputData);
 
     /**
      * Switches the view to return to the list of chats

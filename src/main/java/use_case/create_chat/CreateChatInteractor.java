@@ -26,10 +26,12 @@ public class CreateChatInteractor implements CreateChatInputBoundary {
         User currentUser = userDataAccessObject.getCurrentUser();
         if (currentUser == null) {
             groupChatPresenter.prepareFailView("The current user does not exist");
+            return;
         }
 
         if (createChatInputData.getChatName() == null || createChatInputData.getChatName().trim().isEmpty()) {
             groupChatPresenter.prepareFailView("Please enter a chat name");
+            return;
         }
 
         // Create the group chat in SendBird
@@ -43,7 +45,7 @@ public class CreateChatInteractor implements CreateChatInputBoundary {
         userDataAccessObject.saveGroupChat(newGroupChat, username);
         currentUser.addGroupChat(newGroupChat);
 
-        final CreateChatOutputData createChatOutputData = new CreateChatOutputData(newGroupChat.getName(), currentUserID);
+        final CreateChatOutputData createChatOutputData = new CreateChatOutputData(newGroupChat.getChatName(), currentUserID);
         groupChatPresenter.prepareSuccessView(createChatOutputData);
     }
 }

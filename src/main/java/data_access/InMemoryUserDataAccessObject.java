@@ -1,9 +1,11 @@
 package data_access;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entity.Chat;
 import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
@@ -14,9 +16,14 @@ import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
 import use_case.delete_account.DeleteAccountDataAccessInterface;
+import use_case.join_chat.JoinChatDataAccessInterface;
+import use_case.leave_chat.LeaveChatDataAccessInterface;
+import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.update_chat.UpdateChatDataAccessInterface;
+import use_case.profile.UserProfileDataAccessInterface; // ADD THIS IMPORT
 
 /**
  * In-memory implementation of the DAO for storing user data. This implementation does
@@ -31,11 +38,17 @@ public class InMemoryUserDataAccessObject implements
         AddDOBUserDataAccessInterface,
         BlockFriendUserDataAccessInterface,
         DeleteAccountDataAccessInterface,
-        AddFriendUserDataAccessInterface, CreateChatUserDataAccessInterface {
+        AddFriendUserDataAccessInterface,
+        CreateChatUserDataAccessInterface,
+        JoinChatDataAccessInterface,
+        UpdateChatDataAccessInterface,
+        LeaveChatDataAccessInterface,
+        LoadGroupChatsDataAccessInterface,
+        UserProfileDataAccessInterface { // ADD THIS INTERFACE
 
     private final Map<String, User> users = new HashMap<>();
-
     private String currentUsername;
+    private User currentUser; // ADD THIS FIELD
 
     @Override
     public boolean existsByName(String identifier) {
@@ -66,12 +79,17 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public void changePassword(String username , String password) {
         // Replace the old entry with the new password
-
+        User user = users.get(username);
+        if (user != null) {
+            // You'll need to implement this in your User implementation
+            // For now, this is a placeholder
+        }
     }
 
     @Override
     public void setCurrentUsername(String name) {
         this.currentUsername = name;
+        this.currentUser = users.get(name); // UPDATE CURRENT USER TOO
     }
 
     @Override
@@ -86,7 +104,10 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public void setCurrentUser(User user) {
-
+        this.currentUser = user;
+        if (user != null) {
+            this.currentUsername = user.getName();
+        }
     }
 
     @Override
@@ -102,6 +123,10 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public boolean addBio(String username, String bio) {
+        User user = users.get(username);
+        if (user != null) {
+            return user.EditBiography(bio); // USE EXISTING USER METHOD
+        }
         return false;
     }
 
@@ -113,6 +138,10 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public boolean addDOB(String username, String dob) {
+        User user = users.get(username);
+        if (user != null) {
+            return user.EditDOB(dob); // USE EXISTING USER METHOD
+        }
         return false;
     }
 
@@ -146,7 +175,46 @@ public class InMemoryUserDataAccessObject implements
      */
     @Override
     public User getCurrentUser() {
+        return this.currentUser;
+    }
+
+    @Override
+    public boolean leaveGroupChat(String channelUrl, String userId, String username) {
+        return false;
+    }
+
+    @Override
+    public GroupChat getActiveGroupChat() {
         return null;
+    }
+
+    /**
+     * Loads a GroupChat object given its channel URL
+     *
+     * @param channelUrl the channel URL.
+     * @return the retrieved group chat.
+     */
+    @Override
+    public GroupChat load(String channelUrl) {
+        return null;
+    }
+
+    @Override
+    public void setActiveGroupChat(GroupChat newChat) {
+
+    }
+
+    /**
+     * Adds a user to a group chat given its channel URL, and returns the updated group chat.
+     *
+     * @param userId     the user's ID.
+     * @param channelUrl the channel URL.
+     * @return the updated group chat.
+     */
+    @Override
+    public GroupChat addUser(String userId, String channelUrl) {
+        return null;
+        // IMPLEMENT THIS
     }
 
     /**
@@ -160,6 +228,55 @@ public class InMemoryUserDataAccessObject implements
 
     }
 
+    // ========== NEW METHODS FOR UserProfileDataAccessInterface ==========
+
+    @Override
+    public String saveProfile(String oldUsername, String username, String bio, String dateOfBirth) {
+        if (users.containsKey(oldUsername)) {
+            User user = users.get(oldUsername);
+            // Remove old entry
+            users.remove(user.getName());
+            // Update user data
+            user.setName(username);
+            user.EditBiography(bio);
+            user.EditDOB(dateOfBirth);
+            // Add back with new key
+            users.put(username, user);
+
+            // Update current username if it's the current user
+            if (currentUser != null && currentUser.getName().equals(username)) {
+                currentUsername = username;
+            }
+
+            return user.getID();
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> loadProfile(String username) {
+        if (users.containsKey(username)) {
+            User user = users.get(username);
+            List<String> userProfile = new ArrayList<>();
+            userProfile.add(user.getID());
+            userProfile.add(user.getBio());
+            userProfile.add(user.getDOB());
+            return userProfile;
+        }
+        return null;
+    }
+
+    /**
+     * Helper method to find a user by their ID rather than username.
+     * This is important because usernames can change, but IDs should be stable.
+     */
+    private User findUserById(String userId) {
+        return users.values().stream()
+                .filter(user -> user.getID().equals(userId))
+                .findFirst()
+                .orElse(null);
+    }
+          
     /**
      * Delete user by id and username. Return true only if a stored user with the given id
      * exists and its name matches the provided username.
