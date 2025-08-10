@@ -153,7 +153,7 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
     }
 
     private void handleJoinChat() {
-        String result = JOptionPane.showInputDialog(viewGroupChatsPanel, "Enter the URL of the chat you want to join", JOptionPane.OK_CANCEL_OPTION);
+        String result = JOptionPane.showInputDialog(viewGroupChatsPanel, "Enter the URL of the chat you want to join", "", JOptionPane.OK_CANCEL_OPTION);
         if (result != null) {
             viewGroupChatsController.joinChat(result);
         }
