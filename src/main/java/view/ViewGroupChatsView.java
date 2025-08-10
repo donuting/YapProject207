@@ -100,7 +100,7 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
 
                 // Add them to a new JPanel
                 JPanel newGroupChatPanel = new JPanel();
-                newGroupChatPanel.setLayout(new BoxLayout(newGroupChatPanel, FlowLayout.CENTER));
+                newGroupChatPanel.setLayout(new BoxLayout(newGroupChatPanel, BoxLayout.X_AXIS));
                 newGroupChatPanel.setFont(new Font("Arial", Font.PLAIN, 14));
                 newGroupChatPanel.setBackground(new Color(248, 248, 248));
                 newGroupChatPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

@@ -19,24 +19,23 @@ public class BlockFriendInteractor implements BlockFriendInputBoundary {
     public void execute(BlockFriendInputData inputData) {
         User currentUser = userDataAccessObject.getCurrentUser();
         String currentUsername = currentUser.getName();
-
-        String blockedUsername = inputData.getBlockedUsername();
+        String blockedUserId = inputData.getBlockedId();
+        String blockedUsername = userDataAccessObject.getUsernameFromId(blockedUserId);
         boolean currentUserExists = userDataAccessObject.existsByName(currentUsername);
         boolean blockedUserExists = userDataAccessObject.existsByName(blockedUsername);
         boolean success = false;
-        String blockedUserId = null;
+
         if (currentUserExists && blockedUserExists) {
-            blockedUserId = userDataAccessObject.blockFriend(currentUsername, blockedUsername);
-            success = blockedUserId != null;
+            success = userDataAccessObject.blockFriend(currentUser, blockedUsername, blockedUserId);
         }
 
-        BlockFriendOutputData outputData = new BlockFriendOutputData(currentUsername, blockedUsername, success);
+        BlockFriendOutputData outputData = new BlockFriendOutputData(currentUsername, blockedUsername, inputData.getBlockedId(), success);
         if (success) {
             currentUser.blockUser(blockedUserId);
-            presenter.prepareSuccessView(outputData);
+            presenter.blockFriendPrepareSuccessView(outputData);
         }
         else {
-            presenter.prepareFailView("Failed to block friend.", outputData);
+            presenter.blockFriendPrepareFailView("Failed to block friend.", outputData);
         }
     }
 }

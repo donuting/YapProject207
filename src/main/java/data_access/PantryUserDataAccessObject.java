@@ -8,6 +8,7 @@ import endercrypt.library.jpantry.PantryBasket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The DAO for accessing user data in Pantry. This is user to store data of users in this app.
@@ -64,19 +65,47 @@ public class PantryUserDataAccessObject {
      *
      * @param currentUsername the username blocking someone.
      * @param blockedUsername the user being blocked.
-     * @return the ID of the blocked user.
+     * @param removedPersonalChatUrl the URL of the personal chat being removed
      */
-    public String blockFriend(String currentUsername, String blockedUsername) {
+    public void blockFriend(String currentUsername, String blockedUsername, String removedPersonalChatUrl) {
         // This method only allows blocking one-way, not mutual blocking
-        String blockedId = getUserDataFromUsername(blockedUsername).get(USER_ID).getAsString();
-        JsonArray blockedIds = new JsonArray();
-        blockedIds.add(blockedId);
+        final PantryBasket userBasket = pantry.getBasket(currentUsername);
+        final PantryBasket blockedBasket = pantry.getBasket(blockedUsername);
+        final JsonObject currentUserData = getUserDataFromUsername(currentUsername);
+        final JsonObject blockedUserData = getUserDataFromUsername(blockedUsername);
+        final JsonElement currentId = currentUserData.get(USER_ID);
+        final JsonElement blockedId = blockedUserData.get(USER_ID);
 
-        PantryBasket basket = pantry.getBasket(currentUsername);
-        JsonObject updateData = new JsonObject();
-        updateData.add(BLOCKED_IDS, blockedIds);
-        basket.mergeJson(updateData).queue();
-        return blockedId;
+        // Current user blocks other user:
+        JsonArray currentUserFriendIds = currentUserData.getAsJsonArray(FRIEND_IDS);
+        JsonArray currentUserBlockedIds = currentUserData.getAsJsonArray(BLOCKED_IDS);
+        JsonArray currentUserPersonalChatUrls = currentUserData.getAsJsonArray(PERSONAL_CHANNEL_URLS);
+        JsonArray newCurrentUserPersonalChatUrls = new JsonArray();
+        currentUserFriendIds.remove(blockedId);
+        currentUserBlockedIds.add(blockedId);
+        for (JsonElement personalChatUrl : currentUserPersonalChatUrls) {
+            if (!personalChatUrl.getAsString().equals(removedPersonalChatUrl)) {
+                newCurrentUserPersonalChatUrls.add(personalChatUrl);
+            }
+        }
+        currentUserData.add(FRIEND_IDS, currentUserFriendIds);
+        currentUserData.add(BLOCKED_IDS, currentUserBlockedIds);
+        currentUserData.add(PERSONAL_CHANNEL_URLS, newCurrentUserPersonalChatUrls);
+        userBasket.setJson(currentUserData).queue();
+
+        // Other user gets blocked
+        JsonArray blockedUserFriendIds = blockedUserData.getAsJsonArray(FRIEND_IDS);
+        JsonArray blockedUserPersonalChatUrls = blockedUserData.getAsJsonArray(PERSONAL_CHANNEL_URLS);
+        JsonArray newBlockedUserPersonalChatUrls = new JsonArray();
+        blockedUserFriendIds.remove(currentId);
+        for (JsonElement personalChatUrl : blockedUserPersonalChatUrls) {
+            if (!personalChatUrl.getAsString().equals(removedPersonalChatUrl)) {
+                newBlockedUserPersonalChatUrls.add(personalChatUrl);
+            }
+        }
+        blockedUserData.add(FRIEND_IDS, blockedUserFriendIds);
+        blockedUserData.add(PERSONAL_CHANNEL_URLS, newBlockedUserPersonalChatUrls);
+        blockedBasket.setJson(blockedUserData).queue();
     }
 
     /**
@@ -170,7 +199,7 @@ public class PantryUserDataAccessObject {
      * @param removedUsername the username of the friend to be removed.
      * @return true if successful.
      */
-    public boolean removeFriend(String currentUsername, String removedUsername) {
+    public boolean removeFriend(String currentUsername, String removedUsername, String removedPersonalChatUrl) {
         final PantryBasket userBasket = pantry.getBasket(currentUsername);
         final PantryBasket removedBasket = pantry.getBasket(removedUsername);
         final JsonObject currentUserData = getUserDataFromUsername(currentUsername);
@@ -178,16 +207,32 @@ public class PantryUserDataAccessObject {
         final JsonElement currentId = currentUserData.get(USER_ID);
         final JsonElement removedId = removedUserData.get(USER_ID);
 
-        // Remove friend from current user's friends
+        // Current user removes other user:
         JsonArray currentUserFriendIds = currentUserData.getAsJsonArray(FRIEND_IDS);
-        currentUserFriendIds.remove(currentId);
+        JsonArray currentUserPersonalChatUrls = currentUserData.getAsJsonArray(PERSONAL_CHANNEL_URLS);
+        JsonArray newCurrentUserPersonalChatUrls = new JsonArray();
+        currentUserFriendIds.remove(removedId);
+        for (JsonElement personalChatUrl : currentUserPersonalChatUrls) {
+            if (!personalChatUrl.getAsString().equals(removedPersonalChatUrl)) {
+                newCurrentUserPersonalChatUrls.add(personalChatUrl);
+            }
+        }
         currentUserData.add(FRIEND_IDS, currentUserFriendIds);
+        currentUserData.add(PERSONAL_CHANNEL_URLS, newCurrentUserPersonalChatUrls);
         userBasket.setJson(currentUserData).queue();
 
-        // Remove current user from friend's friends
-        JsonArray removedFriendIds = removedUserData.getAsJsonArray(FRIEND_IDS);
-        removedFriendIds.remove(removedId);
-        removedUserData.add(FRIEND_IDS, removedFriendIds);
+        // Other user gets removed
+        JsonArray removedUserFriendIds = removedUserData.getAsJsonArray(FRIEND_IDS);
+        JsonArray removedUserPersonalChatUrls = removedUserData.getAsJsonArray(PERSONAL_CHANNEL_URLS);
+        JsonArray newRemovedUserPersonalChatUrls = new JsonArray();
+        removedUserFriendIds.remove(currentId);
+        for (JsonElement personalChatUrl : removedUserPersonalChatUrls) {
+            if (!personalChatUrl.getAsString().equals(removedPersonalChatUrl)) {
+                newRemovedUserPersonalChatUrls.add(personalChatUrl);
+            }
+        }
+        removedUserData.add(FRIEND_IDS, removedUserFriendIds);
+        removedUserData.add(PERSONAL_CHANNEL_URLS, newRemovedUserPersonalChatUrls);
         removedBasket.setJson(removedUserData).queue();
 
         return true;

@@ -92,9 +92,11 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         setFields(state);
         if (state.getErrorMessage() != null) {
             JOptionPane.showMessageDialog(this, state.getErrorMessage());
+            state.setErrorMessage(null);
         }
         if (state.getSuccessMessage() != null) {
             JOptionPane.showMessageDialog(this, state.getSuccessMessage());
+            state.setSuccessMessage(null);
         }
     }
 
