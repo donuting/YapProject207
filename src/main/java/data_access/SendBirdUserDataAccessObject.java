@@ -559,6 +559,10 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         return false;
     }
 
+    public void  deleteGroupChat(GroupChat groupChat) {
+        groupChatDataAccessObject.delete(groupChat.getChannelUrl());
+    }
+
     /**
      * Returns the self chat of the current user of the application.
      * @return the self chat of the current user; null indicates that no one is logged into the application.

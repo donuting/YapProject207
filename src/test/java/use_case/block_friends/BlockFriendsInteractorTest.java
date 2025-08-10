@@ -1,6 +1,6 @@
 package use_case.block_friends;
 
-import data_access.InMemoryUserDataAccessObject;
+
 import data_access.SendBirdUserDataAccessObject;
 import entity.CommonUser;
 import entity.CommonUserFactory;
