@@ -184,6 +184,15 @@ public class InMemoryUserDataAccessObject implements
     }
 
     /**
+     * @param newGroupChat
+     * @param username
+     */
+    @Override
+    public void savePersonalChat(GroupChat newGroupChat, String username) {
+
+    }
+
+    /**
      * Get the current user.
      *
      * @return the current user.

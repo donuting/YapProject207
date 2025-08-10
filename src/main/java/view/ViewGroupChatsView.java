@@ -95,7 +95,7 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
                 // Create Buttons
                 JButton newViewGroupChatButton = addActionListener(setViewGroupChatButtonProperties(new JButton(channelName)));
                 viewGroupChatButtons.put(newViewGroupChatButton, channelUrl);
-                JButton newRemoveGroupChatButton = addActionListener(setDeleteGroupChatButtonProperties(new JButton("Delete")));
+                JButton newRemoveGroupChatButton = addActionListener(setDeleteGroupChatButtonProperties(new JButton("Leave")));
                 removeGroupChatButtons.put(newRemoveGroupChatButton, channelUrl);
 
                 // Add them to a new JPanel

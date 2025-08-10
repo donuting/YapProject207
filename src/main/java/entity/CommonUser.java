@@ -297,6 +297,16 @@ public class CommonUser implements User {
     //VisibleForTesting
     public List<GroupChat> getGroupChats() {return groupChats;}
 
+    /**
+     * Adds a personal chat to the user's list of personal chats.
+     *
+     * @param personalChat the group chat.
+     */
+    @Override
+    public void addPersonalChat(GroupChat personalChat) {
+        personalChats.add(personalChat);
+    }
+
     //VisibleForTesting
     public List<GroupChat> getPersonalChats() {return personalChats;}
 

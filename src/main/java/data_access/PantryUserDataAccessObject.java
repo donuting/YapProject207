@@ -28,6 +28,7 @@ public class PantryUserDataAccessObject {
     private static final String BLOCKED_IDS = "blockedIDs";
     private static final String FRIEND_IDS = "friendIDs";
     private static final String GROUP_CHANNEL_URLS = "groupChannelURLs";
+    private static final String PERSONAL_CHANNEL_URLS = "personalChannelURLs";
     private final JPantry pantry = new JPantry.Builder()
             .setToken(API_TOKEN)
             .setCacheTime(CACHE_TIME)
@@ -42,7 +43,7 @@ public class PantryUserDataAccessObject {
         // The name of the user's basket in Pantry is the username
         final String basketName = userData.get(USERNAME).getAsString();
         PantryBasket basket = pantry.getBasket(basketName);
-        basket.setJson(userData).complete();
+        basket.setJson(userData).queue();
     }
 
     /**
@@ -55,7 +56,7 @@ public class PantryUserDataAccessObject {
         PantryBasket basket = pantry.getBasket(username);
         JsonObject updateData = new JsonObject();
         updateData.addProperty(PASSWORD, password);
-        basket.mergeJson(updateData).complete();
+        basket.mergeJson(updateData).queue();
     }
 
     /**
@@ -74,7 +75,7 @@ public class PantryUserDataAccessObject {
         PantryBasket basket = pantry.getBasket(currentUsername);
         JsonObject updateData = new JsonObject();
         updateData.add(BLOCKED_IDS, blockedIds);
-        basket.mergeJson(updateData).complete();
+        basket.mergeJson(updateData).queue();
         return blockedId;
     }
 
@@ -100,7 +101,7 @@ public class PantryUserDataAccessObject {
         PantryBasket basket = pantry.getBasket(username);
         JsonObject updateData = new JsonObject();
         updateData.addProperty(BIOGRAPHY, biography);
-        basket.mergeJson(updateData).complete();
+        basket.mergeJson(updateData).queue();
         return true;
     }
 
@@ -115,7 +116,7 @@ public class PantryUserDataAccessObject {
         PantryBasket basket = pantry.getBasket(username);
         JsonObject updateData = new JsonObject();
         updateData.addProperty(DATE_OF_BIRTH, dateOfBirth);
-        basket.mergeJson(updateData).complete();
+        basket.mergeJson(updateData).queue();
         return true;
     }
 
@@ -127,24 +128,24 @@ public class PantryUserDataAccessObject {
      * @return true if successful.
      */
     public boolean addFriend(String currentUsername, String friendUsername) {
-        final PantryBasket userBasket = pantry.getBasket(currentUsername);
+        final PantryBasket currentUserBasket = pantry.getBasket(currentUsername);
         final PantryBasket friendBasket = pantry.getBasket(friendUsername);
-        final String currentId = userBasket.getJson().complete().get(USER_ID).getAsString();
+        final String currentId = currentUserBasket.getJson().complete().get(USER_ID).getAsString();
         final String friendId = friendBasket.getJson().complete().get(USER_ID).getAsString();
 
         // Add friend to current user's friends
         JsonObject currentUpdateData = new JsonObject();
         JsonArray currentUserFriendIds = new JsonArray();
-        currentUserFriendIds.add(currentId);
+        currentUserFriendIds.add(friendId);
         currentUpdateData.add(FRIEND_IDS, currentUserFriendIds);
-        userBasket.mergeJson(currentUpdateData).complete();
+        currentUserBasket.mergeJson(currentUpdateData).queue();
 
         // Add current user to friend's friends
         JsonObject friendUpdateData = new JsonObject();
         JsonArray friendFriendIds = new JsonArray();
-        friendFriendIds.add(friendId);
+        friendFriendIds.add(currentId);
         friendUpdateData.add(FRIEND_IDS, friendFriendIds);
-        userBasket.mergeJson(friendUpdateData).complete();
+        friendBasket.mergeJson(friendUpdateData).queue();
 
         return true;
     }
@@ -181,13 +182,13 @@ public class PantryUserDataAccessObject {
         JsonArray currentUserFriendIds = currentUserData.getAsJsonArray(FRIEND_IDS);
         currentUserFriendIds.remove(currentId);
         currentUserData.add(FRIEND_IDS, currentUserFriendIds);
-        userBasket.setJson(currentUserData).complete();
+        userBasket.setJson(currentUserData).queue();
 
         // Remove current user from friend's friends
         JsonArray removedFriendIds = removedUserData.getAsJsonArray(FRIEND_IDS);
         removedFriendIds.remove(removedId);
         removedUserData.add(FRIEND_IDS, removedFriendIds);
-        removedBasket.setJson(removedUserData).complete();
+        removedBasket.setJson(removedUserData).queue();
 
         return true;
     }
@@ -205,7 +206,23 @@ public class PantryUserDataAccessObject {
         PantryBasket basket = pantry.getBasket(username);
         JsonObject updateData = new JsonObject();
         updateData.add(GROUP_CHANNEL_URLS, groupChats);
-        basket.mergeJson(updateData).complete();
+        basket.mergeJson(updateData).queue();
+    }
+
+    /**
+     * Allows a user to add a personal chat to their list of personal chats in Pantry.
+     *
+     * @param username the user's username.
+     * @param channelUrl the URL of the personal chat to be added
+     */
+    public void savePersonalChat(String username, String channelUrl) {
+        JsonArray personalChats = new JsonArray();
+        personalChats.add(channelUrl);
+
+        PantryBasket basket = pantry.getBasket(username);
+        JsonObject updateData = new JsonObject();
+        updateData.add(PERSONAL_CHANNEL_URLS, personalChats);
+        basket.mergeJson(updateData).queue();
     }
 
     /**
@@ -215,7 +232,7 @@ public class PantryUserDataAccessObject {
      */
     public void deleteUser(String username) {
         PantryBasket basket = pantry.getBasket(username);
-        basket.deleteJson().complete();
+        basket.deleteJson().queue();
     }
 
     /**
@@ -235,7 +252,7 @@ public class PantryUserDataAccessObject {
         }
         PantryBasket basket = pantry.getBasket(username);
         userData.add(GROUP_CHANNEL_URLS, updatedGroupChatUrls);
-        basket.setJson(userData).complete();
+        basket.setJson(userData).queue();
     }
 
     /**

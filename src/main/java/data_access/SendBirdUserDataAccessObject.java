@@ -165,49 +165,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
             } catch (IOException | JSONException ex) {
                 return null;
             }
-
-
-
-//            try {
-//                ListMyGroupChannelsResponse result = apiInstance.listMyGroupChannels(userId)
-//                        .apiToken(API_TOKEN)
-//                        .showEmpty(true)
-//                        .showMember(true)
-//                        .execute();
-//
-//                System.out.println(result);
-//
-//                // Create GroupChat and PersonalChat objects
-//                List<GroupChat> groupChats = new ArrayList<>();
-//                List<GroupChat> personalChats = new ArrayList<>();
-//                GroupChat selfChat = null;
-//                List<SendbirdGroupChannel> channels = result.getChannels();
-//                if (channels != null) {
-//                    for (SendbirdGroupChannel sendBirdGroupChannel : channels) {
-//                        String channelUrl = sendBirdGroupChannel.getChannelUrl();
-//                        if (groupChannelUrls.contains(channelUrl)) {
-//                            groupChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
-//                        }
-//                        else if (personalChannelUrls.contains(channelUrl)) {
-//                            personalChats.add(groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel));
-//                        }
-//                        else if (selfChatUrl.equals(channelUrl)) {
-//                            selfChat = groupChatDataAccessObject.getGroupChat(sendBirdGroupChannel);
-//                        }
-//                    }
-//                }
-//
-//                // Initialize the user
-//                return userFactory.create(username, password, userId, biography,
-//                        dateOfBirth, friendIds, blockedIds, groupChats, personalChats, selfChat);
-//            }
-//            catch (ApiException e) {
-//                System.err.println("Exception when calling GroupChannelApi#gcListChannels");
-//                System.err.println("Status code: " + e.getCode());
-//                System.err.println("Reason: " + e.getResponseBody());
-//                System.err.println("Response headers: " + e.getResponseHeaders());
-//                e.printStackTrace();
-
         }
         return null;
     }
@@ -396,6 +353,17 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public void saveGroupChat(GroupChat newGroupChat, String username) {
         pantryUserDataAccessObject.saveGroupChat(username, newGroupChat.getChannelUrl());
+    }
+
+    /**
+     * Saves a personal chat to a user.
+     *
+     * @param newPersonalChat the personal chat
+     * @param username the user's name
+     */
+    @Override
+    public void savePersonalChat(GroupChat newPersonalChat, String username) {
+        pantryUserDataAccessObject.savePersonalChat(username, newPersonalChat.getChannelUrl());
     }
 
     @Override
@@ -593,6 +561,9 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
                     .apiToken(apiToken)
                     .execute();
             System.out.println(result);
+
+            String selfChatUrl = pantryUserDataAccessObject.getUserDataFromUsername(username).get("selfChatURL").getAsString();
+            groupChatDataAccessObject.delete(selfChatUrl);
 
             pantryUserDataAccessObject.deleteUser(username);
 

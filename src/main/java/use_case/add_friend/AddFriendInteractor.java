@@ -45,36 +45,28 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
             return;
         }
 
-        // check if current user spelled own username correctly, not sure if this worked (maybe DAO issue)
-        if (currentUser == null || !currentUser.getName().equals(currentUsername)) {
-            presenter.prepareFailView("Your account name is incorrect");
+        // check that the friend exists
+        if (friendUser == null) {
+            presenter.prepareFailView("User does not exist");
             return;
         }
 
+
+        // check if friend's username and ID correspond to the same user
         if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
             presenter.prepareFailView("User " + friendUsername + " does not exist");
             return;
         }
 
-        if (currentUser.getBlockedUserIDs().contains(friendID)) {
+        // check if blocked
+        if (currentUser.getBlockedUserIDs().contains(friendID)
+                || friendUser.getBlockedUserIDs().contains(currentUser.getID())) {
             presenter.prepareFailView(friendUsername + " is blocked");
-        // check if friend's username and ID correspond to the same user
-        if (!userDataAccessObject.existsByName(friendUsername)) {
-            presenter.prepareFailView("User " + friendUsername + " does not exist"
-                    // , new AddFriendOutputData(friendUsername, true, null)
-            );
-            return;
-        }
-
-        if (!friendID.equals(friendUser.getID())) {
-            presenter.prepareFailView("Friend username and IDs do not match"
-                    // , new AddFriendOutputData(friendUsername, true, null)
-            );
             return;
         }
 
         // check if already friends
-        if (userDataAccessObject.alreadyFriend(currentUsername, friendUsername)) {
+        if (currentUser.getFriendIDs().contains(friendID)) {
             presenter.prepareFailView("You are already friends with " + friendUsername);
             return;
         }
@@ -82,31 +74,30 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
         // checking that user is not adding self using IDS, leave for near the end
         if (friendID.equals(currentUser.getID())) {
             presenter.prepareFailView("You cannot add yourself as a friend (friend ID must be different from yours)");
+            return;
         }
 
         // successful
         else {
-            // adds friend for both users
+            // adds friend for in memory object
             currentUser.addFriend(friendID);
-            friendUser.addFriend(currentUser.getID());
 
             // adds friendship in database
             userDataAccessObject.addFriend(currentUsername, friendUsername);
 
             // create the chat between both friends
             List<String> membersOfChat = new ArrayList<>();
-            membersOfChat.add(currentUsername);
-            membersOfChat.add(friendUsername);
+            membersOfChat.add(currentUser.getID());
+            membersOfChat.add(friendID);
             GroupChat chat = userDataAccessObject.create(membersOfChat, currentUsername + ", " +
                     friendUsername, new GroupChatFactory());
 
-            // add chat to both users
-            currentUser.addGroupChat(chat);
-            friendUser.addGroupChat(chat);
+            // add chat to current user for the in memory object
+            currentUser.addPersonalChat(chat);
 
             // add chat to both users in database
-            userDataAccessObject.saveGroupChat(chat, currentUsername);
-            userDataAccessObject.saveGroupChat(chat, friendUsername);
+            userDataAccessObject.savePersonalChat(chat, currentUsername);
+            userDataAccessObject.savePersonalChat(chat, friendUsername);
 
             AddFriendOutputData outputData = new AddFriendOutputData(friendUsername,
                     true, friendUsername + " has been added!");
