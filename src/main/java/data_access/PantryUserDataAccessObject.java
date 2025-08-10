@@ -68,7 +68,7 @@ public class PantryUserDataAccessObject {
     public String blockFriend(String currentUsername, String blockedUsername) {
         // This method only allows blocking one-way, not mutual blocking
         String blockedId = getUserDataFromUsername(blockedUsername).get(USER_ID).getAsString();
-        JsonArray blockedIds = getUserDataFromUsername(currentUsername).getAsJsonArray(BLOCKED_IDS);
+        JsonArray blockedIds = new JsonArray();
         blockedIds.add(blockedId);
 
         PantryBasket basket = pantry.getBasket(currentUsername);
@@ -134,14 +134,14 @@ public class PantryUserDataAccessObject {
 
         // Add friend to current user's friends
         JsonObject currentUpdateData = new JsonObject();
-        JsonArray currentUserFriendIds = getUserDataFromUsername(friendUsername).getAsJsonArray(FRIEND_IDS);
+        JsonArray currentUserFriendIds = new JsonArray();
         currentUserFriendIds.add(currentId);
         currentUpdateData.add(FRIEND_IDS, currentUserFriendIds);
         userBasket.mergeJson(currentUpdateData).complete();
 
         // Add current user to friend's friends
         JsonObject friendUpdateData = new JsonObject();
-        JsonArray friendFriendIds = getUserDataFromUsername(friendUsername).getAsJsonArray(FRIEND_IDS);
+        JsonArray friendFriendIds = new JsonArray();
         friendFriendIds.add(friendId);
         friendUpdateData.add(FRIEND_IDS, friendFriendIds);
         userBasket.mergeJson(friendUpdateData).complete();
@@ -171,23 +171,23 @@ public class PantryUserDataAccessObject {
      */
     public boolean removeFriend(String currentUsername, String removedUsername) {
         final PantryBasket userBasket = pantry.getBasket(currentUsername);
-        final PantryBasket friendBasket = pantry.getBasket(removedUsername);
-        final JsonElement currentId = userBasket.getJson().complete().get(USER_ID);
-        final JsonElement friendId = friendBasket.getJson().complete().get(USER_ID);
+        final PantryBasket removedBasket = pantry.getBasket(removedUsername);
+        final JsonObject currentUserData = getUserDataFromUsername(currentUsername);
+        final JsonObject removedUserData = getUserDataFromUsername(removedUsername);
+        final JsonElement currentId = currentUserData.get(USER_ID);
+        final JsonElement removedId = removedUserData.get(USER_ID);
 
         // Remove friend from current user's friends
-        JsonObject currentUpdateData = new JsonObject();
-        JsonArray currentUserFriendIds = getUserDataFromUsername(currentUsername).getAsJsonArray(FRIEND_IDS);
+        JsonArray currentUserFriendIds = currentUserData.getAsJsonArray(FRIEND_IDS);
         currentUserFriendIds.remove(currentId);
-        currentUpdateData.add(FRIEND_IDS, currentUserFriendIds);
-        userBasket.mergeJson(currentUpdateData).complete();
+        currentUserData.add(FRIEND_IDS, currentUserFriendIds);
+        userBasket.setJson(currentUserData).complete();
 
         // Remove current user from friend's friends
-        JsonObject friendUpdateData = new JsonObject();
-        JsonArray friendFriendIds = getUserDataFromUsername(removedUsername).getAsJsonArray(FRIEND_IDS);
-        friendFriendIds.remove(friendId);
-        friendUpdateData.add(FRIEND_IDS, friendFriendIds);
-        userBasket.mergeJson(friendUpdateData).complete();
+        JsonArray removedFriendIds = removedUserData.getAsJsonArray(FRIEND_IDS);
+        removedFriendIds.remove(removedId);
+        removedUserData.add(FRIEND_IDS, removedFriendIds);
+        removedBasket.setJson(removedUserData).complete();
 
         return true;
     }
@@ -199,7 +199,7 @@ public class PantryUserDataAccessObject {
      * @param channelUrl the URL of the group chat to be added
      */
     public void saveGroupChat(String username, String channelUrl) {
-        JsonArray groupChats = getUserDataFromUsername(username).getAsJsonArray(GROUP_CHANNEL_URLS);
+        JsonArray groupChats = new JsonArray();
         groupChats.add(channelUrl);
 
         PantryBasket basket = pantry.getBasket(username);
@@ -225,7 +225,8 @@ public class PantryUserDataAccessObject {
      * @param channelUrl the URL of the group chat
      */
     public void leaveChat(String username, String channelUrl) {
-        JsonArray groupChatUrls = getUserDataFromUsername(username).getAsJsonArray(GROUP_CHANNEL_URLS);
+        JsonObject userData = getUserDataFromUsername(username);
+        JsonArray groupChatUrls = userData.getAsJsonArray(GROUP_CHANNEL_URLS);
         JsonArray updatedGroupChatUrls = new JsonArray();
         for (JsonElement groupChatUrl : groupChatUrls) {
             if (!groupChatUrl.getAsString().equals(channelUrl)) {
@@ -233,9 +234,8 @@ public class PantryUserDataAccessObject {
             }
         }
         PantryBasket basket = pantry.getBasket(username);
-        JsonObject updateData = new JsonObject();
-        updateData.add(GROUP_CHANNEL_URLS, updatedGroupChatUrls);
-        basket.mergeJson(updateData).complete();
+        userData.add(GROUP_CHANNEL_URLS, updatedGroupChatUrls);
+        basket.setJson(userData).complete();
     }
 
     /**

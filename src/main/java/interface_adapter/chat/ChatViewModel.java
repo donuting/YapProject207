@@ -66,13 +66,7 @@ public class ChatViewModel extends ViewModel<ChatState> {
         }
         currentState.setMessages(messages);
         currentState.setMessagesSentByUser(messagesSentByUser);
-        currentState.setNeedsUpdate(true);
-        // Wait for the current updater to stop running before causing it to run again.
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        currentState.setNeedsClearChat(true);
         firePropertyChanged();
     }
 
