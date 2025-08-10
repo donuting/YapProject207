@@ -22,10 +22,10 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
 
     @Override
     public void execute(AddFriendInputData addFriendInputData) {
-        final String currentUsername = addFriendInputData.getCurrentUsername();
+        User currentUser = userDataAccessObject.getCurrentUser();
+        final String currentUsername = currentUser.getName();
         final String friendUsername = addFriendInputData.getFriendUsername();
         final String friendID = addFriendInputData.getFriendID();
-        User currentUser = userDataAccessObject.get(currentUsername);
         User friendUser = userDataAccessObject.get(friendUsername);
 
 
@@ -44,17 +44,16 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
             return;
         }
 
-        // check if current user spelled own username correctly, not sure if this worked (maybe DAO issue)
-        // says currentUser is null when tested
-        if (!currentUsername.equals(currentUser.getName())) {
-            presenter.prepareFailView("Your account name is incorrect"
+        // check if friend's username and ID correspond to the same user
+        if (!userDataAccessObject.existsByName(friendUsername)) {
+            presenter.prepareFailView("User " + friendUsername + " does not exist"
                     // , new AddFriendOutputData(friendUsername, true, null)
             );
             return;
         }
 
-        if (!userDataAccessObject.existsByName(friendUsername)) {
-            presenter.prepareFailView("User " + friendUsername + " does not exist"
+        if (!friendID.equals(friendUser.getID())) {
+            presenter.prepareFailView("Friend username and IDs do not match"
                     // , new AddFriendOutputData(friendUsername, true, null)
             );
             return;
