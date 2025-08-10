@@ -5,9 +5,15 @@ package use_case.block_friend;
  */
 public class BlockFriendInputData {
     private final String blockedUsername;
+    private final String currentUsername;
 
-    public BlockFriendInputData(String blockedUsername) {;
+    public BlockFriendInputData(String currentUsername, String blockedUsername) {
+        this.currentUsername = currentUsername;
         this.blockedUsername = blockedUsername;
+    }
+
+    public String getCurrentUsername() {
+        return currentUsername;
     }
 
     public String getBlockedUsername() {
