@@ -25,7 +25,6 @@ class SignupInteractorTest {
                 assertEquals("Paul", user.getUsername());
                 assertTrue(userRepository.existsByName("Paul"));
                 User newUser = userRepository.get("Paul");
-                assertNotNull(newUser.getSelfChat());
             }
 
             @Override

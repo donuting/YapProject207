@@ -21,7 +21,7 @@ public class AddFriendInteractorTest {
     private CommonUser friend2;
     private CommonUser friend3;
     private CommonUser friend5;
-    private InMemoryUserDataAccessObject dataAccess;
+    private SendBirdUserDataAccessObject dataAccess;
 
     @BeforeEach
     void setUp() {
@@ -34,9 +34,10 @@ public class AddFriendInteractorTest {
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
-        dataAccess = new InMemoryUserDataAccessObject();
+        dataAccess = new SendBirdUserDataAccessObject();
         dataAccess.setCurrentUser(user);
         dataAccess.setCurrentUsername(user.getName());
+
     }
 
     @Test
@@ -50,6 +51,16 @@ public class AddFriendInteractorTest {
             public void prepareSuccessView(AddFriendOutputData outputData) {
                 assertEquals(friend.getName(), outputData.getFriendUsername());
                 assertTrue(outputData.isSuccess());
+                assert user.getFriendIDs().contains(friend.getID());
+                assert friend.getFriendIDs().contains(user.getID());
+                List<GroupChat> userChats = user.getGroupChats();
+                assert userChats.size() == 1;
+                GroupChat groupChat = userChats.get(0);
+                assert groupChat.hasMember(friend.getID());
+                assert groupChat.hasMember(user.getID());
+                List<GroupChat> friendChats = friend.getGroupChats();
+                assertEquals(friendChats.get(0), groupChat);
+                assertEquals(dataAccess.load(groupChat.getChannelUrl()), groupChat);;
                 assertEquals(friend.getName() + " has been added!", outputData.getSuccessMessage());
 
             }
@@ -188,6 +199,10 @@ public class AddFriendInteractorTest {
     @Test
     // Friend's username and ID do not match
     void AddFriendFailureTest5() {
+        CommonUser friend2 = new CommonUser("Friends2", "Password1", "-1",
+                "Bio", "20250823", new ArrayList<String>(),
+                new ArrayList<String>(), new ArrayList<GroupChat>(),
+                new ArrayList<GroupChat>());
         dataAccess.save(user);
         dataAccess.save(friend);
         dataAccess.save(friend5);
@@ -214,6 +229,36 @@ public class AddFriendInteractorTest {
 
     }
 
+    @Test
+    // Your user name is incorrect
+    void AddFriendFailureTest6() {
+        dataAccess.save(user);
+        dataAccess.save(friend);
+        AddFriendInputData inputData = new AddFriendInputData( friend.getName(), friend.getID());
+        AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
+            @Override
+            public void prepareSuccessView(AddFriendOutputData outputData) {
+                fail("Interactor does not make sure the data entered is correct");
+            }
+
+            @Override
+            public void prepareFailView(String errorMessage) {
+                assertEquals("Incorrect Username entered", errorMessage);
+
+            }
+
+            @Override
+            public void switchToMainMenuView() {
+                fail("WTF, this is not supposed to happen");
+            }
+        };
+        AddFriendInputBoundary addFriendInteractor = new AddFriendInteractor(dataAccess, sucessPresenter);
+        addFriendInteractor.execute(inputData);
+
+    }
+
+
+
     @AfterEach
     void tearDown() {
         dataAccess.deleteUserById(user.getID(), user.getName());
@@ -222,6 +267,10 @@ public class AddFriendInteractorTest {
         dataAccess.deleteUserById(friend3.getID(), friend3.getName());
         dataAccess.deleteUserById(friend5.getID(), friend5.getName());
 
+        GroupChat groupChat = user.getGroupChats().get(0);
+        dataAccess.deleteGroupChat(groupChat);
+        dataAccess.deleteUserById(user.getID(), user.getName());
+        dataAccess.deleteUserById(friend.getID(), friend.getName());
         user = null;
         friend = null;
         friend2 = null;
