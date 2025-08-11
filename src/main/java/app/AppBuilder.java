@@ -126,7 +126,7 @@ public class AppBuilder {
     private final SendBirdUserDataAccessObject userDataAccessObject = new SendBirdUserDataAccessObject();
 
     private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject =
-            new InMemorySelfChatUserDataAccessObject();
+            new InMemorySelfChatUserDataAccessObject(userDataAccessObject);
     private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
 
     private SignupView signupView;
@@ -422,8 +422,11 @@ public class AppBuilder {
         final UpdateChatInputBoundary updateChatInteractor = new UpdateChatInteractor(
                 userDataAccessObject, chatPresenter);
 
+        final JoinChatInputBoundary joinChatInteractor = new JoinChatInteractor(
+                userDataAccessObject, chatPresenter);
+
         final ChatController chatController = new ChatController(
-                sendMessageInteractor, deleteMessageInteractor, updateChatInteractor, viewManagerModel, viewChatsViewModel);
+                sendMessageInteractor, deleteMessageInteractor, updateChatInteractor, joinChatInteractor, viewManagerModel, viewChatsViewModel);
 
         chatView.setChatController(chatController);
         return this;

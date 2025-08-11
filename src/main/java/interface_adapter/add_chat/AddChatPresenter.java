@@ -22,7 +22,9 @@ public class AddChatPresenter implements CreateChatOutputBoundary {
         final AddChatState addChatState = addChatViewModel.getState();
         addChatState.setSuccess(true);
         addChatState.setChatNameError("");
+        addChatState.setUsernameError("");  // NEW: Clear username error
         addChatState.setChatName(outputData.getChatName());
+        addChatState.setUsername(outputData.getAddedUsername());  // NEW: Set added username
         addChatState.setID(outputData.getUserId());
         addChatViewModel.setState(addChatState);
         addChatViewModel.firePropertyChanged();
@@ -40,7 +42,22 @@ public class AddChatPresenter implements CreateChatOutputBoundary {
     public void prepareFailView(String errorMessage) {
         final AddChatState addChatState = addChatViewModel.getState();
         addChatState.setSuccess(false);
-        addChatState.setChatNameError(errorMessage);
+
+        // NEW: Determine which field has the error based on the message
+        if (errorMessage.contains("chat name") || errorMessage.contains("enter a chat name")) {
+            addChatState.setChatNameError(errorMessage);
+            addChatState.setUsernameError("");  // Clear the other error
+        } else if (errorMessage.contains("User") && errorMessage.contains("does not exist")) {
+            addChatState.setUsernameError(errorMessage);
+            addChatState.setChatNameError("");  // Clear the other error
+        } else if (errorMessage.contains("cannot add yourself")) {
+            addChatState.setUsernameError(errorMessage);
+            addChatState.setChatNameError("");  // Clear the other error
+        } else {
+            // General error - show in chat name error field
+            addChatState.setChatNameError(errorMessage);
+            addChatState.setUsernameError("");
+        }
 
         addChatViewModel.firePropertyChanged();
     }

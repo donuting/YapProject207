@@ -48,4 +48,13 @@ public class SelfChatController {
     public void loadMessages() {
         selfChatUseCaseInteractor.loadMessages();
     }
+
+    /**
+     * Saves a birthday entry to the self chat.
+     * @param name the name of the person
+     * @param date the birthday in YYYYMMDD format
+     */
+    public void saveBirthday(String name, String date) {
+        selfChatUseCaseInteractor.saveBirthday(name, date);
+    }
 }

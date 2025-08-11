@@ -1,6 +1,5 @@
 package use_case.create_chat;
 
-
 import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
@@ -34,18 +33,60 @@ public class CreateChatInteractor implements CreateChatInputBoundary {
             return;
         }
 
-        // Create the group chat in SendBird
+        // Create member list starting with current user
         List<String> memberIDs = new ArrayList<>();
         String currentUserID = currentUser.getID();
-        memberIDs.add(currentUserID); // only the current user is a member initially
-        final GroupChat newGroupChat = userDataAccessObject.create(memberIDs, createChatInputData.getChatName(), groupChatFactory);
+        memberIDs.add(currentUserID);
 
-        // Save the group chat to the user.
+        // NEW: Add the other user if username is provided
+        String otherUsername = createChatInputData.getUsername();
+        if (otherUsername != null && !otherUsername.trim().isEmpty()) {
+            // Check if the user exists
+            if (!userDataAccessObject.existsByName(otherUsername.trim())) {
+                groupChatPresenter.prepareFailView("User '" + otherUsername.trim() + "' does not exist");
+                return;
+            }
+
+            // Check if trying to add themselves
+            if (otherUsername.trim().equals(currentUser.getName())) {
+                groupChatPresenter.prepareFailView("You cannot add yourself to the chat");
+                return;
+            }
+
+            // Get the other user and add their ID
+            User otherUser = userDataAccessObject.get(otherUsername.trim());
+            if (otherUser != null) {
+                memberIDs.add(otherUser.getID());
+            }
+        }
+
+        // Create the group chat
+        final GroupChat newGroupChat = userDataAccessObject.create(memberIDs, createChatInputData.getChatName().trim(), groupChatFactory);
+
+        if (newGroupChat == null) {
+            groupChatPresenter.prepareFailView("Failed to create chat. Please try again.");
+            return;
+        }
+
+        // Save the group chat to the current user
         String username = currentUser.getName();
         userDataAccessObject.saveGroupChat(newGroupChat, username);
         currentUser.addGroupChat(newGroupChat);
 
-        final CreateChatOutputData createChatOutputData = new CreateChatOutputData(newGroupChat.getChatName(), currentUserID);
+        // NEW: If another user was added, save the chat to them too
+        if (otherUsername != null && !otherUsername.trim().isEmpty()) {
+            User otherUser = userDataAccessObject.get(otherUsername.trim());
+            if (otherUser != null) {
+                userDataAccessObject.saveGroupChat(newGroupChat, otherUser.getName());
+                otherUser.addGroupChat(newGroupChat);
+            }
+        }
+
+        final CreateChatOutputData createChatOutputData = new CreateChatOutputData(
+                newGroupChat.getChatName(),
+                currentUserID,
+                otherUsername  // Pass the added username to output
+        );
         groupChatPresenter.prepareSuccessView(createChatOutputData);
     }
 }

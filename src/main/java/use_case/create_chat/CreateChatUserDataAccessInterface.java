@@ -28,6 +28,22 @@ public interface CreateChatUserDataAccessInterface {
      * Save a group chat to a user.
      *
      * @param newGroupChat the group chat.
+     * @param username the username of the user
      */
     void saveGroupChat(GroupChat newGroupChat, String username);
+
+    /**
+     * Checks if the given username exists.
+     *
+     * @param username the username to look for
+     * @return true if a user with the given username exists; false otherwise
+     */
+    boolean existsByName(String username);
+
+    /**
+     * Returns the user with the given username.
+     * @param username the username to look up
+     * @return the user with the given username or null if the user does not exist
+     */
+    User get(String username);
 }

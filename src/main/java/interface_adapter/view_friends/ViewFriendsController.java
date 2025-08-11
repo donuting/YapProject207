@@ -72,6 +72,7 @@ public class ViewFriendsController {
         ChatState chatState = chatViewModel.getState();
         chatState.setCurrentChannelUrl(channelUrl);
         chatState.setChatName(chatName);
+        chatState.setGroupChat(false);
 
         // Updates the active chat's messages
         chatState.setNeedsUpdate(true);

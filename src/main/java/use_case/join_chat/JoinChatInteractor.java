@@ -22,30 +22,71 @@ public class JoinChatInteractor implements JoinChatInputBoundary {
      */
     @Override
     public void execute(JoinChatInputData inputData) {
-        User currentUser = joinChatDataAccessInterface.getCurrentUser();
-        if (currentUser == null) {
-            JoinChatOutputData outputData = new JoinChatOutputData(null);
-            presenter.joinChatPrepareFailView("This user doesn't exist", outputData);
-        } else {
-            String channelUrl = inputData.getChannelUrl();
-            GroupChat groupChat = joinChatDataAccessInterface.load(channelUrl);
-            if (groupChat == null) {
+        // In the case where the current user is joining a chat
+        if (inputData.getUsername() == null || inputData.getUsername().isEmpty()) {
+            User user = joinChatDataAccessInterface.getCurrentUser();
+            if (user == null) {
                 JoinChatOutputData outputData = new JoinChatOutputData(null);
-                presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
+                presenter.joinChatPrepareFailView("This user doesn't exist", outputData);
             } else {
-                GroupChat updatedChat = joinChatDataAccessInterface.addUser(currentUser.getID(), channelUrl);
-                if (updatedChat == null) {
-
-
+                String channelUrl = inputData.getChannelUrl();
+                GroupChat groupChat = joinChatDataAccessInterface.load(channelUrl);
+                if (groupChat == null) {
                     JoinChatOutputData outputData = new JoinChatOutputData(null);
                     presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
-                }
-                // Save the chat to the user
-                joinChatDataAccessInterface.saveGroupChat(updatedChat, currentUser.getName());
-                currentUser.addGroupChat(updatedChat);
+                } else {
+                    GroupChat updatedChat = joinChatDataAccessInterface.addUser(user.getID(), channelUrl);
+                    if (updatedChat == null) {
 
-                JoinChatOutputData outputData = new JoinChatOutputData(updatedChat);
-                presenter.joinChatPrepareSuccessView(outputData);
+
+                        JoinChatOutputData outputData = new JoinChatOutputData(null);
+                        presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
+                    }
+                    // Save the chat to the user
+                    joinChatDataAccessInterface.saveGroupChat(updatedChat, user.getName());
+                    user.addGroupChat(updatedChat);
+
+                    JoinChatOutputData outputData = new JoinChatOutputData(updatedChat);
+                    presenter.joinChatPrepareSuccessView(outputData);
+                }
+            }
+        }
+        // In the case where the current user is adding another user to a group chat they are in.
+        else {
+            User user = joinChatDataAccessInterface.get(inputData.getUsername());
+            if (user == null) {
+                JoinChatOutputData outputData = new JoinChatOutputData(null);
+                presenter.joinChatPrepareFailView("This user doesn't exist", outputData);
+            } else {
+                // Grab the group chat from the current user's group chats
+                String channelUrl = inputData.getChannelUrl();
+                User currentUser = joinChatDataAccessInterface.getCurrentUser();
+                GroupChat groupChat = null;
+                for (GroupChat gc : currentUser.getGroupChats()) {
+                    if (gc.getChannelUrl().equals(channelUrl)) {
+                        groupChat = gc;
+                    }
+                }
+                if (groupChat == null) {
+                    JoinChatOutputData outputData = new JoinChatOutputData(null);
+                    presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
+                } else {
+                    GroupChat updatedChat = joinChatDataAccessInterface.addUser(user.getID(), channelUrl);
+                    if (updatedChat == null) {
+
+
+                        JoinChatOutputData outputData = new JoinChatOutputData(null);
+                        presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
+                    }
+                    // Save the chat to the user
+                    joinChatDataAccessInterface.saveGroupChat(updatedChat, user.getName());
+
+                    // Update the group chat object in memory
+                    groupChat.addMember(user.getID());
+
+                    JoinChatOutputData outputData = new JoinChatOutputData(updatedChat);
+                    presenter.joinChatPrepareSuccessView(outputData);
+                }
             }
         }
     }
