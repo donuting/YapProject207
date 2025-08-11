@@ -22,7 +22,6 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
     private final String viewName = "add friend";
     private final AddFriendViewModel addFriendViewModel;
 
-    private final JTextField currentUsernameInputField = new JTextField(15);
     private final JTextField friendUsernameInputField = new JTextField(15);
     private final JTextField friendIDInputField = new JTextField(15);
     // can lower text field to 8 probably since all ID's will be 8 digits
@@ -42,8 +41,6 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
 
 
         // Labels
-        final LabelTextPanel currentUsernameInfo = new LabelTextPanel(
-                new JLabel(AddFriendViewModel.YOUR_USERNAME), currentUsernameInputField);
         final LabelTextPanel friendUsernameInfo = new LabelTextPanel(
                 new JLabel(AddFriendViewModel.FRIEND_USERNAME), friendUsernameInputField);
         final LabelTextPanel friendIDInfo = new LabelTextPanel(
@@ -67,7 +64,6 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         // Adding components to layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
-        this.add(currentUsernameInfo);
         this.add(friendUsernameInfo);
         this.add(friendIDInfo);
         this.add(buttons);
@@ -85,8 +81,7 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
                 addFriendController.switchToMainMenu();
             }
             else if (evt.getSource() == addFriendButton) {
-                addFriendController.execute(currentUsernameInputField.getText(),
-                        friendUsernameInputField.getText(), friendIDInputField.getText());
+                addFriendController.execute(friendUsernameInputField.getText(), friendIDInputField.getText());
             }
         }
     }
@@ -97,11 +92,15 @@ public class AddFriendView extends JPanel implements ActionListener, PropertyCha
         setFields(state);
         if (state.getErrorMessage() != null) {
             JOptionPane.showMessageDialog(this, state.getErrorMessage());
+            state.setErrorMessage(null);
+        }
+        if (state.getSuccessMessage() != null) {
+            JOptionPane.showMessageDialog(this, state.getSuccessMessage());
+            state.setSuccessMessage(null);
         }
     }
 
     private void setFields(AddFriendState state) {
-        currentUsernameInputField.setText(state.getCurrentUsername());
         friendUsernameInputField.setText(state.getFriendUsername());
         friendIDInputField.setText(state.getFriendUserID());
     }

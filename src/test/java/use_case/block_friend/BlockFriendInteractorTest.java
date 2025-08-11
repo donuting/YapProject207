@@ -26,11 +26,12 @@ public class BlockFriendInteractorTest {
         dataAccess.save(user);
         dataAccess.save(friend);
         dataAccess.setCurrentUser(user);
+        dataAccess.setCurrentUsername(user.getName());
     }
 
     @Test
     void blockFriendSuccessTest() {
-        BlockFriendInputData inputData = new BlockFriendInputData(user.getName(), friend.getName());
+        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary successPresenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {
@@ -50,7 +51,7 @@ public class BlockFriendInteractorTest {
 
     @Test
     void blockFriendFailFriendDoesNotExistTest() {
-        BlockFriendInputData inputData = new BlockFriendInputData(user.getName(), "NonExistentUser");
+        BlockFriendInputData inputData = new BlockFriendInputData("NonExistentUser");
         BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {
@@ -69,8 +70,9 @@ public class BlockFriendInteractorTest {
 
     @Test
     void blockFriendFailUserDoesNotExistTest() {
-        dataAccess.setCurrentUser(null); 
-        BlockFriendInputData inputData = new BlockFriendInputData("NonExistentUser", friend.getName());
+        dataAccess.setCurrentUser(null);
+        dataAccess.setCurrentUsername(null);
+        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(BlockFriendOutputData outputData) {

@@ -1,11 +1,16 @@
 package use_case.create_Chat;
 
+import data_access.GroupChatDataAccessObject;
 import data_access.InMemoryUserDataAccessObject;
 import entity.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import use_case.create_chat.*;
+import use_case.create_chat.CreateChatInputData;
+import use_case.create_chat.CreateChatInteractor;
+import use_case.create_chat.CreateChatOutputBoundary;
+import use_case.create_chat.CreateChatOutputData;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +33,8 @@ public class CreateChatInteractorTest {
                 new ArrayList<GroupChat>(), new ArrayList<GroupChat>(),
                 selfChat);
         dataAccess = new InMemoryUserDataAccessObject();
+        dataAccess.setCurrentUser(user);
+        dataAccess.setCurrentUsername(user.getName());
     }
 
     @Test
@@ -78,6 +85,13 @@ public class CreateChatInteractorTest {
 
     @AfterEach
     void tearDown(){
+        GroupChatDataAccessObject groupChatDataAccessObject = new GroupChatDataAccessObject();
+        for (GroupChat groupChat : user.getGroupChats()) {
+            groupChatDataAccessObject.delete(groupChat.getChannelUrl());
+        }
+
+        dataAccess.deleteUserById(user.getID(), user.getName());
+
         dataAccess = null;
         user = null;
     }

@@ -160,13 +160,14 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         if (chatController != null) {
             if (state.getNeedsUpdate()) {
                 // Clear the memory and messages before loading messages
-                messages.clear();
-                deleteMessageButtons.clear();
-                messagesPanel.removeAll();
-                state.setMessages(new ArrayList<>());
-                state.setMessagesSentByUser(new ArrayList<>());
-                state.setUsernames(new ArrayList<>());
+                clearChat(state);
+                state.setNeedsUpdate(false);
                 chatController.updateChat(state.getCurrentChannelUrl());
+            }
+            if (state.getNeedsClearChat()) {
+                // Clear the chat without loading messages
+                clearChat(state);
+                state.setNeedsClearChat(false);
             }
         }
 
@@ -227,6 +228,15 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
             JScrollBar verticalScrollBar = messagesScrollPane.getVerticalScrollBar();
             verticalScrollBar.setValue(verticalScrollBar.getMaximum());
         });
+    }
+
+    private void clearChat(ChatState state) {
+        messages.clear();
+        deleteMessageButtons.clear();
+        messagesPanel.removeAll();
+        state.setMessages(new ArrayList<>());
+        state.setMessagesSentByUser(new ArrayList<>());
+        state.setUsernames(new ArrayList<>());
     }
 
     private JPanel createMessagePanel(Message message) {

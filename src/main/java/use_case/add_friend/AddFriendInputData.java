@@ -5,20 +5,15 @@ package use_case.add_friend;
  */
 public class AddFriendInputData {
 
-    private final String currentUsername;
     private final String friendUsername;
     private final String friendID;
 
-    public AddFriendInputData(String currentUsername, String friendUsername, String friendID) {
-        this.currentUsername = currentUsername;
+    public AddFriendInputData(String friendUsername, String friendID) {
         this.friendUsername = friendUsername;
         this.friendID = friendID;
     }
 
     // only did ID for easier check later on
-    public String getCurrentUsername() {
-        return currentUsername;
-    }
 
     public String getFriendUsername() {
         return friendUsername;
