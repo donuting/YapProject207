@@ -13,6 +13,7 @@ import java.util.Map;
 public class ViewFriendsPresenter implements RemoveFriendOutputBoundary, BlockFriendOutputBoundary, LoadFriendsOutputBoundary {
     private final ViewFriendsViewModel viewFriendsViewModel;
 
+
     public ViewFriendsPresenter(ViewFriendsViewModel viewFriendsViewModel) {
         this.viewFriendsViewModel = viewFriendsViewModel;
     }
@@ -93,6 +94,8 @@ public class ViewFriendsPresenter implements RemoveFriendOutputBoundary, BlockFr
     public void removeFriendPrepareSuccessView(RemoveFriendOutputData outputData) {
         // Remove the friend from the state object
         final ViewFriendsState viewFriendsState = viewFriendsViewModel.getState();
+        viewFriendsState.setSuccessMessage(outputData.getRemovedUsername() + "removed successfully");
+
         Map<String, String> channelToUserIdData = viewFriendsState.getChannelToUserIdData();
         Map<String, String> newChannelToUserIdData = new HashMap<>();
         String removedUserId = outputData.getRemovedId();
@@ -109,16 +112,15 @@ public class ViewFriendsPresenter implements RemoveFriendOutputBoundary, BlockFr
 
     /**
      * Prepare the fail view for the Block Friend use case.
-     *
      * @param errorMessage Explanation of failure.
-     * @param outputData   Output data.
      */
     @Override
-    public void removeFriendPrepareFailView(String errorMessage, RemoveFriendOutputData outputData) {
+    public void removeFriendPrepareFailView(String errorMessage) { //RemoveFriendOutputData outputData) {
         final ViewFriendsState viewFriendsState = viewFriendsViewModel.getState();
         viewFriendsState.setErrorMessage(errorMessage);
         viewFriendsState.setNeedsFriendInfo(false);
         viewFriendsViewModel.setState(viewFriendsState);
         viewFriendsViewModel.firePropertyChanged();
+        //assume it cant fail, not used anyways
     }
 }
