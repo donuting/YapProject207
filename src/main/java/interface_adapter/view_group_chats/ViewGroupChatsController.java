@@ -21,7 +21,8 @@ public class ViewGroupChatsController {
 
     public ViewGroupChatsController(JoinChatInputBoundary joinChatUseCaseInteractor,
                                     LeaveChatInputBoundary leaveChatUseCaseInteractor,
-                                    LoadGroupChatsInputBoundary loadGroupChatsUseCaseInteractor, ChatViewModel chatViewModel,
+                                    LoadGroupChatsInputBoundary loadGroupChatsUseCaseInteractor,
+                                    ChatViewModel chatViewModel,
                                     ViewManagerModel viewManagerModel) {
         this.joinChatUseCaseInteractor = joinChatUseCaseInteractor;
         this.leaveChatUseCaseInteractor = leaveChatUseCaseInteractor;
@@ -30,6 +31,9 @@ public class ViewGroupChatsController {
         this.viewManagerModel = viewManagerModel;
     }
 
+    /**
+     * Switches to the view chats view.
+     */
     public void switchToViewChats() {
         viewManagerModel.setState("view chats");
         viewManagerModel.firePropertyChanged();
@@ -40,13 +44,13 @@ public class ViewGroupChatsController {
      * @param channelUrl the URL of the channel to be joined.
      */
     public void joinChat(String channelUrl) {
-        JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl);
+        JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl, null);
         joinChatUseCaseInteractor.execute(joinChatInputData);
     }
 
     /**
      * Executes the Leave Chat Use Case.
-     * @param channelUrl the URL of the channel to be joined.
+     * @param channelUrl the URL of the channel to be left.
      */
     public void leaveChat(String channelUrl) {
         LeaveChatInputData leaveChatInputData = new LeaveChatInputData(channelUrl);
@@ -56,12 +60,14 @@ public class ViewGroupChatsController {
     /**
      * Executes the View Chat Use Case.
      * @param channelUrl the URL of the channel to be viewed.
+     * @param chatName the name of the chat to be viewed.
      */
     public void switchToViewChat(String channelUrl, String chatName) {
         // Update the active chat's channel URL and name
         ChatState chatState = chatViewModel.getState();
         chatState.setCurrentChannelUrl(channelUrl);
         chatState.setChatName(chatName);
+        chatState.setGroupChat(true);
 
         // Updates the active chat's messages
         chatState.setNeedsUpdate(true);

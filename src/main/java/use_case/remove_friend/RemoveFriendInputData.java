@@ -4,13 +4,13 @@ package use_case.remove_friend;
  * Input data for the Remove Friend use case.
  */
 public class RemoveFriendInputData {
-    private final String removedUsername;
+    private final String removedId;
 
     public RemoveFriendInputData(String removedUsername) {
-        this.removedUsername = removedUsername;
+        this.removedId = removedUsername;
     }
 
-    public String getRemovedUsername() {
-        return removedUsername;
+    public String getRemovedId() {
+        return removedId;
     }
 }

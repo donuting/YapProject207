@@ -197,11 +197,10 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
 
         // Show success message if chat created
         if (state.isSuccess()) {
-            String successMessage = "Chat '" + state.getChatName() + "' created successfully!";
-            if (!state.getUsername().trim().isEmpty()) {
-                successMessage += " User '" + state.getUsername() + "' added to chat.";
-            }
-            javax.swing.JOptionPane.showMessageDialog(this, successMessage);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Chat '" + state.getChatName() + "' created successfully!");
+            state.setSuccess(false);
+            chatNameInputField.setText("");
         }
     }
 

@@ -25,12 +25,11 @@ public class AddFriendController {
 
     /**
      * Executes the AddFriend Use Case
-     * @param currentUsername username of person that is adding the other person
      * @param friendUsername the username of the person you wish to add
      * @param friendID the ID of the person you wish to add
      */
-    public void execute(String currentUsername, String friendUsername, String friendID) {
-        final AddFriendInputData addFriendInputData = new AddFriendInputData(currentUsername, friendUsername, friendID);
+    public void execute(String friendUsername, String friendID) {
+        final AddFriendInputData addFriendInputData = new AddFriendInputData(friendUsername, friendID);
 
         addFriendUseCaseInteractor.execute(addFriendInputData);
 
