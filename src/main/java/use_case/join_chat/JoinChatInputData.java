@@ -5,12 +5,18 @@ package use_case.join_chat;
  */
 public class JoinChatInputData {
     private final String channelUrl;
+    private final String username;
 
-    public JoinChatInputData(String channelUrl) {
+    public JoinChatInputData(String channelUrl, String username) {
         this.channelUrl = channelUrl;
+        this.username = username;
     }
 
     public String getChannelUrl() {
         return channelUrl;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

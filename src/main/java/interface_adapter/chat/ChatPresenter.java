@@ -3,6 +3,8 @@ package interface_adapter.chat;
 import interface_adapter.ViewManagerModel;
 import use_case.delete_message.DeleteMessageOutputBoundary;
 import use_case.delete_message.DeleteMessageOutputData;
+import use_case.join_chat.JoinChatOutputBoundary;
+import use_case.join_chat.JoinChatOutputData;
 import use_case.send_message.SendMessageOutputBoundary;
 import use_case.send_message.SendMessageOutputData;
 import use_case.update_chat.UpdateChatOutputBoundary;
@@ -13,7 +15,8 @@ import java.util.ArrayList;
 /**
  * The Presenter for the Chat Use Case.
  */
-public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOutputBoundary, UpdateChatOutputBoundary {
+public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOutputBoundary,
+        UpdateChatOutputBoundary, JoinChatOutputBoundary {
 
     private final ViewManagerModel viewManagerModel;
     private final ChatViewModel chatViewModel;
@@ -69,6 +72,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
         chatState.setMessages(new ArrayList<>());
         chatState.setMessagesSentByUser(new ArrayList<>());
         chatState.setChatName(null);
+        chatState.setGroupChat(false);
         chatViewModel.firePropertyChanged();
 
         viewManagerModel.setState("view chats");
@@ -93,6 +97,32 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
      */
     @Override
     public void updateChatPrepareFailView(String error, UpdateChatOutputData outputData) {
+        ChatState chatState = chatViewModel.getState();
+        chatState.setError(error);
+        chatState.setNeedsUpdate(false);
+        chatViewModel.firePropertyChanged();
+    }
+
+    /**
+     * Prepare the success view for the Update Chat use case.
+     *
+     * @param outputData Output data.
+     */
+    @Override
+    public void joinChatPrepareSuccessView(JoinChatOutputData outputData) {
+        ChatState chatState = chatViewModel.getState();
+        chatState.setNeedsClearChat(true);
+        chatViewModel.firePropertyChanged();
+    }
+
+    /**
+     * Prepare the fail view for the Update Chat use case.
+     *
+     * @param error Explanation of failure.
+     * @param outputData   Output data.
+     */
+    @Override
+    public void joinChatPrepareFailView(String error, JoinChatOutputData outputData) {
         ChatState chatState = chatViewModel.getState();
         chatState.setError(error);
         chatState.setNeedsUpdate(false);

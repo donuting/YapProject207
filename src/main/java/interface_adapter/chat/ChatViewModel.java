@@ -16,6 +16,7 @@ public class ChatViewModel extends ViewModel<ChatState> {
     public static final String MESSAGE_INPUT_LABEL = "Type here...";
     public static final String BACK_BUTTON_LABEL = "Back";
     public static final String CHAT_PROFILE_BUTTON_LABEL = "Chat Profile";
+    public static final String ADD_MEMBER_BUTTON_LABEL = "Add Member";
 
     public ChatViewModel() {
         super("chat");

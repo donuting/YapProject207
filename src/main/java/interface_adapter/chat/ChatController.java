@@ -4,6 +4,8 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.view_chats.ViewChatsViewModel;
 import use_case.delete_message.DeleteMessageInputBoundary;
 import use_case.delete_message.DeleteMessageInputData;
+import use_case.join_chat.JoinChatInputBoundary;
+import use_case.join_chat.JoinChatInputData;
 import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInputData;
 import use_case.update_chat.UpdateChatInputBoundary;
@@ -17,15 +19,17 @@ public class ChatController {
     private final SendMessageInputBoundary sendMessageUseCaseInteractor;
     private final DeleteMessageInputBoundary deleteMessageUseCaseInteractor;
     private final UpdateChatInputBoundary updateChatInputUseCaseInteractor;
+    private final JoinChatInputBoundary joinChatInputUseCaseInteractor;
     private final ViewManagerModel viewManagerModel;
     private final ViewChatsViewModel viewChatsViewModel;
 
-    public ChatController(SendMessageInputBoundary sendMessageUseCaseInteractor, DeleteMessageInputBoundary deleteMessageUseCaseInteractor, UpdateChatInputBoundary updateChatInputUseCaseInteractor,
+    public ChatController(SendMessageInputBoundary sendMessageUseCaseInteractor, DeleteMessageInputBoundary deleteMessageUseCaseInteractor, UpdateChatInputBoundary updateChatInputUseCaseInteractor, JoinChatInputBoundary joinChatInputUseCaseInteractor,
                           ViewManagerModel viewManagerModel,
                           ViewChatsViewModel viewChatsViewModel) {
         this.sendMessageUseCaseInteractor = sendMessageUseCaseInteractor;
         this.deleteMessageUseCaseInteractor = deleteMessageUseCaseInteractor;
         this.updateChatInputUseCaseInteractor = updateChatInputUseCaseInteractor;
+        this.joinChatInputUseCaseInteractor = joinChatInputUseCaseInteractor;
         this.viewManagerModel = viewManagerModel;
         this.viewChatsViewModel = viewChatsViewModel;
     }
@@ -60,5 +64,13 @@ public class ChatController {
     public void updateChat(String channelUrl) {
         UpdateChatInputData updateChatInputData = new UpdateChatInputData(channelUrl);
         updateChatInputUseCaseInteractor.execute(updateChatInputData);
+    }
+
+    /**
+     * Executes the "join chat" Use Case.
+     */
+    public void joinChat(String channelUrl, String newUsername) {
+        JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl, newUsername);
+        joinChatInputUseCaseInteractor.execute(joinChatInputData);
     }
 }
