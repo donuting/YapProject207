@@ -234,7 +234,7 @@ public class AddFriendInteractorTest {
     void AddFriendFailureTest6() {
         dataAccess.save(user);
         dataAccess.save(friend);
-        AddFriendInputData inputData = new AddFriendInputData("Incorrect Name", friend.getName(), friend.getID());
+        AddFriendInputData inputData = new AddFriendInputData( friend.getName(), friend.getID());
         AddFriendOutputBoundary sucessPresenter = new AddFriendOutputBoundary() {
             @Override
             public void prepareSuccessView(AddFriendOutputData outputData) {

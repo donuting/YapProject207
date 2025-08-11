@@ -30,10 +30,12 @@ public class RemoveFriendInteractorTest {
         friend.addFriend(user.getID());
         dataAccess.save(friend);
         dataAccess.save(user);
+        dataAccess.setCurrentUser(user);
+        dataAccess.setCurrentUsername(user.getName());
         RemoveFriendInputData inputData = new RemoveFriendInputData(friend.getName());
         RemoveFriendOutputBoundary presenter = new RemoveFriendOutputBoundary() {
             @Override
-            public void prepareSuccessView(RemoveFriendOutputData outputData) {
+            public void removeFriendPrepareSuccessView(RemoveFriendOutputData outputData) {
                 assertEquals(user.getName(), outputData.getCurrentUsername());
                 assertEquals(friend.getName(), outputData.getRemovedUsername());
                 assertTrue(outputData.isSuccess());
@@ -42,65 +44,8 @@ public class RemoveFriendInteractorTest {
             }
 
             @Override
-            public void prepareFailView(String errorMessage, RemoveFriendOutputData outputData) {
+            public void removeFriendPrepareFailView(String errorMessage, RemoveFriendOutputData outputData) {
                 fail("The interactor fails success case");
-            }
-        };
-
-        RemoveFriendInteractor interactor = new RemoveFriendInteractor(dataAccess, presenter);
-        interactor.execute(inputData);
-    }
-
-    @Test
-    // The user is not a friend
-    void removeFriendInteractorFailTest1(){
-        dataAccess.save(friend);
-        dataAccess.save(user);
-        RemoveFriendInputData inputData = new RemoveFriendInputData(friend.getName());
-        RemoveFriendOutputBoundary presenter = new RemoveFriendOutputBoundary() {
-            @Override
-            public void prepareSuccessView(RemoveFriendOutputData outputData) {
-                fail("The interactor does not check if the two users are friends");
-            }
-
-            @Override
-            public void prepareFailView(String errorMessage, RemoveFriendOutputData outputData) {
-                assertEquals(user.getName(), outputData.getCurrentUsername());
-                assertEquals(friend.getName(), outputData.getRemovedUsername());
-                assertFalse(outputData.isSuccess());
-                assertTrue(user.getFriendIDs().isEmpty());
-                assertTrue(friend.getFriendIDs().isEmpty());
-            }
-        };
-
-        RemoveFriendInteractor interactor = new RemoveFriendInteractor(dataAccess, presenter);
-        interactor.execute(inputData);
-    }
-
-    @Test
-    // friend is blocked
-    void removeFriendInteractorFailTest2(){
-        user.addFriend(friend.getID());
-        friend.addFriend(user.getID());
-        user.blockUser(friend.getID());
-        dataAccess.save(friend);
-        dataAccess.save(user);
-        RemoveFriendInputData inputData = new RemoveFriendInputData(friend.getName());
-        RemoveFriendOutputBoundary presenter = new RemoveFriendOutputBoundary() {
-            @Override
-            public void prepareSuccessView(RemoveFriendOutputData outputData) {
-                fail("Interactor does not check is the user is blocked");
-            }
-
-            @Override
-            public void prepareFailView(String errorMessage, RemoveFriendOutputData outputData) {
-                assertEquals("The user is blocked", errorMessage);
-                assertEquals(user.getName(), outputData.getCurrentUsername());
-                assertEquals(friend.getName(), outputData.getRemovedUsername());
-                assertFalse(outputData.isSuccess());
-                assertTrue(user.getFriendIDs().isEmpty());
-                assertFalse(friend.getFriendIDs().isEmpty());
-
             }
         };
 

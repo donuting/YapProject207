@@ -1,4 +1,4 @@
-package use_case.create_Chat;
+package use_case.create_chat;
 
 import data_access.GroupChatDataAccessObject;
 import data_access.InMemoryUserDataAccessObject;
