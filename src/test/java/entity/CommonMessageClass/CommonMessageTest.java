@@ -17,18 +17,21 @@ public class CommonMessageTest {
     }
 
     @Test
+    // tests getSenderId
     void getSenderIDTest(){
         String ID = commonMessage.GetSenderId();
         assertEquals("69", ID);
     }
 
     @Test
+    // tests getText
     void getTextTest(){
         String text = commonMessage.GetText();
         assertEquals("Test Message", text);
     }
 
     @Test
+    // tests getMID
     void getMIDTest(){
         commonMessage = new CommonMessage("69", "Test Message", 100, "0000");
         Integer MID = commonMessage.GetMID();
@@ -36,6 +39,7 @@ public class CommonMessageTest {
     }
 
     @Test
+    // tests setMID
     void setMIDTest(){
         Integer originalMID = commonMessage.GetMID();
         commonMessage.SetMID(-1);

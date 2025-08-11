@@ -28,16 +28,19 @@ public class GroupChatTest {
     }
 
     @Test
-    void getChannelUrlTest(){
+    // tests getChannelURL method
+    void getChannelURLTest(){
         assertEquals("chat.com", group.getChannelUrl());
     }
 
     @Test
+    // test getMessageHistory method
     void getMessageHistoryTest(){
         assert group.getMessageHistory().isEmpty();
     }
 
     @Test
+    // tests getMemebrIDs method
     void getMembersTest(){
         List<String> memberIDs = group.getMemberIds();
         assert memberIDs.size() == 1;
@@ -45,11 +48,13 @@ public class GroupChatTest {
     }
 
     @Test
+    //tests getChatName method
     void getChatNameTest(){
         assert "Test Chat".equals(group.getChatName());
     }
 
     @Test
+    // tests if addMember adds the member ID to memberIDs
     void addMemberTest1(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
@@ -64,6 +69,8 @@ public class GroupChatTest {
     }
 
     @Test
+    // tests if blocked members can be added to a chat
+    // TODO: business logic to be checked in interactor
     void addMemberTest2(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
@@ -77,6 +84,7 @@ public class GroupChatTest {
     }
 
     @Test
+    // Tests if message is added to messageHistory
     void addMessageTest1(){
         CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
         boolean result = group.addMessage(message);
@@ -86,6 +94,8 @@ public class GroupChatTest {
     }
 
     @Test
+    // tests if messages sent by members not in teh group are added into messageHistory
+    //TODO: business logic to be tested in teh interactor
     void addMessageTest2(){
        CommonMessage message = new CommonMessage("200", "Test Message", 10, "0000");
        boolean result = group.addMessage(message);
@@ -93,6 +103,8 @@ public class GroupChatTest {
     }
 
     @Test
+    // If there is a blocked user in teh chat, then the sender cannot send the message in the chat
+    //TODO: business logic to be tested in teh interactor
     void addMessageTest3(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
@@ -106,6 +118,8 @@ public class GroupChatTest {
     }
 
     @Test
+    // tests if a member in the chat is blocked then the sender cannot senf the message in chat
+    // TODO: business logic to be tested in the interactor
     void addMessageTest4(){
         CommonUser newUser = new CommonUser("User2", "Password1", "200",
                 "Bio", "20250823", new ArrayList<String>(),
@@ -119,6 +133,7 @@ public class GroupChatTest {
     }
 
     @Test
+    // tests if deleteMessage() deleted message from message History
     void deleteMessageTest(){
         CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
         group.addMessage(message);
@@ -127,11 +142,13 @@ public class GroupChatTest {
     }
 
     @Test
+    // checks hasMember method
     void hasMemberTest(){
         assertTrue(group.hasMember("100"));
     }
 
     @Test
+    // checks removerMember() method
     void removeMemberTest1(){
         boolean result = group.removeMember(user);
         assertTrue(result);
@@ -169,6 +186,7 @@ public class GroupChatTest {
     }
 
     @Test
+    //checks setChannelURL test
     void setChannelUrlTest(){
         group.setChannelUrl("channel.com");
         assert "channel.com".equals(group.getChannelUrl());

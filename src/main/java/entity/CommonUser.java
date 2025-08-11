@@ -3,6 +3,8 @@ package entity;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -245,13 +247,10 @@ public class CommonUser implements User {
      * @return true if successful otherwise false
      */
     public boolean blockUser(String userId) {
-        if (!blockedIDs.contains(userId) && friendIDs.contains(userId)) {
-            blockedIDs.add(userId);
-            // Remove them from friends list if they are friends
-            friendIDs.remove(userId);
-            return true;
-        }
-        return false;
+        blockedIDs.add(userId);
+        // Remove them from friends list if they are friends
+        friendIDs.remove(userId);
+        return true;
     }
 
     @Override
@@ -297,9 +296,28 @@ public class CommonUser implements User {
     //VisibleForTesting
     public List<GroupChat> getGroupChats() {return groupChats;}
 
+    /**
+     * Adds a personal chat to the user's list of personal chats.
+     *
+     * @param personalChat the group chat.
+     */
+    @Override
+    public void addPersonalChat(GroupChat personalChat) {
+        personalChats.add(personalChat);
+    }
+
     //VisibleForTesting
     public List<GroupChat> getPersonalChats() {return personalChats;}
 
+    /**
+     * Sets a list of channel URLs corresponding to personal chats the user is in.
+     *
+     * @param personalChats
+     */
+    @Override
+    public void setPersonalChats(List<GroupChat> personalChats) {
+        this.personalChats = personalChats;
+    }
 
     /**
      * Removes a user from this user's friend list.
@@ -311,11 +329,13 @@ public class CommonUser implements User {
             friendIDs.remove(userId);
 
             // removes personal chat between the user and the friend
+            List<GroupChat> newPersonalChats = new ArrayList<>();
             for (GroupChat personalChat : personalChats) {
-                if (personalChat.hasMember(userId)) {
-                    personalChats.remove(personalChat);
+                if (!personalChat.hasMember(userId)) {
+                    newPersonalChats.add(personalChat);
                 }
             }
+            setPersonalChats(newPersonalChats);
             return true;
         }
         return false;

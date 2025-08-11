@@ -21,7 +21,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
 
     private final JButton viewChatsButton;
     private final JButton profileSettingsButton;
-    private final JButton addFriendsButton;
+    private final JButton viewFriendsButton;
     private final JButton logoutButton;
 
     private MainMenuController mainMenuController;
@@ -45,19 +45,19 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         // Create buttons
         viewChatsButton = new JButton("View Chats");
         profileSettingsButton = new JButton("Profile & Settings");
-        addFriendsButton = new JButton("Add Friends");
+        viewFriendsButton = new JButton("View Friends");
         logoutButton = new JButton("Logout");
 
         // Set button properties
         setButtonProperties(viewChatsButton);
         setButtonProperties(profileSettingsButton);
-        setButtonProperties(addFriendsButton);
+        setButtonProperties(viewFriendsButton);
         setButtonProperties(logoutButton);
 
         // Add action listeners
         viewChatsButton.addActionListener(this);
         profileSettingsButton.addActionListener(this);
-        addFriendsButton.addActionListener(this);
+        viewFriendsButton.addActionListener(this);
         logoutButton.addActionListener(this);
 
         // Layout components
@@ -70,7 +70,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         this.add(Box.createRigidArea(new Dimension(0, 10)));
         this.add(profileSettingsButton);
         this.add(Box.createRigidArea(new Dimension(0, 10)));
-        this.add(addFriendsButton);
+        this.add(viewFriendsButton);
         this.add(Box.createRigidArea(new Dimension(0, 20)));
         this.add(logoutButton);
         this.add(Box.createVerticalGlue());
@@ -90,8 +90,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
                 mainMenuController.switchToViewChats();
             } else if (evt.getSource().equals(profileSettingsButton)) {
                 mainMenuController.switchToProfileSettings();
-            } else if (evt.getSource().equals(addFriendsButton)) {
-                mainMenuController.switchToAddFriends();
+            } else if (evt.getSource().equals(viewFriendsButton)) {
+                mainMenuController.switchToViewFriends();
             } else if (evt.getSource().equals(logoutButton)) {
                 mainMenuController.switchToLogout();
             }

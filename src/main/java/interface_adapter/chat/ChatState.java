@@ -17,6 +17,7 @@ public class ChatState {
     private String currentMessage = "";
     private String error = null;
     private boolean needsUpdate = false;
+    private boolean needsClearChat = false;
 
     public ChatState(ChatState copy) {
         this.currentChannelUrl = copy.currentChannelUrl;
@@ -27,6 +28,7 @@ public class ChatState {
         this.currentMessage = copy.currentMessage;
         this.error = copy.error;
         this.needsUpdate = copy.needsUpdate;
+        this.needsClearChat = copy.needsClearChat;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
@@ -97,4 +99,11 @@ public class ChatState {
         this.needsUpdate = needsUpdate;
     }
 
+    public boolean getNeedsClearChat() {
+        return needsClearChat;
+    }
+
+    public void setNeedsClearChat(boolean needsClearChat) {
+        this.needsClearChat = needsClearChat;
+    }
 }

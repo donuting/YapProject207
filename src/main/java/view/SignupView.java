@@ -70,6 +70,11 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                                     currentState.getPassword(),
                                     currentState.getRepeatPassword()
                             );
+
+                            // Clear the input boxes
+                            usernameInputField.setText("");
+                            passwordInputField.setText("");
+                            repeatPasswordInputField.setText("");
                         }
                     }
                 }
@@ -79,6 +84,11 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
                         signupController.switchToLoginView();
+
+                        // Clear the input boxes
+                        usernameInputField.setText("");
+                        passwordInputField.setText("");
+                        repeatPasswordInputField.setText("");
                     }
                 }
         );

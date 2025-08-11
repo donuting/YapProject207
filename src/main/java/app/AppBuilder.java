@@ -43,6 +43,9 @@ import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.view_chats.ViewChatsController;
 import interface_adapter.view_chats.ViewChatsViewModel;
+import interface_adapter.view_friends.ViewFriendsController;
+import interface_adapter.view_friends.ViewFriendsPresenter;
+import interface_adapter.view_friends.ViewFriendsViewModel;
 import interface_adapter.view_group_chats.ViewGroupChatsController;
 import interface_adapter.view_group_chats.ViewGroupChatsPresenter;
 import interface_adapter.view_group_chats.ViewGroupChatsViewModel;
@@ -60,6 +63,8 @@ import use_case.add_DOB.AddDOBInteractor;
 import use_case.add_friend.AddFriendInputBoundary;
 import use_case.add_friend.AddFriendInteractor;
 import use_case.add_friend.AddFriendOutputBoundary;
+import use_case.block_friend.BlockFriendInputBoundary;
+import use_case.block_friend.BlockFriendInteractor;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
@@ -72,6 +77,9 @@ import use_case.join_chat.JoinChatInputBoundary;
 import use_case.join_chat.JoinChatInteractor;
 import use_case.leave_chat.LeaveChatInputBoundary;
 import use_case.leave_chat.LeaveChatInteractor;
+import use_case.load_friends.LoadFriendsInputBoundary;
+import use_case.load_friends.LoadFriendsInteractor;
+import use_case.load_friends.LoadFriendsOutputBoundary;
 import use_case.load_group_chats.LoadGroupChatsInputBoundary;
 import use_case.load_group_chats.LoadGroupChatsInteractor;
 import use_case.login.LoginInputBoundary;
@@ -80,6 +88,8 @@ import use_case.login.LoginOutputBoundary;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
+import use_case.remove_friend.RemoveFriendInputBoundary;
+import use_case.remove_friend.RemoveFriendInteractor;
 import use_case.self_chat.SelfChatInputBoundary;
 import use_case.self_chat.SelfChatInteractor;
 import use_case.self_chat.SelfChatOutputBoundary;
@@ -150,6 +160,9 @@ public class AppBuilder {
     private ViewGroupChatsView viewGroupChatsView;
     private ViewGroupChatsViewModel viewGroupChatsViewModel;
 
+    private ViewFriendsView viewFriendsView;
+    private ViewFriendsViewModel viewFriendsViewModel;
+
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
@@ -206,6 +219,17 @@ public class AppBuilder {
         viewChatsViewModel = new ViewChatsViewModel();
         viewChatsView = new ViewChatsView(viewChatsViewModel);
         cardPanel.add(viewChatsView, viewChatsView.getViewName());
+        return this;
+    }
+
+    /**
+     * Adds the View Friends View to the application.
+     * @return this builder
+     */
+    public AppBuilder addViewFriendsViewModel() {
+        viewFriendsViewModel = new ViewFriendsViewModel();
+        viewFriendsView = new ViewFriendsView(viewFriendsViewModel);
+        cardPanel.add(viewFriendsView, viewFriendsView.getViewName());
         return this;
     }
 
@@ -462,7 +486,7 @@ public class AppBuilder {
                 logoutController,
                 viewChatsViewModel,
                 mainMenuViewModel,
-                addFriendViewModel,
+                viewFriendsViewModel,
                 profileandSettingViewModel);
         mainMenuView.setMainMenuController(mainMenuController);
         return this;
@@ -483,20 +507,41 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the View Friends Use Case to the application.
+     * @return this builder
+     */
+    public AppBuilder addViewFriendsUseCase() {
+        final ViewFriendsPresenter viewFriendsPresenter =
+                new ViewFriendsPresenter(viewFriendsViewModel);
+        final RemoveFriendInputBoundary removeFriendInputBoundary =
+                new RemoveFriendInteractor(userDataAccessObject, viewFriendsPresenter);
+        final BlockFriendInputBoundary blockFriendInputBoundary =
+                new BlockFriendInteractor(userDataAccessObject, viewFriendsPresenter);
+        final LoadFriendsInputBoundary loadFriendsInputBoundary =
+                new LoadFriendsInteractor(userDataAccessObject, viewFriendsPresenter);
+        final ViewFriendsController viewFriendsController =
+                new ViewFriendsController(removeFriendInputBoundary, blockFriendInputBoundary,
+                        loadFriendsInputBoundary, chatViewModel, viewManagerModel);
+        viewFriendsView.setViewFriendsController(viewFriendsController);
+        return this;
+    }
+
+    /**
      * Adds the View Group Chats Use Case to the application.
      * @return this builder
      */
     public AppBuilder addViewGroupChatsUseCase() {
         final ViewGroupChatsPresenter viewGroupChatsPresenter =
                 new ViewGroupChatsPresenter(viewGroupChatsViewModel);
-        final JoinChatInputBoundary joinChatInputBoundary=
+        final JoinChatInputBoundary joinChatInputBoundary =
                 new JoinChatInteractor(userDataAccessObject, viewGroupChatsPresenter);
         final LeaveChatInputBoundary leaveChatInputBoundary =
                 new LeaveChatInteractor(userDataAccessObject, viewGroupChatsPresenter);
         final LoadGroupChatsInputBoundary loadGroupChatsInputBoundary =
                 new LoadGroupChatsInteractor(userDataAccessObject, viewGroupChatsPresenter);
         final ViewGroupChatsController viewGroupChatsController =
-                new ViewGroupChatsController(joinChatInputBoundary, leaveChatInputBoundary, loadGroupChatsInputBoundary, chatViewModel, viewManagerModel);
+                new ViewGroupChatsController(joinChatInputBoundary, leaveChatInputBoundary,
+                        loadGroupChatsInputBoundary, chatViewModel, viewManagerModel);
         viewGroupChatsView.setViewGroupChatsController(viewGroupChatsController);
         return this;
     }
