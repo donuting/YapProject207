@@ -4,13 +4,13 @@ package use_case.block_friend;
  * Input data for the Block Friend use case.
  */
 public class BlockFriendInputData {
-    private final String blockedUsername;
+    private final String blockedId;
 
     public BlockFriendInputData(String blockedUsername) {;
-        this.blockedUsername = blockedUsername;
+        this.blockedId = blockedUsername;
     }
 
-    public String getBlockedUsername() {
-        return blockedUsername;
+    public String getBlockedId() {
+        return blockedId;
     }
 }

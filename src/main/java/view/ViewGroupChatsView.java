@@ -95,12 +95,12 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
                 // Create Buttons
                 JButton newViewGroupChatButton = addActionListener(setViewGroupChatButtonProperties(new JButton(channelName)));
                 viewGroupChatButtons.put(newViewGroupChatButton, channelUrl);
-                JButton newRemoveGroupChatButton = addActionListener(setDeleteGroupChatButtonProperties(new JButton("Delete")));
+                JButton newRemoveGroupChatButton = addActionListener(setDeleteGroupChatButtonProperties(new JButton("Leave")));
                 removeGroupChatButtons.put(newRemoveGroupChatButton, channelUrl);
 
                 // Add them to a new JPanel
                 JPanel newGroupChatPanel = new JPanel();
-                newGroupChatPanel.setLayout(new BoxLayout(newGroupChatPanel, FlowLayout.CENTER));
+                newGroupChatPanel.setLayout(new BoxLayout(newGroupChatPanel, BoxLayout.X_AXIS));
                 newGroupChatPanel.setFont(new Font("Arial", Font.PLAIN, 14));
                 newGroupChatPanel.setBackground(new Color(248, 248, 248));
                 newGroupChatPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -153,7 +153,7 @@ public class ViewGroupChatsView extends JPanel implements ActionListener, Proper
     }
 
     private void handleJoinChat() {
-        String result = JOptionPane.showInputDialog(viewGroupChatsPanel, "Enter the URL of the chat you want to join", JOptionPane.OK_CANCEL_OPTION);
+        String result = JOptionPane.showInputDialog(viewGroupChatsPanel, "Enter the URL of the chat you want to join", "", JOptionPane.OK_CANCEL_OPTION);
         if (result != null) {
             viewGroupChatsController.joinChat(result);
         }

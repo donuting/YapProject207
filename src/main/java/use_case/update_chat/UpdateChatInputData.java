@@ -9,7 +9,7 @@ public class UpdateChatInputData {
     public UpdateChatInputData(String channelUrl) {
         this.channelUrl = channelUrl;
     }
-     public String getChannelUrl() {
+    public String getChannelUrl() {
         return channelUrl;
-     }
+    }
 }

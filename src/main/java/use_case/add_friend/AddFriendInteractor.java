@@ -1,8 +1,13 @@
 package use_case.add_friend;
 
 import data_access.InMemoryUserDataAccessObject;
+import entity.GroupChat;
+import entity.GroupChatFactory;
 import entity.User;
 import entity.UserFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The AddFriend Interactor.
@@ -22,75 +27,81 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
 
     @Override
     public void execute(AddFriendInputData addFriendInputData) {
-        final String currentUsername = addFriendInputData.getCurrentUsername();
+        User currentUser = userDataAccessObject.getCurrentUser();
+        final String currentUsername = currentUser.getName();
         final String friendUsername = addFriendInputData.getFriendUsername();
         final String friendID = addFriendInputData.getFriendID();
-        User currentUser = userDataAccessObject.get(currentUsername);
         User friendUser = userDataAccessObject.get(friendUsername);
 
 
         // check that nothing is empty
         if (currentUsername == null || friendUsername == null || friendID == null) {
-            presenter.prepareFailView("Please fill out all fields"
-                    //, new AddFriendOutputData(friendUsername, true, null)
-            );
+            presenter.prepareFailView("Please fill out all fields");
             return;
         }
 
         if (currentUsername.trim().isEmpty() || friendUsername.trim().isEmpty() || friendID.trim().isEmpty()) {
-            presenter.prepareFailView("Please fill out all fields"
-                    //, new AddFriendOutputData(currentUsername, true, null)
-            );
+            presenter.prepareFailView("Please fill out all fields");
             return;
         }
 
-        // check if current user spelled own username correctly, not sure if this worked (maybe DAO issue)
-        // says currentUser is null when tested
-        if (!currentUsername.equals(currentUser.getName())) {
-            presenter.prepareFailView("Your account name is incorrect"
-                    // , new AddFriendOutputData(friendUsername, true, null)
-            );
+        // check that the friend exists
+        if (friendUser == null) {
+            presenter.prepareFailView("User does not exist");
             return;
         }
 
-        if (!userDataAccessObject.existsByName(friendUsername)) {
-            presenter.prepareFailView("User " + friendUsername + " does not exist"
-                    // , new AddFriendOutputData(friendUsername, true, null)
-            );
+
+        // check if friend's username and ID correspond to the same user
+        if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
+            presenter.prepareFailView("User " + friendUsername + " does not exist");
+            return;
+        }
+
+        // check if blocked
+        if (currentUser.getBlockedUserIDs().contains(friendID)
+                || friendUser.getBlockedUserIDs().contains(currentUser.getID())) {
+            presenter.prepareFailView(friendUsername + " is blocked");
             return;
         }
 
         // check if already friends
-        if (userDataAccessObject.alreadyFriend(currentUsername, friendUsername)) {
-            presenter.prepareFailView("You are already friends with " + friendUsername
-                    // , new AddFriendOutputData(friendUsername, true, null)
-            );
+        if (currentUser.getFriendIDs().contains(friendID)) {
+            presenter.prepareFailView("You are already friends with " + friendUsername);
             return;
         }
 
         // checking that user is not adding self using IDS, leave for near the end
         if (friendID.equals(currentUser.getID())) {
-            presenter.prepareFailView("You cannot add yourself as a friend"
-                    //, new AddFriendOutputData(friendUsername, true, null)
-            );
+            presenter.prepareFailView("You cannot add yourself as a friend (friend ID must be different from yours)");
             return;
         }
 
         // successful
         else {
-            // adds from current user side
+            // adds friend for in memory object
             currentUser.addFriend(friendID);
-            // create the chat for this user, also do I need to add these to the database???
 
-            // adds from friend's side
-            friendUser.addFriend(currentUser.getID());
-            // create the chat for friend
+            // adds friendship in database
+            userDataAccessObject.addFriend(currentUsername, friendUsername);
+
+            // create the chat between both friends
+            List<String> membersOfChat = new ArrayList<>();
+            membersOfChat.add(currentUser.getID());
+            membersOfChat.add(friendID);
+            GroupChat chat = userDataAccessObject.create(membersOfChat, currentUsername + ", " +
+                    friendUsername, new GroupChatFactory());
+
+            // add chat to current user for the in memory object
+            currentUser.addPersonalChat(chat);
+
+            // add chat to both users in database
+            userDataAccessObject.savePersonalChat(chat, currentUsername);
+            userDataAccessObject.savePersonalChat(chat, friendUsername);
+
             AddFriendOutputData outputData = new AddFriendOutputData(friendUsername,
                     true, friendUsername + " has been added!");
             presenter.prepareSuccessView(outputData);
-
-
-
         }
     }
 

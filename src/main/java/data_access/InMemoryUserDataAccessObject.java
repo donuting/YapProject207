@@ -12,8 +12,10 @@ import entity.User;
 import use_case.add_Bio.AddBioUserDataAccessInterface;
 import use_case.add_DOB.AddDOBUserDataAccessInterface;
 import use_case.add_friend.AddFriendUserDataAccessInterface;
+import use_case.block_friend.BlockFriendUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.create_chat.CreateChatUserDataAccessInterface;
+import use_case.delete_account.DeleteAccountDataAccessInterface;
 import use_case.join_chat.JoinChatDataAccessInterface;
 import use_case.leave_chat.LeaveChatDataAccessInterface;
 import use_case.load_group_chats.LoadGroupChatsDataAccessInterface;
@@ -34,6 +36,8 @@ public class InMemoryUserDataAccessObject implements
         LogoutUserDataAccessInterface,
         AddBioUserDataAccessInterface,
         AddDOBUserDataAccessInterface,
+        BlockFriendUserDataAccessInterface,
+        DeleteAccountDataAccessInterface,
         AddFriendUserDataAccessInterface,
         CreateChatUserDataAccessInterface,
         JoinChatDataAccessInterface,
@@ -49,6 +53,16 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public boolean existsByName(String identifier) {
         return users.containsKey(identifier);
+    }
+
+    @Override
+    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+        User user = users.get(currentUsername);
+        User friend = users.get(friendUsername);
+        if (user.getFriendIDs().contains(friend.getID())) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -70,6 +84,11 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public User get(String username) {
         return users.get(username);
+    }
+
+    @Override
+    public boolean addFriend(String currentUsername, String friendUsername) {
+        return false;
     }
 
     @Override
@@ -141,15 +160,15 @@ public class InMemoryUserDataAccessObject implements
         return false;
     }
 
-    @Override
-    public boolean alreadyFriend(String currentUsername, String friendUsername) {
-        return false;
-    }
-
-    @Override
-    public boolean addFriend(String currentUsername, String friendUsername) {
-        return false;
-    }
+//    @Override
+//    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean addFriend(String currentUsername, String friendUsername) {
+//        return false;
+//    }
 
     /**
      * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
@@ -165,6 +184,15 @@ public class InMemoryUserDataAccessObject implements
     }
 
     /**
+     * @param newGroupChat
+     * @param username
+     */
+    @Override
+    public void savePersonalChat(GroupChat newGroupChat, String username) {
+
+    }
+
+    /**
      * Get the current user.
      *
      * @return the current user.
@@ -172,6 +200,17 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public User getCurrentUser() {
         return this.currentUser;
+    }
+
+    /**
+     * Gets a username given an ID.
+     *
+     * @param blockedId
+     * @return the corresponding user.
+     */
+    @Override
+    public String getUsernameFromId(String blockedId) {
+        return "";
     }
 
     @Override
@@ -271,5 +310,48 @@ public class InMemoryUserDataAccessObject implements
                 .filter(user -> user.getID().equals(userId))
                 .findFirst()
                 .orElse(null);
+    }
+          
+    /**
+     * Delete user by id and username. Return true only if a stored user with the given id
+     * exists and its name matches the provided username.
+     * @param userId   the unique id of the user
+     * @param username the username expected for the user
+     * @return true if deletion succeeded
+     */
+    @Override
+    public boolean deleteUserById(String userId, String username) {
+        if (userId == null || username == null) return false;
+        for (Map.Entry<String, User> entry : users.entrySet()) {
+            User u = entry.getValue();
+            if (u != null && userId.equals(u.getID()) && username.equals(u.getName())) {
+                users.remove(entry.getKey());
+                if (username.equals(this.currentUsername)) {
+                    this.currentUsername = null;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Block the target user for the current user.
+     * @param currentUser The user performing the block.
+     * @param blockedUsername the name of the user to be blocked
+     * @param blockedUserId The user to be blocked.
+     * @return true if successful
+     */
+    @Override
+    public boolean blockFriend(User currentUser, String blockedUsername, String blockedUserId) {
+        User blockedUser = users.get(blockedUsername);
+        if (currentUser == null || blockedUser == null) {
+            return false;
+        }
+        boolean success = currentUser.blockUser(blockedUser.getID());
+        if (success) {
+            return true;
+        }
+        return false;
     }
 }
