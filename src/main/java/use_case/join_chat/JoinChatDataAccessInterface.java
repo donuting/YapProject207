@@ -35,4 +35,11 @@ public interface JoinChatDataAccessInterface {
      * @param name the user's username
      */
     void saveGroupChat(GroupChat chat, String name);
+
+    /**
+     * Gets a user given their username.
+     * @param username the user's username
+     * @return the requested user.
+     */
+    User get(String username);
 }
