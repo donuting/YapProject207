@@ -34,14 +34,14 @@ public class BlockFriendInteractorTest {
         BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary successPresenter = new BlockFriendOutputBoundary() {
             @Override
-            public void prepareSuccessView(BlockFriendOutputData outputData) {
+            public void blockFriendPrepareSuccessView(BlockFriendOutputData outputData) {
                 assertEquals(user.getName(), outputData.getCurrentUsername());
                 assertEquals(friend.getName(), outputData.getBlockedUsername());
                 assertTrue(outputData.isSuccess());
             }
 
             @Override
-            public void prepareFailView(String errorMessage, BlockFriendOutputData outputData) {
+            public void blockFriendPrepareFailView(String errorMessage, BlockFriendOutputData outputData) {
                 fail("Block friend use case should succeed");
             }
         };
@@ -54,12 +54,12 @@ public class BlockFriendInteractorTest {
         BlockFriendInputData inputData = new BlockFriendInputData("NonExistentUser");
         BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
             @Override
-            public void prepareSuccessView(BlockFriendOutputData outputData) {
+            public void blockFriendPrepareSuccessView(BlockFriendOutputData outputData) {
                 fail("Block friend use case should fail when blocked user does not exist");
             }
 
             @Override
-            public void prepareFailView(String errorMessage, BlockFriendOutputData outputData) {
+            public void blockFriendPrepareFailView(String errorMessage, BlockFriendOutputData outputData) {
                 assertFalse(outputData.isSuccess());
                 assertEquals("Failed to block friend.", errorMessage);
             }
@@ -75,12 +75,12 @@ public class BlockFriendInteractorTest {
         BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
         BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
             @Override
-            public void prepareSuccessView(BlockFriendOutputData outputData) {
+            public void blockFriendPrepareSuccessView(BlockFriendOutputData outputData) {
                 fail("Block friend use case should fail when current user does not exist");
             }
 
             @Override
-            public void prepareFailView(String errorMessage, BlockFriendOutputData outputData) {
+            public void blockFriendPrepareFailView(String errorMessage, BlockFriendOutputData outputData) {
                 assertFalse(outputData.isSuccess());
                 assertEquals("Failed to block friend.", errorMessage);
             }

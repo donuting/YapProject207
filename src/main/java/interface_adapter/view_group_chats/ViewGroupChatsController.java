@@ -44,7 +44,7 @@ public class ViewGroupChatsController {
      * @param channelUrl the URL of the channel to be joined.
      */
     public void joinChat(String channelUrl) {
-        JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl);
+        JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl, null);
         joinChatUseCaseInteractor.execute(joinChatInputData);
     }
 
@@ -67,6 +67,7 @@ public class ViewGroupChatsController {
         ChatState chatState = chatViewModel.getState();
         chatState.setCurrentChannelUrl(channelUrl);
         chatState.setChatName(chatName);
+        chatState.setGroupChat(true);
 
         // Updates the active chat's messages
         chatState.setNeedsUpdate(true);

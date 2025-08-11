@@ -1,7 +1,5 @@
 package view;
 
-import entity.Chat;
-import entity.User;
 import interface_adapter.chat.ChatController;
 import interface_adapter.chat.ChatState;
 import interface_adapter.chat.ChatViewModel;
@@ -41,6 +39,7 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private final JTextArea messageInputField;
     private final JButton sendButton;
     private final JButton backButton;
+    private final JButton addMemberButton;
 
     private ChatController chatController;
 
@@ -61,11 +60,17 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         backButton = new JButton(ChatViewModel.BACK_BUTTON_LABEL);
         backButton.addActionListener(this);
 
+        // Add Member button
+        addMemberButton = new JButton(ChatViewModel.ADD_MEMBER_BUTTON_LABEL);
+        addMemberButton.addActionListener(this);
+
+
         // Chat name
         chatNameLabel = new JLabel("Chat", SwingConstants.CENTER);
         chatNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
 
         topPanel.add(backButton, BorderLayout.WEST);
+        topPanel.add(addMemberButton, BorderLayout.EAST);
         topPanel.add(chatNameLabel, BorderLayout.CENTER);
 
         // Center panel with message display and users display
@@ -142,10 +147,14 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
                 messageInputField.setText(""); // Clear the input field
             }
         } else if (evt.getSource().equals(backButton)) {
-            chatController.switchToViewChatsView();
+            chatController.switchToMainMenu();
         } else if (deleteMessageButtons.containsKey(evt.getSource())) {
             Integer messageId = deleteMessageButtons.get(evt.getSource());
             chatController.deleteMessage(messageId);
+        } else if (evt.getSource().equals(addMemberButton)) {
+            String newUsername = JOptionPane.showInputDialog(this, "Enter the username of the user you want to add", "", JOptionPane.OK_CANCEL_OPTION);
+            String channelUrl = chatViewModel.getState().getCurrentChannelUrl();
+            chatController.joinChat(channelUrl, newUsername);
         }
     }
 
@@ -160,15 +169,24 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         if (chatController != null) {
             if (state.getNeedsUpdate()) {
                 // Clear the memory and messages before loading messages
-                clearChat(state);
+                clearChatAndMemberList(state);
                 state.setNeedsUpdate(false);
                 chatController.updateChat(state.getCurrentChannelUrl());
             }
             if (state.getNeedsClearChat()) {
                 // Clear the chat without loading messages
-                clearChat(state);
+                clearChatAndMemberList(state);
                 state.setNeedsClearChat(false);
             }
+        }
+
+        // Show add member button if the current chat is a group chat
+        if (state.getIsGroupChat()) {
+            addMemberButton.setVisible(true);
+            addMemberButton.setEnabled(true);
+        } else {
+            addMemberButton.setVisible(false);
+            addMemberButton.setEnabled(false);
         }
 
         // Update chat name
@@ -230,12 +248,17 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         });
     }
 
-    private void clearChat(ChatState state) {
+    private void clearChatAndMemberList(ChatState state) {
         messages.clear();
         deleteMessageButtons.clear();
         messagesPanel.removeAll();
+
+        usersPanel.removeAll();
+
         state.setMessages(new ArrayList<>());
         state.setMessagesSentByUser(new ArrayList<>());
+        state.setUsernames(new ArrayList<>());
+
         state.setUsernames(new ArrayList<>());
     }
 
