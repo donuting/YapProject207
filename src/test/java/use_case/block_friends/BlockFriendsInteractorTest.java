@@ -28,6 +28,7 @@ public class BlockFriendsInteractorTest {
         user = factory.create("User", "Password1");
         friend = factory.create("Friend", "Password2");
         dataAccess = new SendBirdUserDataAccessObject();
+        dataAccess.setCurrentUser(user);
     }
 
     @Test

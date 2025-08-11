@@ -22,6 +22,7 @@ public class DeleteAccountInteractorTest {
         userFactory = new CommonUserFactory();
         user = userFactory.create("User", "Password1");
         dataAccess.save(user);
+        dataAccess.setCurrentUser(user);
     }
 
     @Test
