@@ -5,14 +5,18 @@ package interface_adapter.add_chat;
  */
 public class AddChatState {
     private String chatName = "";
+    private String username = "";  // NEW: username to add to chat
     private String ID = "";
     private String chatNameError = "";
+    private String usernameError = "";  // NEW: error for username validation
     private boolean success = false;
 
     public AddChatState(AddChatState copy) {
         chatName = copy.chatName;
+        username = copy.username;  // NEW
         ID = copy.ID;
         chatNameError = copy.chatNameError;
+        usernameError = copy.usernameError;  // NEW
         success = copy.success;
     }
 
@@ -26,6 +30,15 @@ public class AddChatState {
 
     public void setChatName(String chatName) {
         this.chatName = chatName;
+    }
+
+    // NEW: Username getter/setter
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getID() {
@@ -42,6 +55,15 @@ public class AddChatState {
 
     public void setChatNameError(String chatNameError) {
         this.chatNameError = chatNameError;
+    }
+
+    // NEW: Username error getter/setter
+    public String getUsernameError() {
+        return usernameError;
+    }
+
+    public void setUsernameError(String usernameError) {
+        this.usernameError = usernameError;
     }
 
     public boolean isSuccess() {

@@ -30,6 +30,7 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
     private final JButton sendButton;
     private final JButton backButton;
     private final JButton clearChatButton;
+    private final JButton saveBirthdayButton;
 
     private SelfChatController selfChatController;
 
@@ -47,6 +48,10 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
         clearChatButton = new JButton("Clear Chat");
         clearChatButton.setFont(new Font("Arial", Font.PLAIN, 12));
         clearChatButton.addActionListener(this);
+
+        saveBirthdayButton = new JButton("Save Birthday");
+        saveBirthdayButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        saveBirthdayButton.addActionListener(this);
 
         backButton = new JButton("Back");
         backButton.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -85,8 +90,7 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
         this.add(chatScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Initialize with existing messages
-        updateChatDisplay();
+        // Initialize with existing messages when controller is set
     }
 
     private JPanel createTopPanel() {
@@ -95,6 +99,7 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
 
         // Control buttons panel
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        controlPanel.add(saveBirthdayButton);
         controlPanel.add(clearChatButton);
         controlPanel.add(backButton);
 
@@ -133,6 +138,8 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
                 selfChatController.backToViewChats();
             } else if (evt.getSource().equals(clearChatButton)) {
                 handleClearChat();
+            } else if (evt.getSource().equals(saveBirthdayButton)) {
+                handleSaveBirthday();
             }
         }
     }
@@ -160,6 +167,55 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
         }
     }
 
+    private void handleSaveBirthday() {
+        // Create input panel for name and date
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField(20);
+        JLabel dateLabel = new JLabel("Date (YYYYMMDD):");
+        JTextField dateField = new JTextField(20);
+
+        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
+        inputPanel.add(nameLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0;
+        inputPanel.add(nameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1; gbc.anchor = GridBagConstraints.WEST;
+        inputPanel.add(dateLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1;
+        inputPanel.add(dateField, gbc);
+
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                inputPanel,
+                "Save Birthday",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (result == JOptionPane.OK_OPTION) {
+            String name = nameField.getText().trim();
+            String date = dateField.getText().trim();
+
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a name.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (date.isEmpty() || date.length() != 8 || !date.matches("\\d{8}")) {
+                JOptionPane.showMessageDialog(this,
+                        "Please enter a valid 8-digit date (YYYYMMDD).",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            selfChatController.saveBirthday(name, date);
+        }
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final SelfChatState state = (SelfChatState) evt.getNewValue();
@@ -168,38 +224,63 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
         // Handle any error messages
         if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {
             JOptionPane.showMessageDialog(this, state.getErrorMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            // Clear the error message after showing it
+            selfChatViewModel.setErrorMessage("");
         }
     }
 
     private void updateChatDisplay() {
-
         SelfChatState state = selfChatViewModel.getState();
         Map<Integer, JsonObject> messageData = state.getMessages();
 
+        // Clear existing messages from display but keep track of what we've shown
+        java.util.Set<String> existingMessageIds = new java.util.HashSet<>();
+        for (String messageId : messages.values()) {
+            existingMessageIds.add(messageId);
+        }
+
         for (JsonObject jsonObject : messageData.values()) {
-
             String newMessageId = jsonObject.get("message_ID").getAsString();
-            if (!messages.containsValue(newMessageId)) {
-
-                // Create new text field
+            if (!existingMessageIds.contains(newMessageId)) {
+                // Create new text area for the message
                 JTextArea messageSpace = new JTextArea();
                 messageSpace.setAlignmentX(Component.LEFT_ALIGNMENT);
                 messageSpace.setFont(new Font("Arial", Font.PLAIN, 14));
                 messageSpace.setLineWrap(true);
                 messageSpace.setWrapStyleWord(true);
                 messageSpace.setEditable(false);
-                messageSpace.setPreferredSize(new Dimension(200, 40));
-                messageSpace.setMaximumSize(new Dimension(200, 40));
-                messageSpace.setText(jsonObject.get("message").getAsString());
+                messageSpace.setOpaque(true);
+                messageSpace.setBackground(Color.WHITE);
+                messageSpace.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+                        BorderFactory.createEmptyBorder(8, 8, 8, 8)
+                ));
+
+                // Set the message text
+                String messageText = jsonObject.get("message").getAsString();
+                String timestamp = jsonObject.has("timestamp") ? jsonObject.get("timestamp").getAsString() : "";
+                if (!timestamp.isEmpty()) {
+                    messageSpace.setText(messageText + "\n" + timestamp);
+                } else {
+                    messageSpace.setText(messageText);
+                }
+
+                // Dynamically set size based on content
+                messageSpace.setPreferredSize(null);
+                messageSpace.setMaximumSize(new Dimension(Integer.MAX_VALUE, messageSpace.getPreferredSize().height));
 
                 // Add the new message to the list of messages
                 messages.put(messageSpace, newMessageId);
 
                 // Add the new message to the chat area
                 chatArea.add(messageSpace);
-
+                chatArea.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between messages
             }
         }
+
+        // Revalidate and repaint the chat area
+        chatArea.revalidate();
+        chatArea.repaint();
 
         // Auto-scroll to bottom
         SwingUtilities.invokeLater(() -> {
@@ -218,5 +299,9 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
 
     public void setSelfChatController(SelfChatController selfChatController) {
         this.selfChatController = selfChatController;
+        // Load existing messages when controller is set
+        if (selfChatController != null) {
+            selfChatController.loadMessages();
+        }
     }
 }
