@@ -74,13 +74,14 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
         // checking that user is not adding self using IDS, leave for near the end
         if (friendID.equals(currentUser.getID())) {
             presenter.prepareFailView("You cannot add yourself as a friend (friend ID must be different from yours)");
-            return;
+
         }
 
         // successful
         else {
-            // adds friend for in memory object
+            // adds friend for both user objects
             currentUser.addFriend(friendID);
+            friendUser.addFriend(currentUser.getID());
 
             // adds friendship in database
             userDataAccessObject.addFriend(currentUsername, friendUsername);
@@ -94,6 +95,7 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
 
             // add chat to current user for the in memory object
             currentUser.addPersonalChat(chat);
+            friendUser.addPersonalChat(chat);
 
             // add chat to both users in database
             userDataAccessObject.savePersonalChat(chat, currentUsername);
