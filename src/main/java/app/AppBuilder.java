@@ -116,7 +116,7 @@ public class AppBuilder {
     private final SendBirdUserDataAccessObject userDataAccessObject = new SendBirdUserDataAccessObject();
 
     private final InMemorySelfChatUserDataAccessObject selfChatDataAccessObject =
-            new InMemorySelfChatUserDataAccessObject();
+            new InMemorySelfChatUserDataAccessObject(userDataAccessObject);
     private final MessageDataAccessObject messageDataAccessObject = new MessageDataAccessObject();
 
     private SignupView signupView;

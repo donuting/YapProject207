@@ -1,5 +1,8 @@
 package use_case.self_chat;
 
+/**
+ * The Input Boundary for actions which are related to self chat.
+ */
 public interface SelfChatInputBoundary {
 
     /**
@@ -14,7 +17,14 @@ public interface SelfChatInputBoundary {
     void clearMessages();
 
     /**
-     * Loads existing messages from storage.
+     * Loads existing messages in the self chat.
      */
     void loadMessages();
+
+    /**
+     * Saves a birthday entry to the self chat.
+     * @param name the name of the person
+     * @param date the birthday in YYYYMMDD format
+     */
+    void saveBirthday(String name, String date);
 }

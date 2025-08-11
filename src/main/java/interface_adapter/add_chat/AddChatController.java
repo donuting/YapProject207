@@ -18,11 +18,21 @@ public class AddChatController {
     /**
      * Executes the Add Chat Use Case.
      * @param chatName the name of the chat to create
+     * @param username the username of the user to add to the chat (can be empty)
      */
-    public void execute(String chatName) {
-        final use_case.create_chat.CreateChatInputData addChatInputData = new use_case.create_chat.CreateChatInputData(chatName);
+    public void execute(String chatName, String username) {
+        final use_case.create_chat.CreateChatInputData addChatInputData =
+                new use_case.create_chat.CreateChatInputData(chatName, username);
 
         addChatUseCaseInteractor.execute(addChatInputData);
+    }
+
+    /**
+     * Backwards compatibility method - creates chat with just chat name
+     * @param chatName the name of the chat to create
+     */
+    public void execute(String chatName) {
+        execute(chatName, "");  // Call the new method with empty username
     }
 
     /**

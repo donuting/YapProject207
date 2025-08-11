@@ -11,7 +11,6 @@ import java.beans.PropertyChangeListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -31,7 +30,9 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
     private final AddChatViewModel addChatViewModel;
 
     private final JTextField chatNameInputField = new JTextField(15);
+    private final JTextField usernameInputField = new JTextField(15);  // NEW: username input field
     private final JLabel chatNameErrorField = new JLabel();
+    private final JLabel usernameErrorField = new JLabel();  // NEW: username error field
     private final JLabel userLabel = new JLabel();
 
     private final JButton createChatButton;
@@ -60,9 +61,19 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
         chatNameInputField.setAlignmentX(Component.CENTER_ALIGNMENT);
         chatNameInputField.setMaximumSize(new Dimension(250, 30));
 
-        // Error field
+        // NEW: Username input
+        final JLabel usernameLabel = new JLabel("Add User (Username):");
+        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        usernameInputField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        usernameInputField.setMaximumSize(new Dimension(250, 30));
+
+        // Error fields
         chatNameErrorField.setAlignmentX(Component.CENTER_ALIGNMENT);
         chatNameErrorField.setForeground(java.awt.Color.RED);
+
+        // NEW: Username error field
+        usernameErrorField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        usernameErrorField.setForeground(java.awt.Color.RED);
 
         // Buttons
         createChatButton = new JButton("Create Chat");
@@ -99,6 +110,30 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
             }
         });
 
+        // NEW: Add document listener for username
+        usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
+            private void documentListenerHelper() {
+                final AddChatState currentState = addChatViewModel.getState();
+                currentState.setUsername(usernameInputField.getText());
+                addChatViewModel.setState(currentState);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
+        });
+
         // Layout components
         this.add(Box.createRigidArea(new Dimension(0, 20)));
         this.add(title);
@@ -106,10 +141,18 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
         this.add(userLabel);
         this.add(Box.createRigidArea(new Dimension(0, 30)));
 
+        // Chat name section
         this.add(chatNameLabel);
         this.add(Box.createRigidArea(new Dimension(0, 5)));
         this.add(chatNameInputField);
         this.add(chatNameErrorField);
+        this.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // NEW: Username section
+        this.add(usernameLabel);
+        this.add(Box.createRigidArea(new Dimension(0, 5)));
+        this.add(usernameInputField);
+        this.add(usernameErrorField);
         this.add(Box.createRigidArea(new Dimension(0, 30)));
 
         this.add(createChatButton);
@@ -130,7 +173,8 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
         if (addChatController != null) {
             if (evt.getSource().equals(createChatButton)) {
                 final AddChatState currentState = addChatViewModel.getState();
-                addChatController.execute(currentState.getChatName());
+                // UPDATED: Pass both chat name and username
+                addChatController.execute(currentState.getChatName(), currentState.getUsername());
             } else if (evt.getSource().equals(backToViewChatButton)) {
                 addChatController.backToViewChat();
             }
@@ -142,8 +186,9 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
         final AddChatState state = (AddChatState) evt.getNewValue();
         setFields(state);
 
-        // Display error
+        // Display errors
         chatNameErrorField.setText(state.getChatNameError());
+        usernameErrorField.setText(state.getUsernameError());  // NEW: Display username error
 
         // Update user display
         if (state.getID() != null && !state.getID().isEmpty()) {
@@ -152,13 +197,17 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
 
         // Show success message if chat created
         if (state.isSuccess()) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Chat '" + state.getChatName() + "' created successfully!");
+            String successMessage = "Chat '" + state.getChatName() + "' created successfully!";
+            if (!state.getUsername().trim().isEmpty()) {
+                successMessage += " User '" + state.getUsername() + "' added to chat.";
+            }
+            javax.swing.JOptionPane.showMessageDialog(this, successMessage);
         }
     }
 
     private void setFields(AddChatState state) {
         chatNameInputField.setText(state.getChatName());
+        usernameInputField.setText(state.getUsername());  // NEW: Set username field
     }
 
     public String getViewName() {
