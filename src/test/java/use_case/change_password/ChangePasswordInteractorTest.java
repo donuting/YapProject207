@@ -128,7 +128,7 @@ public class ChangePasswordInteractorTest {
 
             @Override
             public void prepareFailChangePasswordView(String errorMessage) {
-                assertEquals("Password is empty.",
+                assertEquals("Password is empty or has less than 8 characters.",
                         errorMessage);
             }
         };

@@ -11,7 +11,6 @@ import java.beans.PropertyChangeListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -154,6 +153,8 @@ public class AddChatView extends JPanel implements ActionListener, PropertyChang
         if (state.isSuccess()) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Chat '" + state.getChatName() + "' created successfully!");
+            state.setSuccess(false);
+            chatNameInputField.setText("");
         }
     }
 

@@ -56,9 +56,20 @@ public interface User {
     List<GroupChat> getGroupChats();
 
     /**
+     * Adds a personal chat to the user's list of personal chats.
+     * @param personalChat the group chat.
+     */
+    void addPersonalChat(GroupChat personalChat);
+
+    /**
      * Returns a list of channel URLs corresponding to personal chats the user is in.
      */
     List<GroupChat> getPersonalChats();
+
+    /**
+     * Sets a list of channel URLs corresponding to personal chats the user is in.
+     */
+    void setPersonalChats(List<GroupChat> personalChats);
 
     /**
      * Adds a bio to the user.
@@ -77,6 +88,8 @@ public interface User {
     String getDOB();
 
     String getBio();
+
+    List<String> getFriendIDs();
 
     /**
      * Adds the user to this user's friend list.

@@ -1,11 +1,11 @@
 package interface_adapter.main_menu;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.add_friend.AddFriendController;
-import interface_adapter.add_friend.AddFriendViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.profile_and_settings.PandSViewModel;
 import interface_adapter.view_chats.ViewChatsViewModel;
+import interface_adapter.view_friends.ViewFriendsState;
+import interface_adapter.view_friends.ViewFriendsViewModel;
 
 /**
  * The controller for the Main Menu View.
@@ -15,17 +15,17 @@ public class MainMenuController {
     private final LogoutController logoutController;
     private final ViewChatsViewModel viewChatsViewModel;
     private final MainMenuViewModel mainMenuViewModel;
-    private final AddFriendViewModel addFriendViewModel;
+    private final ViewFriendsViewModel viewFriendsViewModel;
     private final PandSViewModel pandSViewModel;
 
     public MainMenuController(ViewManagerModel viewManagerModel, LogoutController logoutController,
                               ViewChatsViewModel viewChatsViewModel, MainMenuViewModel mainMenuViewModel,
-                              AddFriendViewModel addFriendViewModel, PandSViewModel pandSViewModel) {
+                              ViewFriendsViewModel viewFriendsViewModel, PandSViewModel pandSViewModel) {
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.viewChatsViewModel = viewChatsViewModel;
         this.mainMenuViewModel = mainMenuViewModel;
-        this.addFriendViewModel = addFriendViewModel;
+        this.viewFriendsViewModel = viewFriendsViewModel;
         this.pandSViewModel = pandSViewModel;
     }
 
@@ -63,9 +63,15 @@ public class MainMenuController {
     /**
      * Executes the switch to Add Friends use case.
      */
-    public void switchToAddFriends() {
+    public void switchToViewFriends() {
+        // Update friends in state object
+        ViewFriendsState viewFriendsState= viewFriendsViewModel.getState();
+        viewFriendsState.setNeedsFriendInfo(true);
+        viewFriendsViewModel.setState(viewFriendsState);
+        viewFriendsViewModel.firePropertyChanged();
+
         // Navigate to add friends screen
-        viewManagerModel.setState("add friend");
+        viewManagerModel.setState("view friends");
         viewManagerModel.firePropertyChanged();
     }
 

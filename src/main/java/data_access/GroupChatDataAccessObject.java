@@ -174,36 +174,6 @@ public class GroupChatDataAccessObject {
     }
 
     /**
-     * Removes a user from a group chat in SendBird.
-     * @param channelUrl the URL of the chat.
-     * @param userId the ID of the user.
-     */
-    public void removeUser(String channelUrl, String userId) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath(APPLICATION_ID);
-
-        GroupChannelApi apiInstance = new GroupChannelApi(defaultClient);
-        List<String> userIds = new ArrayList<>();
-        userIds.add(userId);
-        LeaveAChannelRequest leaveChannelRequest = new LeaveAChannelRequest()
-                .userIds(userIds);
-        try {
-            Object result = apiInstance.leaveAChannel(channelUrl)
-                    .apiToken(API_TOKEN)
-                    .leaveAChannelRequest(leaveChannelRequest)
-                    .execute();
-            System.out.println(result);
-        }
-        catch (ApiException e) {
-            System.err.println("Exception when calling GroupChannelApi#leaveAChannel");
-            System.err.println("Status code: " + e.getCode());
-            System.err.println("Reason: " + e.getResponseBody());
-            System.err.println("Response headers: " + e.getResponseHeaders());
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Deletes a chat in SendBird.
      * @param channelUrl the URL of the chat.
      */

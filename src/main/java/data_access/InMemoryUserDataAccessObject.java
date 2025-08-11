@@ -56,6 +56,16 @@ public class InMemoryUserDataAccessObject implements
     }
 
     @Override
+    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+        User user = users.get(currentUsername);
+        User friend = users.get(friendUsername);
+        if (user.getFriendIDs().contains(friend.getID())) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void save(User user) {
         users.put(user.getName(), user);
     }
@@ -74,6 +84,11 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public User get(String username) {
         return users.get(username);
+    }
+
+    @Override
+    public boolean addFriend(String currentUsername, String friendUsername) {
+        return false;
     }
 
     @Override
@@ -145,15 +160,15 @@ public class InMemoryUserDataAccessObject implements
         return false;
     }
 
-    @Override
-    public boolean alreadyFriend(String currentUsername, String friendUsername) {
-        return false;
-    }
-
-    @Override
-    public boolean addFriend(String currentUsername, String friendUsername) {
-        return false;
-    }
+//    @Override
+//    public boolean alreadyFriend(String currentUsername, String friendUsername) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean addFriend(String currentUsername, String friendUsername) {
+//        return false;
+//    }
 
     /**
      * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
@@ -169,6 +184,15 @@ public class InMemoryUserDataAccessObject implements
     }
 
     /**
+     * @param newGroupChat
+     * @param username
+     */
+    @Override
+    public void savePersonalChat(GroupChat newGroupChat, String username) {
+
+    }
+
+    /**
      * Get the current user.
      *
      * @return the current user.
@@ -176,6 +200,17 @@ public class InMemoryUserDataAccessObject implements
     @Override
     public User getCurrentUser() {
         return this.currentUser;
+    }
+
+    /**
+     * Gets a username given an ID.
+     *
+     * @param blockedId
+     * @return the corresponding user.
+     */
+    @Override
+    public String getUsernameFromId(String blockedId) {
+        return "";
     }
 
     @Override
@@ -301,22 +336,22 @@ public class InMemoryUserDataAccessObject implements
     }
 
     /**
-     * Blocks a user for the current user.
-     * @param currentUsername The username of the user who wants to block someone.
-     * @param blockedUsername The username of the user to be blocked.
-     * @return The ID of the blocked user if successful, otherwise null.
+     * Block the target user for the current user.
+     * @param currentUser The user performing the block.
+     * @param blockedUsername the name of the user to be blocked
+     * @param blockedUserId The user to be blocked.
+     * @return true if successful
      */
     @Override
-    public String blockFriend(String currentUsername, String blockedUsername) {
-        User currentUser = users.get(currentUsername);
+    public boolean blockFriend(User currentUser, String blockedUsername, String blockedUserId) {
         User blockedUser = users.get(blockedUsername);
         if (currentUser == null || blockedUser == null) {
-            return null;
+            return false;
         }
         boolean success = currentUser.blockUser(blockedUser.getID());
         if (success) {
-            return blockedUser.getID();
+            return true;
         }
-        return null;
+        return false;
     }
 }
