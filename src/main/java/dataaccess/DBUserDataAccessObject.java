@@ -15,7 +15,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import usecase.add_Bio.AddBioUserDataAccessInterface;
-import usecase.add_DOB.AddDOBUserDataAccessInterface;
+import usecase.add_DOB.AddDobUserDataAccessInterface;
 import usecase.change_password.ChangePasswordUserDataAccessInterface;
 import usecase.login.LoginUserDataAccessInterface;
 import usecase.logout.LogoutUserDataAccessInterface;
@@ -28,7 +28,7 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
-        AddDOBUserDataAccessInterface,
+        AddDobUserDataAccessInterface,
         AddBioUserDataAccessInterface {
     private static final int SUCCESS_CODE = 200;
     private static final String CONTENT_TYPE_LABEL = "Content-Type";
@@ -210,10 +210,10 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
      * Updates the system to record this user's DOB.
      *
      * @param username the name of the user whose DOB is to be updated
-     * @param dob      the user's date of birth
+     * @param dateOfBirth      the user's date of birth
      */
     @Override
-    public boolean addDOB(String username, String dob) {
+    public boolean addDob(String username, String dateOfBirth) {
         return false;
     }
 }

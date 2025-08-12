@@ -10,6 +10,11 @@ public class SelfChatInputData {
         this.message = message;
     }
 
+    /**
+     * Gets the inputted message.
+     *
+     * @return the inputted message.
+     */
     public String getMessage() {
         return message;
     }

@@ -14,10 +14,18 @@ public class SignupOutputData {
         this.useCaseFailed = useCaseFailed;
     }
 
+    /**
+     * Gets the username outputted by the interactor.
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Returns whether the use case failed.
+     * @return true if unsuccessful
+     */
     public boolean isUseCaseFailed() {
         return useCaseFailed;
     }

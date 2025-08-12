@@ -1,11 +1,11 @@
 package usecase.signup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import entity.GroupChat;
 import entity.User;
 import entity.UserFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The Signup Interactor.

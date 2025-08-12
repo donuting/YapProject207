@@ -56,8 +56,8 @@ import interfaceadapter.profile.UserProfileViewModel;
 
 import usecase.add_Bio.AddBioInputBoundary;
 import usecase.add_Bio.AddBioInteractor;
-import usecase.add_DOB.AddDOBInputBoundary;
-import usecase.add_DOB.AddDOBInteractor;
+import usecase.add_DOB.AddDobInputBoundary;
+import usecase.add_DOB.AddDobInteractor;
 import usecase.add_friend.AddFriendInputBoundary;
 import usecase.add_friend.AddFriendInteractor;
 import usecase.add_friend.AddFriendOutputBoundary;
@@ -463,8 +463,8 @@ public class AppBuilder {
         final AddBioInputBoundary addBioInputBoundary =
                 new AddBioInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
-        final AddDOBInputBoundary addDateOfBirthInputBoundary =
-                new AddDOBInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory);
+        final AddDobInputBoundary addDateOfBirthInputBoundary =
+                new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory);
 
         final PandScontroller profileAndSettingsController = new PandScontroller(viewManagerModel,
                 mainMenuViewModel,

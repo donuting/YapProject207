@@ -15,9 +15,18 @@ public class SendMessageOutputData {
         this.message = message;
     }
 
+    /**
+     * Returns whether the use case failed.
+     * @return true if unsuccessful
+     */
     public boolean isUseCaseFailed() {
         return useCaseFailed;
     }
+
+    /**
+     * Gets the message outputted by the interactor.
+     * @return the message
+     */
     public Message getMessage() {
         return message;
     }

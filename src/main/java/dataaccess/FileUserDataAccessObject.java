@@ -15,7 +15,7 @@ import entity.GroupChat;
 import entity.User;
 import entity.UserFactory;
 import usecase.add_Bio.AddBioUserDataAccessInterface;
-import usecase.add_DOB.AddDOBUserDataAccessInterface;
+import usecase.add_DOB.AddDobUserDataAccessInterface;
 import usecase.change_password.ChangePasswordUserDataAccessInterface;
 import usecase.login.LoginUserDataAccessInterface;
 import usecase.signup.SignupUserDataAccessInterface;
@@ -26,7 +26,7 @@ import usecase.signup.SignupUserDataAccessInterface;
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
                                                  LoginUserDataAccessInterface,
                                                  ChangePasswordUserDataAccessInterface,
-                                                 AddDOBUserDataAccessInterface,
+        AddDobUserDataAccessInterface,
                                                  AddBioUserDataAccessInterface {
 
     private static final String HEADER = "username,password";
@@ -161,10 +161,10 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
      * Updates the system to record this user's DOB.
      *
      * @param username the name of the user whose DOB is to be updated
-     * @param dob      the user's date of birth
+     * @param dateOfBirth      the user's date of birth
      */
     @Override
-    public boolean addDOB(String username, String dob) {
+    public boolean addDob(String username, String dateOfBirth) {
         return false;
     }
 }

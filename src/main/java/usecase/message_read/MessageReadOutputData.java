@@ -7,6 +7,10 @@ public class MessageReadOutputData {
         this.success = success;
     }
 
+    /**
+     * Returns whether the use case succeeded.
+     * @return true if successful
+     */
     public boolean isSuccess() {
         return success;
     }

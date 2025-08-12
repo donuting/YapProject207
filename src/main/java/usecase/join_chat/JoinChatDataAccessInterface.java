@@ -15,7 +15,7 @@ public interface JoinChatDataAccessInterface {
     User getCurrentUser();
 
     /**
-     * Loads a GroupChat object given its channel URL
+     * Loads a GroupChat object given its channel URL.
      * @param channelUrl the channel URL.
      * @return the retrieved group chat.
      */
@@ -30,7 +30,7 @@ public interface JoinChatDataAccessInterface {
     GroupChat addUser(String userId, String channelUrl);
 
     /**
-     * Adds a group chat to a user's list of group chats
+     * Adds a group chat to a user's list of group chats.
      * @param chat the group chat.
      * @param name the user's username
      */

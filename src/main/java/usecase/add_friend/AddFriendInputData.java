@@ -13,12 +13,20 @@ public class AddFriendInputData {
         this.friendID = friendID;
     }
 
-    // only did ID for easier check later on
-
+    /**
+     * Gets the inputted username.
+     *
+     * @return the inputted username.
+     */
     public String getFriendUsername() {
         return friendUsername;
     }
 
+    /**
+     * Gets the inputted user ID.
+     *
+     * @return the inputted user ID.
+     */
     public String getFriendID() {
         return friendID;
     }

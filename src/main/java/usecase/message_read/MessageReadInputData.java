@@ -14,14 +14,29 @@ public class MessageReadInputData {
         this.chat = chat;
     }
 
+    /**
+     * Gets the inputted user ID.
+     *
+     * @return the inputted user ID
+     */
     public String getUserId() {
         return userId;
     }
 
+    /**
+     * Gets the inputted message.
+     *
+     * @return the inputted message
+     */
     public Message getMessage() {
         return message;
     }
 
+    /**
+     * Gets the inputted chat.
+     *
+     * @return the inputted chat
+     */
     public Chat getChat() {
         return chat;
     }

@@ -1,11 +1,11 @@
 package usecase.add_friend;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The AddFriend Interactor.
@@ -13,7 +13,6 @@ import java.util.List;
 public class AddFriendInteractor implements AddFriendInputBoundary {
     private final AddFriendUserDataAccessInterface userDataAccessObject;
     private final AddFriendOutputBoundary presenter;
-
 
     public AddFriendInteractor(AddFriendUserDataAccessInterface userDataAccessInterface,
                                AddFriendOutputBoundary addFriendOutputBoundary) {
@@ -31,46 +30,33 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
         final String friendID = addFriendInputData.getFriendID();
         User friendUser = userDataAccessObject.get(friendUsername);
 
-
-        // check that nothing is empty
-        if (currentUsername == null || friendUsername == null || friendID == null) {
+        if (checkNotEmpty(currentUsername, friendUsername, friendID)) {
             presenter.prepareFailView("Please fill out all fields");
-            return;
-        }
-
-        if (currentUsername.trim().isEmpty() || friendUsername.trim().isEmpty() || friendID.trim().isEmpty()) {
-            presenter.prepareFailView("Please fill out all fields");
-            return;
         }
 
         // check that the friend exists
-        if (friendUser == null) {
+        else if (friendUser == null) {
             presenter.prepareFailView("User does not exist");
-            return;
         }
 
-
         // check if friend's username and ID correspond to the same user
-        if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
+        else if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
             presenter.prepareFailView("User " + friendUsername + " does not exist");
-            return;
         }
 
         // check if blocked
-        if (currentUser.getBlockedUserIDs().contains(friendID)
+        else if (currentUser.getBlockedUserIDs().contains(friendID)
                 || friendUser.getBlockedUserIDs().contains(currentUser.getID())) {
             presenter.prepareFailView(friendUsername + " is blocked");
-            return;
         }
 
         // check if already friends
-        if (currentUser.getFriendIDs().contains(friendID)) {
+        else if (currentUser.getFriendIDs().contains(friendID)) {
             presenter.prepareFailView("You are already friends with " + friendUsername);
-            return;
         }
 
         // checking that user is not adding self using IDS, leave for near the end
-        if (friendID.equals(currentUser.getID())) {
+        else if (friendID.equals(currentUser.getID())) {
             presenter.prepareFailView("You cannot add yourself as a friend (friend ID must be different from yours)");
 
         }
@@ -84,8 +70,8 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
             List<String> membersOfChat = new ArrayList<>();
             membersOfChat.add(currentUser.getID());
             membersOfChat.add(friendID);
-            GroupChat chat = userDataAccessObject.create(membersOfChat, currentUsername + ", " +
-                    friendUsername, new GroupChatFactory());
+            GroupChat chat = userDataAccessObject.create(membersOfChat, currentUsername + ", "
+                    + friendUsername, new GroupChatFactory());
 
             // add chat to current user for the in memory object
             currentUser.addPersonalChat(chat);
@@ -99,6 +85,12 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
                     true, friendUsername + " has been added!");
             presenter.prepareSuccessView(outputData);
         }
+    }
+
+    private boolean checkNotEmpty(String currentUsername, String friendUsername, String friendID) {
+        // check that nothing is empty
+        return currentUsername != null && friendUsername != null && friendID != null
+                && !currentUsername.trim().isEmpty() && !friendUsername.trim().isEmpty() && !friendID.trim().isEmpty();
     }
 
     @Override

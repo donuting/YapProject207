@@ -29,7 +29,8 @@ public class BlockFriendInteractor implements BlockFriendInputBoundary {
             success = userDataAccessObject.blockFriend(currentUser, blockedUsername, blockedUserId);
         }
 
-        BlockFriendOutputData outputData = new BlockFriendOutputData(currentUsername, blockedUsername, inputData.getBlockedId(), success);
+        BlockFriendOutputData outputData = new BlockFriendOutputData(
+                currentUsername, blockedUsername, inputData.getBlockedId(), success);
         if (success) {
             currentUser.blockUser(blockedUserId);
             presenter.blockFriendPrepareSuccessView(outputData);

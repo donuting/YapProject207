@@ -9,7 +9,7 @@ import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
 import usecase.add_Bio.AddBioUserDataAccessInterface;
-import usecase.add_DOB.AddDOBUserDataAccessInterface;
+import usecase.add_DOB.AddDobUserDataAccessInterface;
 import usecase.add_friend.AddFriendUserDataAccessInterface;
 import usecase.block_friend.BlockFriendUserDataAccessInterface;
 import usecase.change_password.ChangePasswordUserDataAccessInterface;
@@ -34,7 +34,7 @@ public class InMemoryUserDataAccessObject implements
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
         AddBioUserDataAccessInterface,
-        AddDOBUserDataAccessInterface,
+        AddDobUserDataAccessInterface,
         BlockFriendUserDataAccessInterface,
         DeleteAccountDataAccessInterface,
         AddFriendUserDataAccessInterface,
@@ -147,13 +147,13 @@ public class InMemoryUserDataAccessObject implements
      * Updates the system to record this user's DOB.
      *
      * @param username the name of the user whose DOB is to be updated
-     * @param dob      the user's date of birth
+     * @param dateOfBirth      the user's date of birth
      */
     @Override
-    public boolean addDOB(String username, String dob) {
+    public boolean addDob(String username, String dateOfBirth) {
         User user = users.get(username);
         if (user != null) {
-            return user.EditDOB(dob); // USE EXISTING USER METHOD
+            return user.EditDOB(dateOfBirth); // USE EXISTING USER METHOD
         }
         return false;
     }
@@ -171,13 +171,13 @@ public class InMemoryUserDataAccessObject implements
     /**
      * Creates a SendBirdGroupChannel, adds the users using their ID, creates a GroupChat and adds the channel as an attribute.
      *
-     * @param memberIDs        the member IDs of the users in the chat
+     * @param memberIds        the member IDs of the users in the chat
      * @param chatName         the name of the chat
      * @param groupChatFactory the factory for the GroupChat
      * @return the newly created GroupChat
      */
     @Override
-    public GroupChat create(List<String> memberIDs, String chatName, GroupChatFactory groupChatFactory) {
+    public GroupChat create(List<String> memberIds, String chatName, GroupChatFactory groupChatFactory) {
         return null;
     }
 

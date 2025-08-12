@@ -5,7 +5,8 @@ package usecase.create_chat;
  */
 public class CreateChatInputData {
     private final String chatName;
-    private final String username;  // NEW: username to add to chat
+    // NEW: username to add to chat
+    private final String username;
 
     // NEW: Constructor with both parameters
     public CreateChatInputData(String chatName, String username) {
@@ -16,14 +17,25 @@ public class CreateChatInputData {
     // Backwards compatibility constructor
     public CreateChatInputData(String chatName) {
         this.chatName = chatName;
-        this.username = "";  // Default to empty username
+        // Default to empty username
+        this.username = "";
     }
 
+    /**
+     * Gets the inputted chat name.
+     *
+     * @return the inputted chat name.
+     */
     public String getChatName() {
         return chatName;
     }
 
     // NEW: Getter for username
+    /**
+     * Gets the inputted username to be added to the chat (not the current user).
+     *
+     * @return the inputted username.
+     */
     public String getUsername() {
         return username;
     }

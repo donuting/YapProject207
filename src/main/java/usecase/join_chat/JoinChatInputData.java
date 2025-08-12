@@ -12,10 +12,20 @@ public class JoinChatInputData {
         this.username = username;
     }
 
+    /**
+     * Gets the inputted channel URL.
+     *
+     * @return the inputted channel URL.
+     */
     public String getChannelUrl() {
         return channelUrl;
     }
 
+    /**
+     * Gets the inputted username.
+     *
+     * @return the inputted username.
+     */
     public String getUsername() {
         return username;
     }

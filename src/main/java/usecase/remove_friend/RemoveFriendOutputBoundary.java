@@ -13,7 +13,6 @@ public interface RemoveFriendOutputBoundary {
     /**
      * Prepare the fail view for the Block Friend use case.
      * @param errorMessage Explanation of failure.
-     * @param outputData Output data.
      */
-    void removeFriendPrepareFailView(String errorMessage);//, RemoveFriendOutputData outputData);
+    void removeFriendPrepareFailView(String errorMessage);
 }

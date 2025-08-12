@@ -10,6 +10,10 @@ public class LeaveChatOutputData {
         this.channelUrl = channelUrl;
     }
 
+    /**
+     * Gets the channel URL outputted by the interactor.
+     * @return the channel URL
+     */
     public String getChannelUrl() {
         return channelUrl;
     }

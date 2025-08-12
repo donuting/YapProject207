@@ -9,6 +9,12 @@ public class UpdateChatInputData {
     public UpdateChatInputData(String channelUrl) {
         this.channelUrl = channelUrl;
     }
+
+    /**
+     * Gets the inputted channel URL.
+     *
+     * @return the inputted channel URL
+     */
     public String getChannelUrl() {
         return channelUrl;
     }

@@ -16,14 +16,26 @@ public class ChangePasswordOutputData {
         this.password = password;
     }
 
+    /**
+     * Gets the username outputted by the interactor.
+     * @return the username.
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Returns whether the use case failed.
+     * @return true if the use case failed.
+     */
     public boolean isUseCaseFailed() {
         return useCaseFailed;
     }
 
+    /**
+     * Gets the password outputted by the interactor.
+     * @return the password.
+     */
     public String getPassword() {
         return password;
     }

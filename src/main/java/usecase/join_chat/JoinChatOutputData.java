@@ -12,6 +12,10 @@ public class JoinChatOutputData {
         this.groupChat = groupChat;
     }
 
+    /**
+     * Gets the group chat outputted by the interactor.
+     * @return the group chat
+     */
     public GroupChat getGroupChat() {
         return groupChat;
     }

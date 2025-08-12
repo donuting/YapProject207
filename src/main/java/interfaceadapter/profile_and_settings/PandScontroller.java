@@ -4,8 +4,8 @@ import interfaceadapter.ViewManagerModel;
 import interfaceadapter.main_menu.MainMenuViewModel;
 import usecase.add_Bio.AddBioInputBoundary;
 import usecase.add_Bio.AddBioInputData;
-import usecase.add_DOB.AddDOBInputBoundary;
-import usecase.add_DOB.AddDOBInputData;
+import usecase.add_DOB.AddDobInputBoundary;
+import usecase.add_DOB.AddDobInputData;
 import usecase.change_password.ChangePasswordInputBoundary;
 import usecase.change_password.ChangePasswordInputData;
 
@@ -19,11 +19,11 @@ public class PandScontroller {
     private final PandSviewModel pandsViewModel;
     private final ChangePasswordInputBoundary changePasswordInputBoundary;
     private final AddBioInputBoundary addBioInputBoundary;
-    private final AddDOBInputBoundary addDobInputBoundary;
+    private final AddDobInputBoundary addDobInputBoundary;
 
     public PandScontroller(ViewManagerModel viewManagerModel, MainMenuViewModel mainMenuViewModel,
                            PandSviewModel pandsViewModel, ChangePasswordInputBoundary changePasswordInteractor,
-                           AddBioInputBoundary addBioInputBoundary, AddDOBInputBoundary addDobInputBoundary) {
+                           AddBioInputBoundary addBioInputBoundary, AddDobInputBoundary addDobInputBoundary) {
         this.viewManagerModel = viewManagerModel;
         this.mainMenuViewModel = mainMenuViewModel;
         this.pandsViewModel = pandsViewModel;
@@ -61,7 +61,7 @@ public class PandScontroller {
     public void addDob(String doB) {
         final String username = pandsViewModel.getState().getUsername();
         final String password = pandsViewModel.getState().getChangePasswordText();
-        final AddDOBInputData inputData = new AddDOBInputData(doB, username, password);
+        final AddDobInputData inputData = new AddDobInputData(doB, username, password);
         addDobInputBoundary.execute(inputData);
 
     }

@@ -36,23 +36,23 @@ public class AddDOBInteractorTest {
     // success case for Add DOB
     void addDOBInteractorSuccessTest(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("20061007", user.getName(), user.getPassword());
-        AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
+        AddDobInputData inputData = new AddDobInputData("20061007", user.getName(), user.getPassword());
+        AddDobOutputBoundary presneter = new AddDobOutputBoundary() {
             @Override
-            public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
-                assertEquals(user.getName(), addDOBOutputData.getUsername());
-                assertFalse(addDOBOutputData.getUseCaseFailed());
-                assertEquals("20061007", addDOBOutputData.getDob());
+            public void prepareSuccessAddDobView(AddDobOutputData addDobOutputData) {
+                assertEquals(user.getName(), addDobOutputData.getUsername());
+                assertFalse(addDobOutputData.getUseCaseFailed());
+                assertEquals("20061007", addDobOutputData.getDob());
                 assertEquals("20061007", user.getDOB());
             }
 
             @Override
-            public void prepareFailAddDOBView(String errorMessage, AddDOBOutputData addDOBOutputData) {
+            public void prepareFailAddDobView(String errorMessage, AddDobOutputData addDobOutputData) {
                 fail("Interactor does not work on success case");
             }
         };
 
-        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter, new CommonUserFactory());
+        AddDobInteractor interactor = new AddDobInteractor(dataAccess, presneter, new CommonUserFactory());
         interactor.execute(inputData);
     }
 
@@ -60,24 +60,24 @@ public class AddDOBInteractorTest {
     // DOB is not of appropriate length
     void addDOBInteractorFailTest1(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("", user.getName(), user.getPassword());
-        AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
+        AddDobInputData inputData = new AddDobInputData("", user.getName(), user.getPassword());
+        AddDobOutputBoundary presneter = new AddDobOutputBoundary() {
             @Override
-            public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
+            public void prepareSuccessAddDobView(AddDobOutputData addDobOutputData) {
                fail("Interactor does not check input format");
             }
 
             @Override
-            public void prepareFailAddDOBView(String errorMessage, AddDOBOutputData addDOBOutputData) {
+            public void prepareFailAddDobView(String errorMessage, AddDobOutputData addDobOutputData) {
                 assertEquals("The input should be in the format YYYYMMDD", errorMessage);
-                assertEquals(user.getName(), addDOBOutputData.getUsername());
-                assertTrue(addDOBOutputData.getUseCaseFailed());
-                assertEquals("20250808", addDOBOutputData.getDob());
+                assertEquals(user.getName(), addDobOutputData.getUsername());
+                assertTrue(addDobOutputData.getUseCaseFailed());
+                assertEquals("20250808", addDobOutputData.getDob());
                 assertEquals("20250808", user.getDOB());
             }
         };
 
-        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter, new CommonUserFactory());
+        AddDobInteractor interactor = new AddDobInteractor(dataAccess, presneter, new CommonUserFactory());
         interactor.execute(inputData);
     }
 
@@ -85,24 +85,24 @@ public class AddDOBInteractorTest {
     // DOB is contains non-digit characters
     void addDOBInteractorFailTest2(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("a", user.getName(), user.getPassword());
-        AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
+        AddDobInputData inputData = new AddDobInputData("a", user.getName(), user.getPassword());
+        AddDobOutputBoundary presneter = new AddDobOutputBoundary() {
             @Override
-            public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
+            public void prepareSuccessAddDobView(AddDobOutputData addDobOutputData) {
                 fail("Interactor does not check input format");
             }
 
             @Override
-            public void prepareFailAddDOBView(String errorMessage, AddDOBOutputData addDOBOutputData) {
+            public void prepareFailAddDobView(String errorMessage, AddDobOutputData addDobOutputData) {
                 assertEquals("The input should not contain letters", errorMessage);
-                assertEquals(user.getName(), addDOBOutputData.getUsername());
-                assertTrue(addDOBOutputData.getUseCaseFailed());
-                assertEquals("20250808", addDOBOutputData.getDob());
+                assertEquals(user.getName(), addDobOutputData.getUsername());
+                assertTrue(addDobOutputData.getUseCaseFailed());
+                assertEquals("20250808", addDobOutputData.getDob());
                 assertEquals("20250808", user.getDOB());
             }
         };
 
-        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter, new CommonUserFactory());
+        AddDobInteractor interactor = new AddDobInteractor(dataAccess, presneter, new CommonUserFactory());
         interactor.execute(inputData);
     }
 

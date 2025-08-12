@@ -14,12 +14,26 @@ public class AddBioOutputData {
         this.bio = bio;
     }
 
+    /**
+     * Gets the username outputted by the interactor.
+     * @return the username.
+     */
     public String getUsername() {
         return username;
     }
+
+    /**
+     * Returns whether the use case failed.
+     * @return true if the use case failed.
+     */
     public boolean isUseCaseFailed() {
         return useCaseFailed;
     }
+
+    /**
+     * Gets the bio outputted by the interactor.
+     * @return the bio.
+     */
     public String getBio() {
         return bio;
     }

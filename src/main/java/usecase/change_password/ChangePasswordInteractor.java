@@ -6,6 +6,7 @@ import entity.UserFactory;
  * The Change Password Interactor.
  */
 public class ChangePasswordInteractor implements ChangePasswordInputBoundary {
+    public static final int MIN_PASSWORD_LENGTH = 8;
     private final ChangePasswordUserDataAccessInterface userDataAccessObject;
     private final ChangePasswordOutputBoundary userPresenter;
     private final UserFactory userFactory;
@@ -23,40 +24,21 @@ public class ChangePasswordInteractor implements ChangePasswordInputBoundary {
         String username = changePasswordInputData.getUsername();
         String password = changePasswordInputData.getPassword();
 
-        if (password == null || password.length() < 8) {
+        if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
             userPresenter.prepareFailChangePasswordView("Password is empty or has less than 8 characters.");
         }
+        else {
 
-        boolean hasDigit = false;
-        boolean hasUpper = false;
-        boolean hasLower = false;
+            if (!password.matches("(.*[a-z].*)(.*[A-Z].*)(.*\\d.*)")) {
+                userPresenter.prepareFailChangePasswordView("Password must contain at least one digit,"
+                        + " one uppercase letter, and one lowercase letter.");
+            }
 
-        for (int i = 0; i < password.length(); i++) {
-            char c = password.charAt(i);
-            if (Character.isDigit(c)) {
-                hasDigit = true;
-            }
-            else if (Character.isUpperCase(c)) {
-                hasUpper = true;
-            }
-            else if (Character.isLowerCase(c)) {
-                hasLower = true;
-            }
-            if (hasDigit && hasUpper && hasLower) {
-                // End early if all conditions met
-                break;
-            }
+            userDataAccessObject.changePassword(username, password);
+
+            final ChangePasswordOutputData changePasswordOutputData = new ChangePasswordOutputData(username,
+                    false, password);
+            userPresenter.prepareSuccessChangePasswordView(changePasswordOutputData);
         }
-
-        if (!hasDigit || !hasUpper || !hasLower) {
-            userPresenter.prepareFailChangePasswordView("Password must contain at least one digit," +
-                    " one uppercase letter, and one lowercase letter.");
-        }
-
-        userDataAccessObject.changePassword(username, password);
-
-        final ChangePasswordOutputData changePasswordOutputData = new ChangePasswordOutputData(username,
-                                                                                  false, password);
-        userPresenter.prepareSuccessChangePasswordView(changePasswordOutputData);
     }
 }

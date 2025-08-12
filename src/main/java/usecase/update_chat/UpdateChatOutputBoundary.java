@@ -2,6 +2,9 @@ package usecase.update_chat;
 
 public interface UpdateChatOutputBoundary {
 
+    /**
+     * Leaves the chat and returns to the main menu.
+     */
     void leaveChatView();
 
     /**

@@ -29,7 +29,7 @@ public interface RemoveFriendDataAccessInterface {
 
     /**
      * Gets a username given an ID.
-     *
+     * @param removedId the ID of the user being removed
      * @return the corresponding user.
      */
     String getUsernameFromId(String removedId);

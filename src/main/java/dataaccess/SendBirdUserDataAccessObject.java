@@ -19,7 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import entity.*;
 import usecase.add_Bio.AddBioUserDataAccessInterface;
-import usecase.add_DOB.AddDOBUserDataAccessInterface;
+import usecase.add_DOB.AddDobUserDataAccessInterface;
 import usecase.add_friend.AddFriendUserDataAccessInterface;
 import usecase.block_friend.BlockFriendUserDataAccessInterface;
 import usecase.change_password.ChangePasswordUserDataAccessInterface;
@@ -47,7 +47,7 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
         LogoutUserDataAccessInterface,
         BlockFriendUserDataAccessInterface,
         AddBioUserDataAccessInterface,
-        AddDOBUserDataAccessInterface,
+        AddDobUserDataAccessInterface,
         AddFriendUserDataAccessInterface,
         RemoveFriendDataAccessInterface,
         CreateChatUserDataAccessInterface,
@@ -359,12 +359,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     /**
      * Updates the system to delete a message from a chat.
      *
-     * @param MID  the ID of the message to be deleted.
+     * @param messageId  the ID of the message to be deleted.
      * @param chat the chat in which the message was sent.
      */
     @Override
-    public boolean deleteMessage(String MID, Chat chat) {
-        return messageDataAccessObject.deleteMessage(MID, chat);
+    public boolean deleteMessage(String messageId, Chat chat) {
+        return messageDataAccessObject.deleteMessage(messageId, chat);
     }
 
     @Override
@@ -580,12 +580,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      * Updates the system to record this user's DOB.
      *
      * @param username the name of the user whose DOB is to be updated\
-     * @param dob the date of birth
+     * @param dateOfBirth the date of birth
      */
     @Override
-    public boolean addDOB(String username, String dob) {
+    public boolean addDob(String username, String dateOfBirth) {
         if (existsByName(username)) {
-            return pantryUserDataAccessObject.updateDateOfBirth(username, dob);
+            return pantryUserDataAccessObject.updateDateOfBirth(username, dateOfBirth);
         }
         return false;
     }

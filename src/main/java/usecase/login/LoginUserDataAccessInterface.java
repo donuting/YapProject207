@@ -29,7 +29,7 @@ public interface LoginUserDataAccessInterface {
     User get(String username);
 
     /**
-     * Returns the username of the curren user of the application.
+     * Returns the username of the current user of the application.
      * @return the username of the current user; null indicates that no one is logged into the application.
      */
     String getCurrentUsername();
@@ -40,5 +40,9 @@ public interface LoginUserDataAccessInterface {
      */
     void setCurrentUser(User user);
 
+    /**
+     * Sets the self chat of the current user.
+     * @param selfChat the self chat
+     */
     void setCurrentSelfChat(GroupChat selfChat);
 }

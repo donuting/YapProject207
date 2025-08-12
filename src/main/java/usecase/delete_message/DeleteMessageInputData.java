@@ -10,6 +10,11 @@ public class DeleteMessageInputData {
         this.messageId = messageId;
     }
 
+    /**
+     * Gets the inputted message ID.
+     *
+     * @return the inputted message ID.
+     */
     public String getMessageId() {
         return messageId;
     }

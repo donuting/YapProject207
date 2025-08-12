@@ -2,8 +2,8 @@ package interfaceadapter.profile_and_settings;
 
 import usecase.add_Bio.AddBioOutputBoundary;
 import usecase.add_Bio.AddBioOutputData;
-import usecase.add_DOB.AddDOBOutputBoundary;
-import usecase.add_DOB.AddDOBOutputData;
+import usecase.add_DOB.AddDobOutputBoundary;
+import usecase.add_DOB.AddDobOutputData;
 import usecase.change_password.ChangePasswordOutputBoundary;
 import usecase.change_password.ChangePasswordOutputData;
 
@@ -14,7 +14,7 @@ import usecase.change_password.ChangePasswordOutputData;
  * The Presenter for the Add Bio Use Case.
  */
 public class PandSpresenter implements ChangePasswordOutputBoundary,
-        AddDOBOutputBoundary,
+        AddDobOutputBoundary,
         AddBioOutputBoundary {
     private static final String PROFILE_AND_SETTINGS = "Profile And Settings";
     private final PandSviewModel pandSviewModel;
@@ -33,7 +33,7 @@ public class PandSpresenter implements ChangePasswordOutputBoundary,
     }
 
     @Override
-    public void prepareSuccessAddDOBView(AddDOBOutputData addDobOutputData) {
+    public void prepareSuccessAddDobView(AddDobOutputData addDobOutputData) {
         final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
         pandSstate.setAddDobText(addDobOutputData.getDob());
         pandSviewModel.setState(pandSstate);
@@ -59,7 +59,7 @@ public class PandSpresenter implements ChangePasswordOutputBoundary,
     }
 
     @Override
-    public void prepareFailAddDOBView(String errorMessage, AddDOBOutputData addDobOutputData) {
+    public void prepareFailAddDobView(String errorMessage, AddDobOutputData addDobOutputData) {
         final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
         pandSstate.setAddDobText(addDobOutputData.getDob());
         System.out.println(errorMessage);

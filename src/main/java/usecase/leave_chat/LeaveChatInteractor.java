@@ -5,13 +5,14 @@ import entity.User;
 /**
  * The interactor for the Leave Chat use case.
  */
-public class LeaveChatInteractor implements LeaveChatInputBoundary{
+public class LeaveChatInteractor implements LeaveChatInputBoundary {
     private final LeaveChatDataAccessInterface leaveChatDataAccessInterface;
     private final LeaveChatOutputBoundary viewGroupChatsPresenter;
 
-    public LeaveChatInteractor(LeaveChatDataAccessInterface leaveChatDataAccessInterface1, LeaveChatOutputBoundary viewGroupChatsPresenter1) {
-        this.leaveChatDataAccessInterface = leaveChatDataAccessInterface1;
-        this.viewGroupChatsPresenter = viewGroupChatsPresenter1;
+    public LeaveChatInteractor(LeaveChatDataAccessInterface leaveChatDataAccessInterface,
+                               LeaveChatOutputBoundary viewGroupChatsPresenter) {
+        this.leaveChatDataAccessInterface = leaveChatDataAccessInterface;
+        this.viewGroupChatsPresenter = viewGroupChatsPresenter;
     }
 
     /**
@@ -25,13 +26,16 @@ public class LeaveChatInteractor implements LeaveChatInputBoundary{
         if (currentUser == null) {
             LeaveChatOutputData outputData = new LeaveChatOutputData(null);
             viewGroupChatsPresenter.leaveChatPrepareFailView("This user doesn't exist", outputData);
-        } else {
+        }
+        else {
             String channelUrl = leaveChatInputData.getChannelUrl();
-            boolean success = leaveChatDataAccessInterface.leaveGroupChat(channelUrl, currentUser.getID(), currentUser.getName());
+            boolean success = leaveChatDataAccessInterface.leaveGroupChat(
+                    channelUrl, currentUser.getID(), currentUser.getName());
             if (!success) {
                 LeaveChatOutputData outputData = new LeaveChatOutputData(null);
                 viewGroupChatsPresenter.leaveChatPrepareFailView("Failed to leave chat", outputData);
-            } else {
+            }
+            else {
                 currentUser.removeGroupChat(channelUrl);
                 LeaveChatOutputData outputData = new LeaveChatOutputData(channelUrl);
                 viewGroupChatsPresenter.leaveChatPrepareSuccessView(outputData);
