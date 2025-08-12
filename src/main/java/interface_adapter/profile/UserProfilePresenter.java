@@ -17,7 +17,7 @@ public class UserProfilePresenter implements UserProfileOutputBoundary {
     @Override
     public void presentProfileSaved(UserProfileOutputData outputData) {
         // Create a new state with updated information
-        UserProfileState userProfileState = userProfileViewModel.getState();
+        final UserProfileState userProfileState = userProfileViewModel.getState();
         userProfileState.setUsername(outputData.getUsername());
         userProfileState.setUserId(outputData.getUserId());
         userProfileState.setBio(outputData.getBio());
@@ -32,7 +32,7 @@ public class UserProfilePresenter implements UserProfileOutputBoundary {
     @Override
     public void presentProfileLoaded(UserProfileOutputData outputData) {
         // Create a new state with loaded information
-        UserProfileState userProfileState = new UserProfileState();
+        final UserProfileState userProfileState = new UserProfileState();
         userProfileState.setUsername(outputData.getUsername());
         userProfileState.setUserId(outputData.getUserId());
         userProfileState.setBio(outputData.getBio());
@@ -46,7 +46,7 @@ public class UserProfilePresenter implements UserProfileOutputBoundary {
 
     @Override
     public void presentError(String errorMessage) {
-        UserProfileState userProfileState = userProfileViewModel.getState();
+        final UserProfileState userProfileState = userProfileViewModel.getState();
         userProfileState.setError(errorMessage);
         userProfileState.setSuccessMessage(null);
 

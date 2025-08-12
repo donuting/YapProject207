@@ -28,11 +28,12 @@ public class AddChatController {
     }
 
     /**
-     * Backwards compatibility method - creates chat with just chat name
+     * Backwards compatibility method - creates chat with just chat name.
      * @param chatName the name of the chat to create
      */
     public void execute(String chatName) {
-        execute(chatName, "");  // Call the new method with empty username
+        execute(chatName, "");
+        // Call the new method with empty username
     }
 
     /**

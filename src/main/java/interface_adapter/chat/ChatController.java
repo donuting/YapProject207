@@ -23,7 +23,10 @@ public class ChatController {
     private final ViewManagerModel viewManagerModel;
     private final ViewChatsViewModel viewChatsViewModel;
 
-    public ChatController(SendMessageInputBoundary sendMessageUseCaseInteractor, DeleteMessageInputBoundary deleteMessageUseCaseInteractor, UpdateChatInputBoundary updateChatInputUseCaseInteractor, JoinChatInputBoundary joinChatInputUseCaseInteractor,
+    public ChatController(SendMessageInputBoundary sendMessageUseCaseInteractor,
+                          DeleteMessageInputBoundary deleteMessageUseCaseInteractor,
+                          UpdateChatInputBoundary updateChatInputUseCaseInteractor,
+                          JoinChatInputBoundary joinChatInputUseCaseInteractor,
                           ViewManagerModel viewManagerModel,
                           ViewChatsViewModel viewChatsViewModel) {
         this.sendMessageUseCaseInteractor = sendMessageUseCaseInteractor;
@@ -52,25 +55,29 @@ public class ChatController {
 
     /**
      * Executes the "delete message" Use Case.
+     * @param messageId message id
      */
     public void deleteMessage(Integer messageId) {
-        DeleteMessageInputData deleteMessageInputData = new DeleteMessageInputData(messageId.toString());
+        final DeleteMessageInputData deleteMessageInputData = new DeleteMessageInputData(messageId.toString());
         deleteMessageUseCaseInteractor.execute(deleteMessageInputData);
     }
 
     /**
      * Executes the "update chat" Use Case.
+     * @param channelUrl channel url
      */
     public void updateChat(String channelUrl) {
-        UpdateChatInputData updateChatInputData = new UpdateChatInputData(channelUrl);
+        final UpdateChatInputData updateChatInputData = new UpdateChatInputData(channelUrl);
         updateChatInputUseCaseInteractor.execute(updateChatInputData);
     }
 
     /**
      * Executes the "join chat" Use Case.
+     * @param channelUrl channel url
+     * @param newUsername username
      */
     public void joinChat(String channelUrl, String newUsername) {
-        JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl, newUsername);
+        final JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl, newUsername);
         joinChatInputUseCaseInteractor.execute(joinChatInputData);
     }
 }

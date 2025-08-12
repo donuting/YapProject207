@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.profile_and_settings.PandSController;
-import interface_adapter.profile_and_settings.PandSState;
-import interface_adapter.profile_and_settings.PandSViewModel;
+import interface_adapter.profile_and_settings.PandScontroller;
+import interface_adapter.profile_and_settings.PandSstate;
+import interface_adapter.profile_and_settings.PandSviewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.beans.PropertyChangeListener;
  * The View for the Profile and Settings after clicking the "Profile and settings" button from Main menu.
  */
 public class ProfileandSettingView extends JPanel implements PropertyChangeListener, ActionListener {
-    private final PandSViewModel pandSViewModel;
+    private final PandSviewModel pandSViewModel;
     private final String viewName = "Profile And Settings";
     private final JLabel username;
     private final JButton changePasswordButton;
@@ -29,9 +29,9 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
     private final JLabel UID;
     private final JLabel title;
 
-    private PandSController pandSController;
+    private PandScontroller pandSController;
 
-    public ProfileandSettingView(PandSViewModel pandSViewModel) {
+    public ProfileandSettingView(PandSviewModel pandSViewModel) {
         this.pandSViewModel = pandSViewModel;
         this.pandSViewModel.addPropertyChangeListener(this);
 
@@ -51,7 +51,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         logoutButton = new JButton("Logout");
 
         //Create Other components
-        UID = new JLabel("UID = " + pandSViewModel.getState().getUID());
+        UID = new JLabel("UID = " + pandSViewModel.getState().getUserId());
         username = new JLabel("Username = " + pandSViewModel.getState().getUsername());
 
         //Add action listeners
@@ -109,12 +109,12 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("Profile And Settings")) {
-            PandSState pandSState = pandSViewModel.getState();
-            UID.setText("UID =" + pandSViewModel.getState().getUID());
+            PandSstate pandSState = pandSViewModel.getState();
+            UID.setText("UID =" + pandSViewModel.getState().getUserId());
             username.setText("Username =" + pandSViewModel.getState().getUsername());
             changePassword.setText(pandSState.getChangePasswordText());
             addBio.setText(pandSState.getAddBioText());
-            addDOB.setText(pandSState.getAddDOBText());
+            addDOB.setText(pandSState.getAddDobText());
             this.revalidate();
             this.repaint();
         }
@@ -129,7 +129,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
             } else if (e.getSource() == addBioButton) {
                 pandSController.addBio(addBio.getText());
             } else if (e.getSource() == addDOBButton) {
-                pandSController.addDOB(addDOB.getText());
+                pandSController.addDob(addDOB.getText());
             } else if (e.getSource() == backButton) {
                 pandSController.switchToMenu();
             } else if (e.getSource() == logoutButton) {
@@ -143,7 +143,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
      * @param pandSController is the controller to be set.
      */
 
-    public void setPandSController(PandSController pandSController) {
+    public void setPandSController(PandScontroller pandSController) {
         this.pandSController = pandSController;
     }
 

@@ -44,7 +44,7 @@ public class ViewGroupChatsController {
      * @param channelUrl the URL of the channel to be joined.
      */
     public void joinChat(String channelUrl) {
-        JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl, null);
+        final JoinChatInputData joinChatInputData = new JoinChatInputData(channelUrl, null);
         joinChatUseCaseInteractor.execute(joinChatInputData);
     }
 
@@ -53,7 +53,7 @@ public class ViewGroupChatsController {
      * @param channelUrl the URL of the channel to be left.
      */
     public void leaveChat(String channelUrl) {
-        LeaveChatInputData leaveChatInputData = new LeaveChatInputData(channelUrl);
+        final LeaveChatInputData leaveChatInputData = new LeaveChatInputData(channelUrl);
         leaveChatUseCaseInteractor.execute(leaveChatInputData);
     }
 
@@ -64,7 +64,7 @@ public class ViewGroupChatsController {
      */
     public void switchToViewChat(String channelUrl, String chatName) {
         // Update the active chat's channel URL and name
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setCurrentChannelUrl(channelUrl);
         chatState.setChatName(chatName);
         chatState.setGroupChat(true);

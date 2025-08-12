@@ -5,10 +5,10 @@ import interface_adapter.ViewModel;
 /**
  * The View Model for the Profile and settings View.
  */
-public class PandSViewModel extends ViewModel<PandSState> {
+public class PandSviewModel extends ViewModel<PandSstate> {
 
-    public PandSViewModel() {
+    public PandSviewModel() {
         super("Profile And Settings");
-        setState(new PandSState());
+        setState(new PandSstate());
     }
 }

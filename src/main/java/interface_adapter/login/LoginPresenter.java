@@ -1,13 +1,10 @@
 package interface_adapter.login;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.change_password.LoggedInState;
-import interface_adapter.change_password.LoggedInViewModel;
-import use_case.login.LoginOutputBoundary;
 import interface_adapter.main_menu.MainMenuState;
 import interface_adapter.main_menu.MainMenuViewModel;
-import use_case.login.LoginOutputData;
 import use_case.login.LoginOutputBoundary;
+import use_case.login.LoginOutputData;
 
 /**
  * The Presenter for the Login Use Case.
@@ -32,12 +29,11 @@ public class LoginPresenter implements LoginOutputBoundary {
         final MainMenuState mainMenuState = mainMenuViewModel.getState();
         mainMenuState.setUsername(response.getUsername());
         mainMenuState.setPassword(response.getPassword());
-        mainMenuState.setUID(response.getUID());
+        mainMenuState.setUserId(response.getUID());
         this.mainMenuViewModel.setState(mainMenuState);
         this.mainMenuViewModel.firePropertyChanged();
 
-        this.viewManagerModel.setState(mainMenuViewModel.getState().getUsername().isEmpty() ?
-                "main menu" : "main menu");
+        this.viewManagerModel.setState("main menu");
         this.viewManagerModel.firePropertyChanged();
     }
 
