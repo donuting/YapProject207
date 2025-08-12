@@ -7,12 +7,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
-import interface_adapter.add_friend.AddFriendController;
-import interface_adapter.add_friend.AddFriendState;
-import interface_adapter.add_friend.AddFriendViewModel;
+import interfaceadapter.add_friend.AddFriendController;
+import interfaceadapter.add_friend.AddFriendState;
+import interfaceadapter.add_friend.AddFriendViewModel;
 
 
 /**

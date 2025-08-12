@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.main_menu.MainMenuController;
-import interface_adapter.main_menu.MainMenuState;
-import interface_adapter.main_menu.MainMenuViewModel;
+import interfaceadapter.main_menu.MainMenuController;
+import interfaceadapter.main_menu.MainMenuState;
+import interfaceadapter.main_menu.MainMenuViewModel;
 
 import javax.swing.*;
 import java.awt.*;
