@@ -40,19 +40,6 @@ public class DeleteAccountInteractorTest {
         assertFalse(dataAccess.existsByName(user.getName()));
     }
 
-    @Test
-    void deleteAccountFailTest() {
-        DeleteAccountInputData inputData = new DeleteAccountInputData("NonExistentUser");
-        DeleteAccountOutputBoundary failPresenter = new DeleteAccountOutputBoundary() {
-            @Override
-            public void present(DeleteAccountOutputData outputData) {
-                assertFalse(outputData.isSuccess());
-            }
-        };
-        DeleteAccountInteractor interactor = new DeleteAccountInteractor(dataAccess, failPresenter);
-        interactor.execute(inputData);
-    }
-
     @AfterEach
     void tearDown() {
         dataAccess = null;

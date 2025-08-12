@@ -13,4 +13,6 @@ public interface AddDOBUserDataAccessInterface {
      * @param dob the user's date of birth
      */
     boolean addDOB(String username, String dob);
+
+    User get(String username);
 }

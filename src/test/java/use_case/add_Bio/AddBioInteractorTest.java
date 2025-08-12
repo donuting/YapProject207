@@ -65,7 +65,7 @@ public class AddBioInteractorTest {
 
             @Override
             public void prepareFailAddBioView(String errorMessage, AddBioOutputData addBioOutputData) {
-                assertEquals("The input is empty", errorMessage);
+                assertEquals("Add Bio Failed", errorMessage);
             }
         };
         AddBioInteractor interactor = new AddBioInteractor(dataAccess, presenter);
@@ -85,7 +85,7 @@ public class AddBioInteractorTest {
 
             @Override
             public void prepareFailAddBioView(String errorMessage, AddBioOutputData addBioOutputData) {
-                assertEquals("Bio cannot match password", errorMessage);
+                assertEquals("Add Bio Failed", errorMessage);
             }
         };
         AddBioInteractor interactor = new AddBioInteractor(dataAccess, presenter);

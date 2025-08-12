@@ -25,4 +25,6 @@ public interface LogoutUserDataAccessInterface {
      * @param selfChat the self chat
      */
     void setCurrentSelfChat(GroupChat selfChat);
+
+    void setCurrentUsername(String username);
 }
