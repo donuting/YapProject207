@@ -147,7 +147,7 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
                 messageInputField.setText(""); // Clear the input field
             }
         } else if (evt.getSource().equals(backButton)) {
-            chatController.switchToMainMenu();
+            chatController.switchToViewChatsView();
         } else if (deleteMessageButtons.containsKey(evt.getSource())) {
             Integer messageId = deleteMessageButtons.get(evt.getSource());
             chatController.deleteMessage(messageId);

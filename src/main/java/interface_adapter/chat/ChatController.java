@@ -46,7 +46,7 @@ public class ChatController {
     /**
      * Executes the "switch to ViewChats" Use Case.
      */
-    public void switchToMainMenu() {
+    public void switchToViewChatsView() {
         updateChatInputUseCaseInteractor.leaveChatView();
     }
 

@@ -75,7 +75,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
         chatState.setGroupChat(false);
         chatViewModel.firePropertyChanged();
 
-        viewManagerModel.setState("main menu");
+        viewManagerModel.setState("view chats");
         viewManagerModel.firePropertyChanged();
     }
 
