@@ -60,7 +60,7 @@ public class AddDOBInteractorTest {
     // DOB is not of appropriate length
     void addDOBInteractorFailTest1(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("", user.getName(), user.getPassword());
+        AddDOBInputData inputData = new AddDOBInputData("1", user.getName(), user.getPassword());
         AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
             @Override
             public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
@@ -85,7 +85,7 @@ public class AddDOBInteractorTest {
     // DOB is contains non-digit characters
     void addDOBInteractorFailTest2(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("a", user.getName(), user.getPassword());
+        AddDOBInputData inputData = new AddDOBInputData("abcdefgh", user.getName(), user.getPassword());
         AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
             @Override
             public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
@@ -94,7 +94,7 @@ public class AddDOBInteractorTest {
 
             @Override
             public void prepareFailAddDOBView(String errorMessage, AddDOBOutputData addDOBOutputData) {
-                assertEquals("The input should not contain letters", errorMessage);
+                assertEquals("The input should only contain numbers", errorMessage);
                 assertEquals(user.getName(), addDOBOutputData.getUsername());
                 assertTrue(addDOBOutputData.getUseCaseFailed());
                 assertEquals("20250808", addDOBOutputData.getDob());
