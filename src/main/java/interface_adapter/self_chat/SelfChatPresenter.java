@@ -106,7 +106,7 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
             final String formattedDate = now.format(formatter);
 
             jsonObject.addProperty(TIMESTAMP, formattedDate);
-            jsonObject.addProperty(MESSAGE, "✓ " + message);
+            jsonObject.addProperty(MESSAGE, "\u2713" + message);
             jsonObject.addProperty("message_ID", "birthday_" + System.currentTimeMillis());
 
             final Map<Integer, JsonObject> messageData = new HashMap<>();
