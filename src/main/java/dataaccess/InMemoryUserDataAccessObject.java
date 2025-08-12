@@ -85,7 +85,7 @@ public class InMemoryUserDataAccessObject implements
     }
 
     @Override
-    public boolean addFriend(String currentUsername, String friendUsername) {
+    public boolean addFriend(String currentUsername, String friendUsername, GroupChat chat) {
         return false;
     }
 
@@ -185,7 +185,6 @@ public class InMemoryUserDataAccessObject implements
      * @param newGroupChat
      * @param username
      */
-    @Override
     public void savePersonalChat(GroupChat newGroupChat, String username) {
 
     }

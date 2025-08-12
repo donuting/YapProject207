@@ -27,11 +27,12 @@ public interface AddFriendUserDataAccessInterface {
 
     /**
      * Add friendship.
-     * @param currentUsername the user performing the friendship
-     * @param friendUsername the user receiving the friendship
+     * @param currentUsername the user performing the friendship.
+     * @param friendUsername the user receiving the friendship.
+     * @param chat the new chat between the two users.
      * @return true if friendship was successful
      */
-    boolean addFriend(String currentUsername, String friendUsername);
+    boolean addFriend(String currentUsername, String friendUsername, GroupChat chat);
 
     /**
      * Creates a SendBirdGroupChannel, adds the users using their ID,
@@ -43,13 +44,6 @@ public interface AddFriendUserDataAccessInterface {
      */
     GroupChat create(List<String> memberIds, String chatName, GroupChatFactory groupChatFactory);
 
-    /**
-     * Saves a personal chat to a user.
-     *
-     * @param newPersonalChat the personal chat
-     * @param username the user's name
-     */
-    void savePersonalChat(GroupChat newPersonalChat, String username);
 
     /**
      * Returns the current user.

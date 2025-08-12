@@ -153,26 +153,42 @@ public class PantryUserDataAccessObject {
      *
      * @param currentUsername the current user's username.
      * @param friendUsername the username of the friend to be added.
+     * @param personalChannelUrl the URL of the new personal chat between the two users.
      * @return true if successful.
      */
-    public boolean addFriend(String currentUsername, String friendUsername) {
+    public boolean addFriend(String currentUsername, String friendUsername, String personalChannelUrl) {
         final PantryBasket currentUserBasket = pantry.getBasket(currentUsername);
         final PantryBasket friendBasket = pantry.getBasket(friendUsername);
         final String currentId = currentUserBasket.getJson().complete().get(USER_ID).getAsString();
         final String friendId = friendBasket.getJson().complete().get(USER_ID).getAsString();
 
-        // Add friend to current user's friends
+        // For updating the current user
         JsonObject currentUpdateData = new JsonObject();
+
+        // Add friend to current user's friends
         JsonArray currentUserFriendIds = new JsonArray();
         currentUserFriendIds.add(friendId);
         currentUpdateData.add(FRIEND_IDS, currentUserFriendIds);
+
+        // Add personal chat to current user's personal chats
+        JsonArray currentUserPersonalChatUrls = new JsonArray();
+        currentUserPersonalChatUrls.add(personalChannelUrl);
+        currentUpdateData.add(PERSONAL_CHANNEL_URLS, currentUserPersonalChatUrls);
+
         currentUserBasket.mergeJson(currentUpdateData).queue();
 
-        // Add current user to friend's friends
+        // For updating the friend
         JsonObject friendUpdateData = new JsonObject();
+
+        // Add current user to friend's friends
         JsonArray friendFriendIds = new JsonArray();
         friendFriendIds.add(currentId);
         friendUpdateData.add(FRIEND_IDS, friendFriendIds);
+
+        JsonArray friendPersonalChatUrls = new JsonArray();
+        friendPersonalChatUrls.add(personalChannelUrl);
+        friendUpdateData.add(PERSONAL_CHANNEL_URLS, friendPersonalChatUrls);
+
         friendBasket.mergeJson(friendUpdateData).queue();
 
         return true;

@@ -176,11 +176,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      *
      * @param currentUsername the current user.
      * @param friendUsername the username of the friend to be added.
+     * @param personalChat the new chat between the two users.
      * @return true if friendship was successful
      */
     @Override
-    public boolean addFriend(String currentUsername, String friendUsername) {
-        return pantryUserDataAccessObject.addFriend(currentUsername, friendUsername);
+    public boolean addFriend(String currentUsername, String friendUsername, GroupChat personalChat) {
+        return pantryUserDataAccessObject.addFriend(currentUsername, friendUsername, personalChat.getChannelUrl());
     }
 
     /**
@@ -425,7 +426,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      * @param newPersonalChat the personal chat
      * @param username the user's name
      */
-    @Override
     public void savePersonalChat(GroupChat newPersonalChat, String username) {
         pantryUserDataAccessObject.savePersonalChat(username, newPersonalChat.getChannelUrl());
     }

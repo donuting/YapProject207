@@ -80,9 +80,6 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
             // updates current user in memory
             currentUser.addFriend(friendID);
 
-            // adds friendship in database
-            userDataAccessObject.addFriend(currentUsername, friendUsername);
-
             // create the chat between both friends
             List<String> membersOfChat = new ArrayList<>();
             membersOfChat.add(currentUser.getID());
@@ -93,9 +90,10 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
             // add chat to current user for the in memory object
             currentUser.addPersonalChat(chat);
 
+            // adds friendship in database, which adds chat to both users as well
+            userDataAccessObject.addFriend(currentUsername, friendUsername, chat);
+
             // add chat to both users in database
-            userDataAccessObject.savePersonalChat(chat, currentUsername);
-            userDataAccessObject.savePersonalChat(chat, friendUsername);
 
             AddFriendOutputData outputData = new AddFriendOutputData(friendUsername,
                     true, friendUsername + " has been added!");

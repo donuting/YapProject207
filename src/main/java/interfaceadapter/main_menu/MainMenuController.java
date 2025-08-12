@@ -7,6 +7,8 @@ import interfaceadapter.view_chats.ViewChatsViewModel;
 import interfaceadapter.view_friends.ViewFriendsState;
 import interfaceadapter.view_friends.ViewFriendsViewModel;
 
+import java.util.HashMap;
+
 /**
  * The controller for the Main Menu View.
  */
@@ -67,6 +69,7 @@ public class MainMenuController {
         // Update friends in state object
         final ViewFriendsState viewFriendsState = viewFriendsViewModel.getState();
         viewFriendsState.setNeedsFriendInfo(true);
+        viewFriendsState.setChannelToUserIdData(new HashMap<>());
         viewFriendsViewModel.setState(viewFriendsState);
         viewFriendsViewModel.firePropertyChanged();
 
