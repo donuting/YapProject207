@@ -1,10 +1,5 @@
 package interface_adapter.self_chat;
 
-import com.google.gson.JsonObject;
-import entity.Message;
-import use_case.self_chat.SelfChatOutputBoundary;
-import use_case.self_chat.SelfChatOutputData;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -12,11 +7,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+import entity.Message;
+import use_case.self_chat.SelfChatOutputBoundary;
+import use_case.self_chat.SelfChatOutputData;
+
 /**
  * The Presenter for the Self Chat Use Case.
  */
 public class SelfChatPresenter implements SelfChatOutputBoundary {
 
+    private static final String FORMAT = "MMM dd, yyyy HH:mm";
+    private static final String TIMESTAMP = "timestamp";
+    private static final String MESSAGE = "message";
+    private static final String MESSAGE_ID = "message_ID";
     private final SelfChatViewModel selfChatViewModel;
 
     public SelfChatPresenter(SelfChatViewModel selfChatViewModel) {
@@ -29,41 +33,45 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
             // Messages were successfully added
             selfChatViewModel.setUsername(outputData.getUsername());
 
-            Map<Integer, JsonObject> messageData = new HashMap<>();
+            final Map<Integer, JsonObject> messageData = new HashMap<>();
             for (Message message : outputData.getMessages()) {
                 try {
                     // Fix the timestamp parsing issue - the original had Long.getLong which was incorrect
-                    long timestampLong = Long.parseLong(message.getTimestamp());
-                    Instant instant = Instant.ofEpochMilli(timestampLong);
-                    ZoneId zoneId = ZoneId.systemDefault();
-                    LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
-                    String formattedDate = localDateTime.format(formatter);
+                    final long timestampLong = Long.parseLong(message.getTimestamp());
+                    final Instant instant = Instant.ofEpochMilli(timestampLong);
+                    final ZoneId zoneId = ZoneId.systemDefault();
+                    final LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);
+                    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT);
+                    final String formattedDate = localDateTime.format(formatter);
 
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("timestamp", formattedDate);
-                    jsonObject.addProperty("message", message.GetText()); // Changed from "message_body" to "message"
-                    jsonObject.addProperty("message_ID", message.GetMID().toString()); // Ensure it's a string
+                    final JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty(TIMESTAMP, formattedDate);
+                    // Changed from "message_body" to "message"
+                    jsonObject.addProperty(MESSAGE, message.GetText());
+                    // Ensure it's a string
+                    jsonObject.addProperty(MESSAGE_ID, message.GetMID().toString());
 
                     // Use the message ID as integer key
                     messageData.put(Integer.parseInt(message.GetMID().toString()), jsonObject);
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException evt) {
                     // Handle timestamp parsing error - use current time as fallback
-                    LocalDateTime now = LocalDateTime.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
-                    String formattedDate = now.format(formatter);
+                    final LocalDateTime now = LocalDateTime.now();
+                    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT);
+                    final String formattedDate = now.format(formatter);
 
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("timestamp", formattedDate);
-                    jsonObject.addProperty("message", message.GetText());
-                    jsonObject.addProperty("message_ID", message.GetMID().toString());
+                    final JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty(TIMESTAMP, formattedDate);
+                    jsonObject.addProperty(MESSAGE, message.GetText());
+                    jsonObject.addProperty(MESSAGE_ID, message.GetMID().toString());
 
                     // Use hash code as fallback for ID
                     messageData.put(message.GetMID().toString().hashCode(), jsonObject);
                 }
             }
             selfChatViewModel.addMessages(messageData);
-        } else {
+        }
+        else {
             // There was an error
             selfChatViewModel.setErrorMessage(outputData.getErrorMessage());
         }
@@ -73,7 +81,8 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
     public void presentClearResult(boolean success, String errorMessage) {
         if (success) {
             selfChatViewModel.clearMessages();
-        } else {
+        }
+        else {
             selfChatViewModel.setErrorMessage(errorMessage);
         }
     }
@@ -85,23 +94,26 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
 
     /**
      * Presents the result of saving birthday data.
+     * @param success successful or not
+     * @param message message
      */
     public void presentBirthdaySaveResult(boolean success, String message) {
         if (success) {
             // Create a system message to show in chat
-            JsonObject jsonObject = new JsonObject();
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
-            String formattedDate = now.format(formatter);
+            final JsonObject jsonObject = new JsonObject();
+            final LocalDateTime now = LocalDateTime.now();
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT);
+            final String formattedDate = now.format(formatter);
 
-            jsonObject.addProperty("timestamp", formattedDate);
-            jsonObject.addProperty("message", "✓ " + message);
+            jsonObject.addProperty(TIMESTAMP, formattedDate);
+            jsonObject.addProperty(MESSAGE, "✓ " + message);
             jsonObject.addProperty("message_ID", "birthday_" + System.currentTimeMillis());
 
-            Map<Integer, JsonObject> messageData = new HashMap<>();
-            messageData.put((int)System.currentTimeMillis(), jsonObject);
+            final Map<Integer, JsonObject> messageData = new HashMap<>();
+            messageData.put((int) System.currentTimeMillis(), jsonObject);
             selfChatViewModel.addMessages(messageData);
-        } else {
+        }
+        else {
             selfChatViewModel.setErrorMessage(message);
         }
     }

@@ -7,13 +7,13 @@ public class MainMenuState {
     private String username = "";
     private String error = "";
     private String password = "";
-    private String UID = "";
+    private String uiD = "";
 
     public MainMenuState(MainMenuState copy) {
         username = copy.username;
         error = copy.error;
         password = copy.password;
-        UID = copy.UID;
+        uiD = copy.uiD;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
@@ -36,11 +36,23 @@ public class MainMenuState {
         this.error = error;
     }
 
-    public String getPassword() {return password;}
+    public String getPassword() {
+        return password;
+    }
 
-    public void setPassword(String password) {this.password = password;}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public String getUID() {return UID;}
+    public String getUiD() {
+        return uiD;
+    }
 
-    public void setUID(String UID) {this.UID = UID;}
+    /**
+     * Description.
+     * @param userID user id
+     */
+    public void setUserId(String userID) {
+        this.uiD = userID;
+    }
 }

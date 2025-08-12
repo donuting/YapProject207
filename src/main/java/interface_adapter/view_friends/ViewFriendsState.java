@@ -13,7 +13,7 @@ public class ViewFriendsState {
     private String successMessage;
 
     // Records whether the friend info needs to be updated
-    private boolean needsFriendInfo = false;
+    private boolean needsFriendInfo;
 
     public ViewFriendsState(ViewFriendsState copy) {
         username = copy.username;
@@ -62,6 +62,7 @@ public class ViewFriendsState {
     public String getSuccessMessage() {
         return successMessage;
     }
+
     public void setSuccessMessage(String successMessage) {
         this.successMessage = successMessage;
     }

@@ -20,12 +20,14 @@ public class UserProfileController {
 
     /**
      * Executes the "save profile" Use Case.
+     * @param oldUsername old username
      * @param username the new username
      * @param bio the new bio
      * @param dateOfBirth the new date of birth
      */
     public void saveProfile(String oldUsername, String username, String bio, String dateOfBirth) {
-        final UserProfileInputData userProfileInputData = new UserProfileInputData(oldUsername, username, bio, dateOfBirth);
+        final UserProfileInputData userProfileInputData = new UserProfileInputData(oldUsername,
+                username, bio, dateOfBirth);
         userProfileUseCaseInteractor.saveProfile(userProfileInputData);
     }
 
