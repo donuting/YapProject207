@@ -1,9 +1,9 @@
 package interface_adapter.add_chat;
 
-import interface_adapter.ViewModel;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
+import interface_adapter.ViewModel;
 
 /**
  * The View Model for the Add Chat View.
@@ -27,10 +27,17 @@ public class AddChatViewModel extends ViewModel<AddChatState> {
         return state;
     }
 
+    /**
+     * Description.
+     * @param listener The PropertyChangeListener to be added
+     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
     }
 
+    /**
+     * Description.
+     */
     public void firePropertyChanged() {
         support.firePropertyChange("state", null, this.state);
     }

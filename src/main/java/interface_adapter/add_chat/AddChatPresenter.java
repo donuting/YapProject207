@@ -22,15 +22,17 @@ public class AddChatPresenter implements CreateChatOutputBoundary {
         final AddChatState addChatState = addChatViewModel.getState();
         addChatState.setSuccess(true);
         addChatState.setChatNameError("");
-        addChatState.setUsernameError("");  // NEW: Clear username error
+        // NEW: Clear username error
+        addChatState.setUsernameError("");
         addChatState.setChatName(outputData.getChatName());
-        addChatState.setUsername(outputData.getAddedUsername());  // NEW: Set added username
+        // NEW: Set added username
+        addChatState.setUsername(outputData.getAddedUsername());
         addChatState.setID(outputData.getUserId());
         addChatViewModel.setState(addChatState);
         addChatViewModel.firePropertyChanged();
 
         // Navigate back to view chats after successful creation
-        javax.swing.Timer timer = new javax.swing.Timer(1500, e -> {
+        final javax.swing.Timer timer = new javax.swing.Timer(1500, evt -> {
             viewManagerModel.setState("view chats");
             viewManagerModel.firePropertyChanged();
         });
@@ -46,14 +48,20 @@ public class AddChatPresenter implements CreateChatOutputBoundary {
         // NEW: Determine which field has the error based on the message
         if (errorMessage.contains("chat name") || errorMessage.contains("enter a chat name")) {
             addChatState.setChatNameError(errorMessage);
-            addChatState.setUsernameError("");  // Clear the other error
-        } else if (errorMessage.contains("User") && errorMessage.contains("does not exist")) {
+            // Clear the other error
+            addChatState.setUsernameError("");
+        }
+        else if (errorMessage.contains("User") && errorMessage.contains("does not exist")) {
             addChatState.setUsernameError(errorMessage);
-            addChatState.setChatNameError("");  // Clear the other error
-        } else if (errorMessage.contains("cannot add yourself")) {
+            // Clear the other error
+            addChatState.setChatNameError("");
+        }
+        else if (errorMessage.contains("cannot add yourself")) {
             addChatState.setUsernameError(errorMessage);
-            addChatState.setChatNameError("");  // Clear the other error
-        } else {
+            // Clear the other error
+            addChatState.setChatNameError("");
+        }
+        else {
             // General error - show in chat name error field
             addChatState.setChatNameError(errorMessage);
             addChatState.setUsernameError("");

@@ -1,9 +1,9 @@
 package interface_adapter.chat;
 
-import entity.GroupChat;
-import entity.Message;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import entity.Message;
 
 /**
  * The State information representing the logged-in user.
@@ -15,10 +15,10 @@ public class ChatState {
     private List<Message> messagesSentByUser = new ArrayList<>();
     private List<String> usernames = new ArrayList<>();
     private String currentMessage = "";
-    private String error = null;
-    private boolean needsUpdate = false;
-    private boolean needsClearChat = false;
-    private boolean isGroupChat = false;
+    private String error;
+    private boolean needsUpdate;
+    private boolean needsClearChat;
+    private boolean isGroupChat;
 
     public ChatState(ChatState copy) {
         this.currentChannelUrl = copy.currentChannelUrl;

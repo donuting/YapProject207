@@ -1,17 +1,17 @@
 package interface_adapter.self_chat;
 
-import com.google.gson.JsonObject;
-
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.JsonObject;
 
 /**
  * The state for the Self Chat View Model.
  */
 public class SelfChatState {
     private String username = "";
-    private Map<Integer, JsonObject> messageData = new HashMap<>(); // A map from the message ID to the message data (body text, message ID, timestamp)
+    // A map from the message ID to the message data (body text, message ID, timestamp)
+    private Map<Integer, JsonObject> messageData = new HashMap<>();
     private String errorMessage = "";
 
     public SelfChatState(SelfChatState copy) {
@@ -36,8 +36,12 @@ public class SelfChatState {
         return new HashMap<>(messageData);
     }
 
-    public void addMessageData(Map<Integer, JsonObject> messageData) {
-        this.messageData.putAll(messageData);
+    /**
+     * Description.
+     * @param data message data
+     */
+    public void addMessageData(Map<Integer, JsonObject> data) {
+        this.messageData.putAll(data);
     }
 
     public String getErrorMessage() {
@@ -48,6 +52,9 @@ public class SelfChatState {
         this.errorMessage = errorMessage;
     }
 
+    /**
+     * Description.
+     */
     public void clearMessages() {
         this.messageData.clear();
     }

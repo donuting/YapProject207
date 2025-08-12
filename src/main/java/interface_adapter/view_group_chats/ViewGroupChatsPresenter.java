@@ -1,5 +1,7 @@
 package interface_adapter.view_group_chats;
 
+import java.util.Map;
+
 import entity.GroupChat;
 import use_case.join_chat.JoinChatOutputBoundary;
 import use_case.join_chat.JoinChatOutputData;
@@ -7,8 +9,6 @@ import use_case.leave_chat.LeaveChatOutputBoundary;
 import use_case.leave_chat.LeaveChatOutputData;
 import use_case.load_group_chats.LoadGroupChatsOutputBoundary;
 import use_case.load_group_chats.LoadGroupChatsOutputData;
-
-import java.util.Map;
 
 public class ViewGroupChatsPresenter implements JoinChatOutputBoundary,
         LeaveChatOutputBoundary, LoadGroupChatsOutputBoundary {
@@ -26,9 +26,9 @@ public class ViewGroupChatsPresenter implements JoinChatOutputBoundary,
     @Override
     public void joinChatPrepareSuccessView(JoinChatOutputData outputData) {
         // Updated the state object with the newly joined chat
-        GroupChat groupChat = outputData.getGroupChat();
+        final GroupChat groupChat = outputData.getGroupChat();
         final ViewGroupChatsState viewGroupChatsState = viewGroupChatsViewModel.getState();
-        Map<String, String> channelInfo = viewGroupChatsState.getChannelInfo();
+        final Map<String, String> channelInfo = viewGroupChatsState.getChannelInfo();
         channelInfo.put(groupChat.getChannelUrl(), groupChat.getChatName());
         viewGroupChatsState.setChannelInfo(channelInfo);
         viewGroupChatsState.setNeedsGroupChatInfo(true);
@@ -77,7 +77,7 @@ public class ViewGroupChatsPresenter implements JoinChatOutputBoundary,
     public void leaveChatPrepareSuccessView(LeaveChatOutputData outputData) {
         // Remove the chat from the state object
         final ViewGroupChatsState viewGroupChatsState = viewGroupChatsViewModel.getState();
-        Map<String, String> channelInfo = viewGroupChatsState.getChannelInfo();
+        final Map<String, String> channelInfo = viewGroupChatsState.getChannelInfo();
         channelInfo.remove(outputData.getChannelUrl());
         viewGroupChatsState.setChannelInfo(channelInfo);
         viewGroupChatsState.setNeedsGroupChatInfo(true);
