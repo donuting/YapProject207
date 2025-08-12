@@ -2,7 +2,7 @@ package interface_adapter.main_menu;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logout.LogoutController;
-import interface_adapter.profile_and_settings.PandSViewModel;
+import interface_adapter.profile_and_settings.PandSviewModel;
 import interface_adapter.view_chats.ViewChatsViewModel;
 import interface_adapter.view_friends.ViewFriendsState;
 import interface_adapter.view_friends.ViewFriendsViewModel;
@@ -16,17 +16,17 @@ public class MainMenuController {
     private final ViewChatsViewModel viewChatsViewModel;
     private final MainMenuViewModel mainMenuViewModel;
     private final ViewFriendsViewModel viewFriendsViewModel;
-    private final PandSViewModel pandSViewModel;
+    private final PandSviewModel pandsViewModel;
 
     public MainMenuController(ViewManagerModel viewManagerModel, LogoutController logoutController,
                               ViewChatsViewModel viewChatsViewModel, MainMenuViewModel mainMenuViewModel,
-                              ViewFriendsViewModel viewFriendsViewModel, PandSViewModel pandSViewModel) {
+                              ViewFriendsViewModel viewFriendsViewModel, PandSviewModel pandsViewModel) {
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.viewChatsViewModel = viewChatsViewModel;
         this.mainMenuViewModel = mainMenuViewModel;
         this.viewFriendsViewModel = viewFriendsViewModel;
-        this.pandSViewModel = pandSViewModel;
+        this.pandsViewModel = pandsViewModel;
     }
 
     /**
@@ -49,11 +49,11 @@ public class MainMenuController {
     public void switchToProfileSettings() {
         final String currentUsername = mainMenuViewModel.getState().getUsername();
         final String password = mainMenuViewModel.getState().getPassword();
-        final String UID = mainMenuViewModel.getState().getUID();
-        pandSViewModel.getState().setUsername(currentUsername);
-        pandSViewModel.getState().setChangePasswordText(password);
-        pandSViewModel.getState().setUID(UID);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        final String uiD = mainMenuViewModel.getState().getUiD();
+        pandsViewModel.getState().setUsername(currentUsername);
+        pandsViewModel.getState().setChangePasswordText(password);
+        pandsViewModel.getState().setUserId(uiD);
+        pandsViewModel.firePropertyChanged("Profile And Settings");
         // Navigate to profile settings screen
 
         viewManagerModel.setState("Profile And Settings");
@@ -65,7 +65,7 @@ public class MainMenuController {
      */
     public void switchToViewFriends() {
         // Update friends in state object
-        ViewFriendsState viewFriendsState= viewFriendsViewModel.getState();
+        final ViewFriendsState viewFriendsState = viewFriendsViewModel.getState();
         viewFriendsState.setNeedsFriendInfo(true);
         viewFriendsViewModel.setState(viewFriendsState);
         viewFriendsViewModel.firePropertyChanged();
@@ -83,5 +83,4 @@ public class MainMenuController {
         viewManagerModel.setState("sign up");
         viewManagerModel.firePropertyChanged();
     }
-
 }

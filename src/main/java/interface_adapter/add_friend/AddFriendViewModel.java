@@ -18,9 +18,14 @@ public class AddFriendViewModel extends ViewModel<AddFriendState> {
         super("add friend");
         setState(new AddFriendState());
     }
+
+    /**
+     * Description.
+     * @param errorMessage error message
+     */
     public void setErrorMessage(String errorMessage) {
-        AddFriendState currentState = getState();
-        AddFriendState newState = new AddFriendState(currentState);
+        final AddFriendState currentState = getState();
+        final AddFriendState newState = new AddFriendState(currentState);
         newState.setErrorMessage(errorMessage);
         setState(newState);
 

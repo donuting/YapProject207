@@ -1,8 +1,6 @@
 package interface_adapter.add_friend;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.login.LoginViewModel;
-import interface_adapter.main_menu.MainMenuViewModel;
 import use_case.add_friend.AddFriendOutputBoundary;
 import use_case.add_friend.AddFriendOutputData;
 
@@ -40,6 +38,4 @@ public class AddFriendPresenter implements AddFriendOutputBoundary {
         viewManagerModel.setState("main menu");
         viewManagerModel.firePropertyChanged();
     }
-
-
 }

@@ -20,10 +20,17 @@ public class ViewChatsViewModel {
         return state;
     }
 
+    /**
+     * Description.
+     * @param listener listener
+     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
     }
 
+    /**
+     * Description.
+     */
     public void firePropertyChanged() {
         support.firePropertyChange("state", null, this.state);
     }

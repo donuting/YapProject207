@@ -24,11 +24,16 @@ public class LoadGroupChatsInteractor implements LoadGroupChatsInputBoundary{
     @Override
     public void execute() {
         User currentUser = loadGroupChatsDataAccessInterface.getCurrentUser();
-        if (currentUser == null) {
+        User updatedCurrentUser = null;
+        if (currentUser != null) {
+            updatedCurrentUser = loadGroupChatsDataAccessInterface.get(currentUser.getName());
+            loadGroupChatsDataAccessInterface.setCurrentUser(updatedCurrentUser);
+        }
+        if (updatedCurrentUser == null) {
             viewGroupChatsPresenter.loadGroupChatsPrepareFailView("this user doesn't exist");
         } else {
             Map<String, String> channelInfo = new HashMap<>();
-            for (GroupChat groupChat : currentUser.getGroupChats()) {
+            for (GroupChat groupChat : updatedCurrentUser.getGroupChats()) {
                 channelInfo.put(groupChat.getChannelUrl(), groupChat.getChatName());
             }
             LoadGroupChatsOutputData outputData = new LoadGroupChatsOutputData(channelInfo);

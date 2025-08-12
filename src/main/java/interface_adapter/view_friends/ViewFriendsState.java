@@ -10,15 +10,17 @@ public class ViewFriendsState {
     // and the values are the corresponding IDs.
     private Map<String, String> channelToUserIdData = new HashMap<>();
     private String errorMessage = "";
+    private String successMessage;
 
     // Records whether the friend info needs to be updated
-    private boolean needsFriendInfo = false;
+    private boolean needsFriendInfo;
 
     public ViewFriendsState(ViewFriendsState copy) {
         username = copy.username;
         channelToUserIdData = copy.channelToUserIdData;
         errorMessage = copy.errorMessage;
         needsFriendInfo = copy.needsFriendInfo;
+        successMessage = copy.successMessage;
     }
 
     public ViewFriendsState() {
@@ -55,5 +57,13 @@ public class ViewFriendsState {
 
     public void setNeedsFriendInfo(boolean needsFriendInfo) {
         this.needsFriendInfo = needsFriendInfo;
+    }
+
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
     }
 }

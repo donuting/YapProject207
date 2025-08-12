@@ -1,5 +1,8 @@
 package interface_adapter.view_friends;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import use_case.block_friend.BlockFriendOutputBoundary;
 import use_case.block_friend.BlockFriendOutputData;
 import use_case.load_friends.LoadFriendsOutputBoundary;
@@ -7,10 +10,8 @@ import use_case.load_friends.LoadFriendsOutputData;
 import use_case.remove_friend.RemoveFriendOutputBoundary;
 import use_case.remove_friend.RemoveFriendOutputData;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class ViewFriendsPresenter implements RemoveFriendOutputBoundary, BlockFriendOutputBoundary, LoadFriendsOutputBoundary {
+public class ViewFriendsPresenter implements RemoveFriendOutputBoundary,
+        BlockFriendOutputBoundary, LoadFriendsOutputBoundary {
     private final ViewFriendsViewModel viewFriendsViewModel;
 
     public ViewFriendsPresenter(ViewFriendsViewModel viewFriendsViewModel) {
@@ -26,9 +27,9 @@ public class ViewFriendsPresenter implements RemoveFriendOutputBoundary, BlockFr
     public void blockFriendPrepareSuccessView(BlockFriendOutputData outputData) {
         // Remove the friend from the state object
         final ViewFriendsState viewFriendsState = viewFriendsViewModel.getState();
-        Map<String, String> channelToUserIdData = viewFriendsState.getChannelToUserIdData();
-        Map<String, String> newChannelToUserIdData = new HashMap<>();
-        String blockedId = outputData.getBlockedId();
+        final Map<String, String> channelToUserIdData = viewFriendsState.getChannelToUserIdData();
+        final Map<String, String> newChannelToUserIdData = new HashMap<>();
+        final String blockedId = outputData.getBlockedId();
         for (Map.Entry<String, String> entry : channelToUserIdData.entrySet()) {
             if (!entry.getValue().equals(blockedId)) {
                 newChannelToUserIdData.put(entry.getKey(), entry.getValue());
@@ -93,9 +94,11 @@ public class ViewFriendsPresenter implements RemoveFriendOutputBoundary, BlockFr
     public void removeFriendPrepareSuccessView(RemoveFriendOutputData outputData) {
         // Remove the friend from the state object
         final ViewFriendsState viewFriendsState = viewFriendsViewModel.getState();
-        Map<String, String> channelToUserIdData = viewFriendsState.getChannelToUserIdData();
-        Map<String, String> newChannelToUserIdData = new HashMap<>();
-        String removedUserId = outputData.getRemovedId();
+        viewFriendsState.setSuccessMessage(outputData.getRemovedUsername() + "removed successfully");
+
+        final Map<String, String> channelToUserIdData = viewFriendsState.getChannelToUserIdData();
+        final Map<String, String> newChannelToUserIdData = new HashMap<>();
+        final String removedUserId = outputData.getRemovedId();
         for (Map.Entry<String, String> entry : channelToUserIdData.entrySet()) {
             if (!entry.getValue().equals(removedUserId)) {
                 newChannelToUserIdData.put(entry.getKey(), entry.getValue());
@@ -109,16 +112,15 @@ public class ViewFriendsPresenter implements RemoveFriendOutputBoundary, BlockFr
 
     /**
      * Prepare the fail view for the Block Friend use case.
-     *
      * @param errorMessage Explanation of failure.
-     * @param outputData   Output data.
      */
     @Override
-    public void removeFriendPrepareFailView(String errorMessage, RemoveFriendOutputData outputData) {
+    public void removeFriendPrepareFailView(String errorMessage) {
         final ViewFriendsState viewFriendsState = viewFriendsViewModel.getState();
         viewFriendsState.setErrorMessage(errorMessage);
         viewFriendsState.setNeedsFriendInfo(false);
         viewFriendsViewModel.setState(viewFriendsState);
         viewFriendsViewModel.firePropertyChanged();
+        // assume it cant fail, not used anyway
     }
 }

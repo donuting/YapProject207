@@ -5,18 +5,17 @@ package interface_adapter.add_friend;
  */
 public class AddFriendState {
 
-
     private String currentUsername = "";
     private String errorMessage;
     private String successMessage;
     private String friendName;
     private String friendUserID;
 
-    public AddFriendState () {
+    public AddFriendState() {
 
     }
 
-    public  AddFriendState(AddFriendState copy) {
+    public AddFriendState(AddFriendState copy) {
         this.currentUsername = copy.currentUsername;
         this.errorMessage = copy.errorMessage;
         this.successMessage = copy.successMessage;
@@ -41,8 +40,8 @@ public class AddFriendState {
         return friendName;
     }
 
-    public void setFriendUsername(String friendName) {
-        this.friendName = friendName;
+    public void setFriendUsername(String name) {
+        this.friendName = name;
     }
 
     public void setCurrentUsername(String currentUsername) {

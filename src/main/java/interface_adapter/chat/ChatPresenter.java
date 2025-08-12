@@ -1,5 +1,7 @@
 package interface_adapter.chat;
 
+import java.util.ArrayList;
+
 import interface_adapter.ViewManagerModel;
 import use_case.delete_message.DeleteMessageOutputBoundary;
 import use_case.delete_message.DeleteMessageOutputData;
@@ -9,8 +11,6 @@ import use_case.send_message.SendMessageOutputBoundary;
 import use_case.send_message.SendMessageOutputData;
 import use_case.update_chat.UpdateChatOutputBoundary;
 import use_case.update_chat.UpdateChatOutputData;
-
-import java.util.ArrayList;
 
 /**
  * The Presenter for the Chat Use Case.
@@ -35,7 +35,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
 
     @Override
     public void prepareFailSendMessageView(String error, SendMessageOutputData response) {
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setError(error);
         chatViewModel.firePropertyChanged();
     }
@@ -58,7 +58,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
      */
     @Override
     public void prepareFailDeleteMessageView(String error, DeleteMessageOutputData deleteMessageOutputData) {
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setError(error);
         chatViewModel.firePropertyChanged();
     }
@@ -66,7 +66,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
     @Override
     public void leaveChatView() {
         // Reset state objects
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setCurrentChannelUrl(null);
         chatState.setUsernames(new ArrayList<>());
         chatState.setMessages(new ArrayList<>());
@@ -86,7 +86,8 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
      */
     @Override
     public void updateChatPrepareSuccessView(UpdateChatOutputData outputData) {
-        chatViewModel.setMessagesAndUsernames(outputData.getCurrentUserId(), outputData.getMessages(), outputData.getUsernames());
+        chatViewModel.setMessagesAndUsernames(outputData.getCurrentUserId(),
+                outputData.getMessages(), outputData.getUsernames());
     }
 
     /**
@@ -97,7 +98,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
      */
     @Override
     public void updateChatPrepareFailView(String error, UpdateChatOutputData outputData) {
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setError(error);
         chatState.setNeedsUpdate(false);
         chatViewModel.firePropertyChanged();
@@ -110,7 +111,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
      */
     @Override
     public void joinChatPrepareSuccessView(JoinChatOutputData outputData) {
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setNeedsClearChat(true);
         chatViewModel.firePropertyChanged();
     }
@@ -123,7 +124,7 @@ public class ChatPresenter implements SendMessageOutputBoundary, DeleteMessageOu
      */
     @Override
     public void joinChatPrepareFailView(String error, JoinChatOutputData outputData) {
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setError(error);
         chatState.setNeedsUpdate(false);
         chatViewModel.firePropertyChanged();

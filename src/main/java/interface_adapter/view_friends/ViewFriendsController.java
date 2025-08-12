@@ -10,11 +10,11 @@ import use_case.remove_friend.RemoveFriendInputBoundary;
 import use_case.remove_friend.RemoveFriendInputData;
 
 public class ViewFriendsController {
-    public final RemoveFriendInputBoundary removeFriendUseCaseInteractor;
-    public final BlockFriendInputBoundary blockFriendUseCaseInteractor;
-    public final LoadFriendsInputBoundary loadFriendsUseCaseInteractor;
-    public final ChatViewModel chatViewModel;
-    public final ViewManagerModel viewManagerModel;
+    private final RemoveFriendInputBoundary removeFriendUseCaseInteractor;
+    private final BlockFriendInputBoundary blockFriendUseCaseInteractor;
+    private final LoadFriendsInputBoundary loadFriendsUseCaseInteractor;
+    private final ChatViewModel chatViewModel;
+    private final ViewManagerModel viewManagerModel;
 
     public ViewFriendsController(RemoveFriendInputBoundary removeFriendUseCaseInteractor, 
                                  BlockFriendInputBoundary blockFriendUseCaseInteractor, 
@@ -49,7 +49,7 @@ public class ViewFriendsController {
      * @param blockedId the ID of the user to be blocked.
      */
     public void block(String blockedId) {
-        BlockFriendInputData blockFriendInputData = new BlockFriendInputData(blockedId);
+        final BlockFriendInputData blockFriendInputData = new BlockFriendInputData(blockedId);
         blockFriendUseCaseInteractor.execute(blockFriendInputData);
     }
 
@@ -58,7 +58,7 @@ public class ViewFriendsController {
      * @param removedId the ID of the user to be unfriended.
      */
     public void removeFriend(String removedId) {
-        RemoveFriendInputData removeFriendInputData = new RemoveFriendInputData(removedId);
+        final RemoveFriendInputData removeFriendInputData = new RemoveFriendInputData(removedId);
         removeFriendUseCaseInteractor.execute(removeFriendInputData);
     }
 
@@ -69,7 +69,7 @@ public class ViewFriendsController {
      */
     public void switchToViewChat(String channelUrl, String chatName) {
         // Update the active chat's channel URL and name
-        ChatState chatState = chatViewModel.getState();
+        final ChatState chatState = chatViewModel.getState();
         chatState.setCurrentChannelUrl(channelUrl);
         chatState.setChatName(chatName);
         chatState.setGroupChat(false);
