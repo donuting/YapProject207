@@ -19,14 +19,6 @@ public interface AddFriendUserDataAccessInterface {
     boolean existsByName(String username);
 
     /**
-     * Checks if user already has friend added.
-     * @param currentUsername user performing friendship
-     * @param friendUsername user receiving friendship
-     * @return true if the two users have each other added already
-     */
-    boolean alreadyFriend(String currentUsername, String friendUsername);
-
-    /**
      * Returns the user with the given username.
      * @param username the ID to look up
      * @return the user with the given ID

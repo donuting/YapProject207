@@ -22,14 +22,19 @@ public class LoadFriendsInteractor implements LoadFriendsInputBoundary{
     @Override
     public void execute() {
         User currentUser = loadFriendsDataAccessInterface.getCurrentUser();
-        if (currentUser == null) {
+        User updatedCurrentUser = null;
+        if (currentUser != null) {
+            updatedCurrentUser = loadFriendsDataAccessInterface.get(currentUser.getName());
+            loadFriendsDataAccessInterface.setCurrentUser(updatedCurrentUser);
+        }
+        if (updatedCurrentUser == null) {
             loadFriendsPresenter.loadFriendsPrepareFailView("this user doesn't exist");
         } else {
             Map<String, String> channelInfo = new HashMap<>();
-            for (GroupChat personalChat : currentUser.getPersonalChats()) {
+            for (GroupChat personalChat : updatedCurrentUser.getPersonalChats()) {
                 String friendId = null;
                 for (String userId : personalChat.getMemberIds()) {
-                    if (!userId.equals(currentUser.getID())) {
+                    if (!userId.equals(updatedCurrentUser.getID())) {
                         friendId = userId;
                     }
                 }
