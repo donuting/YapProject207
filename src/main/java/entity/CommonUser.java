@@ -327,15 +327,6 @@ public class CommonUser implements User {
     public boolean removeFriend(String userId) {
         if (friendIDs.contains(userId)) {
             friendIDs.remove(userId);
-
-            // removes personal chat between the user and the friend
-            List<GroupChat> newPersonalChats = new ArrayList<>();
-            for (GroupChat personalChat : personalChats) {
-                if (!personalChat.hasMember(userId)) {
-                    newPersonalChats.add(personalChat);
-                }
-            }
-            setPersonalChats(newPersonalChats);
             return true;
         }
         return false;

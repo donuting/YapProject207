@@ -442,7 +442,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      * @param friendUsername user receiving friendship
      * @return true if the two users have each other added already
      */
-    @Override
     public boolean alreadyFriend(String currentUsername, String friendUsername) {
         return pantryUserDataAccessObject.alreadyFriend(currentUsername, friendUsername);
     }

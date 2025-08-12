@@ -21,48 +21,39 @@ public class RemoveFriendInteractor implements RemoveFriendInputBoundary{
         String removedId = inputData.getRemovedId();
         String removedUsername = removeFriendDataAccessInterface.getUsernameFromId(removedId);
         String currentUsername = currentUser.getName();
-        User removedUser = removeFriendDataAccessInterface.get(removedUsername);
-
 
         // checks both users exist
         // should never happen
-//        if (!removeFriendDataAccessInterface.existsByName(currentUsername)) {
-//            RemoveFriendOutputData outputData = new RemoveFriendOutputData(currentUsername, removedUsername, removedId, false);
-//            presenter.removeFriendPrepareFailView("Current user does not exist in database", outputData);
-//        }
+        if (!removeFriendDataAccessInterface.existsByName(currentUsername)) {
+            presenter.removeFriendPrepareFailView("Current user does not exist in database");
+            return;
+        }
         // check that friend user exists
-//        if (!removeFriendDataAccessInterface.existsByName(removedUsername)) {
-//            //RemoveFriendOutputData outputData = new RemoveFriendOutputData(currentUsername, removedUsername, removedId, false);
-//            presenter.removeFriendPrepareFailView("User does not exist");
-//        }
+        if (!removeFriendDataAccessInterface.existsByName(removedUsername)) {
+            presenter.removeFriendPrepareFailView("User does not exist");
+            return;
+        }
 
-//        if (!currentUser.getFriendIDs().contains(removedId)) {
-//            //RemoveFriendOutputData outputData = new RemoveFriendOutputData(currentUsername, removedUsername, removedId, false);
-//            presenter.removeFriendPrepareFailView("You cannot remove someone who is not your friend");
-//        }
-//        else {
-            // removes the friend in currentUser
-//            if (!currentUser.removeFriend(removedId)) {
-//                RemoveFriendOutputData outputData = new RemoveFriendOutputData(currentUsername, removedUsername, removedId, false);
-//                presenter.removeFriendPrepareFailView("Failed to remove friend");
-//            }
-            // remove friendship from both users (from friends list and chats)
-        currentUser.removeFriend(removedId);
-        removedUser.removeFriend(currentUsername);
-
+        if (!currentUser.getFriendIDs().contains(removedId)) {
+            presenter.removeFriendPrepareFailView("You cannot remove someone who is not your friend");
+            return;
+        }
+        else {
+            // Remove friend for the current user in memory
+            if (!currentUser.removeFriend(removedId)) {
+                presenter.removeFriendPrepareFailView("Failed to remove friend");
+                return;
+            }
 
             // removes the friend in the database
-        removeFriendDataAccessInterface.removeFriend(currentUser, removedUsername, removedId);
-        removeFriendDataAccessInterface.removeFriend(removedUser, currentUsername, currentUser.getID());
-
-//            if (!removeFriendDataAccessInterface.removeFriend(currentUser, removedUsername, removedId)) {
-//                RemoveFriendOutputData outputData = new RemoveFriendOutputData(currentUsername, removedUsername, removedId, false);
-//                presenter.removeFriendPrepareFailView("Failed to remove friend");
-//            }
+            if (!removeFriendDataAccessInterface.removeFriend(currentUser, removedUsername, removedId)) {
+                presenter.removeFriendPrepareFailView("Failed to remove friend");
+                return;
+            }
 
         RemoveFriendOutputData outputData = new RemoveFriendOutputData(currentUsername, removedUsername, removedId, true);
         presenter.removeFriendPrepareSuccessView(outputData);
-//        }
+        }
 
     }
 }
