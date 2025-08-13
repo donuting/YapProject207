@@ -25,30 +25,19 @@ public class JoinChatInteractor implements JoinChatInputBoundary {
         // In the case where the current user is joining a chat
         if (inputData.getUsername() == null || inputData.getUsername().isEmpty()) {
             User user = joinChatDataAccessInterface.getCurrentUser();
-            if (user == null) {
+            String channelUrl = inputData.getChannelUrl();
+            GroupChat groupChat = joinChatDataAccessInterface.load(channelUrl);
+            if (groupChat == null) {
                 JoinChatOutputData outputData = new JoinChatOutputData(null);
-                presenter.joinChatPrepareFailView("This user doesn't exist", outputData);
+                presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
             } else {
-                String channelUrl = inputData.getChannelUrl();
-                GroupChat groupChat = joinChatDataAccessInterface.load(channelUrl);
-                if (groupChat == null) {
-                    JoinChatOutputData outputData = new JoinChatOutputData(null);
-                    presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
-                } else {
-                    GroupChat updatedChat = joinChatDataAccessInterface.addUser(user.getID(), channelUrl);
-                    if (updatedChat == null) {
+                GroupChat updatedChat = joinChatDataAccessInterface.addUser(user.getID(), channelUrl);
+                // Save the chat to the user
+                joinChatDataAccessInterface.saveGroupChat(updatedChat, user.getName());
+                user.addGroupChat(updatedChat);
 
-
-                        JoinChatOutputData outputData = new JoinChatOutputData(null);
-                        presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
-                    }
-                    // Save the chat to the user
-                    joinChatDataAccessInterface.saveGroupChat(updatedChat, user.getName());
-                    user.addGroupChat(updatedChat);
-
-                    JoinChatOutputData outputData = new JoinChatOutputData(updatedChat);
-                    presenter.joinChatPrepareSuccessView(outputData);
-                }
+                JoinChatOutputData outputData = new JoinChatOutputData(updatedChat);
+                presenter.joinChatPrepareSuccessView(outputData);
             }
         }
         // In the case where the current user is adding another user to a group chat they are in.
@@ -72,12 +61,6 @@ public class JoinChatInteractor implements JoinChatInputBoundary {
                     presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
                 } else {
                     GroupChat updatedChat = joinChatDataAccessInterface.addUser(user.getID(), channelUrl);
-                    if (updatedChat == null) {
-
-
-                        JoinChatOutputData outputData = new JoinChatOutputData(null);
-                        presenter.joinChatPrepareFailView("This chat doesn't exist", outputData);
-                    }
                     // Save the chat to the user
                     joinChatDataAccessInterface.saveGroupChat(updatedChat, user.getName());
 

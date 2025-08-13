@@ -29,7 +29,7 @@ public class DeleteMessageInteractor implements DeleteMessageInputBoundary {
         }
         else {
             final DeleteMessageOutputData deleteMessageOutputData = new DeleteMessageOutputData(null, true);
-            messagePresenter.prepareFailDeleteMessageView("delete Message Failed", deleteMessageOutputData);
+            messagePresenter.prepareFailDeleteMessageView("Delete Message Failed", deleteMessageOutputData);
         }
 
 

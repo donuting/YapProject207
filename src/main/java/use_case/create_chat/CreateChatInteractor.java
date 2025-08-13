@@ -23,10 +23,6 @@ public class CreateChatInteractor implements CreateChatInputBoundary {
     @Override
     public void execute(CreateChatInputData createChatInputData) {
         User currentUser = userDataAccessObject.getCurrentUser();
-        if (currentUser == null) {
-            groupChatPresenter.prepareFailView("The current user does not exist");
-            return;
-        }
 
         if (createChatInputData.getChatName() == null || createChatInputData.getChatName().trim().isEmpty()) {
             groupChatPresenter.prepareFailView("Please enter a chat name");

@@ -10,29 +10,32 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BlockFriendInteractorTest {
 
-    private SendBirdUserDataAccessObject dataAccess;
+    private SendBirdUserDataAccessObject dataAccess = mock(SendBirdUserDataAccessObject.class);
     private UserFactory userFactory;
     private User user;
     private User friend;
 
     @BeforeEach
     void setUp() {
-        dataAccess = new SendBirdUserDataAccessObject();
         userFactory = new CommonUserFactory();
         user = userFactory.create("User", "Password1");
         friend = userFactory.create("Friend", "Password2");
-        dataAccess.save(user);
-        dataAccess.save(friend);
-        dataAccess.setCurrentUser(user);
-        dataAccess.setCurrentUsername(user.getName());
+        when(dataAccess.getCurrentUser()).thenReturn(user);
+        when(dataAccess.getCurrentUsername()).thenReturn(user.getName());
     }
 
     @Test
     void blockFriendSuccessTest() {
-        dataAccess.addFriend(user.getName(), friend.getName());
+        user.addFriend(friend.getName());
+        friend.addFriend(user.getName());
+        when(dataAccess.existsByName(user.getName())).thenReturn(true);
+        when(dataAccess.existsByName(friend.getName())).thenReturn(true);
+        when(dataAccess.blockFriend(user, friend.getName(), friend.getID())).thenReturn(true);
         BlockFriendInputData inputData = new BlockFriendInputData(friend.getID());
         BlockFriendOutputBoundary successPresenter = new BlockFriendOutputBoundary() {
             @Override
@@ -53,6 +56,8 @@ public class BlockFriendInteractorTest {
 
     @Test
     void blockFriendFailFriendDoesNotExistTest() {
+        when(dataAccess.existsByName(user.getName())).thenReturn(true);
+        when(dataAccess.existsByName("NonExistentUser")).thenReturn(false);
         BlockFriendInputData inputData = new BlockFriendInputData("NonExistentUser");
         BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
             @Override

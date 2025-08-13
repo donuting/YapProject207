@@ -52,6 +52,12 @@
             <artifactId>JPantry</artifactId>
             <version>b051df713c</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.11.0</version>  <!-- latest Mockito 4.x -->
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

@@ -54,7 +54,7 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
 
         // check if friend's username and ID correspond to the same user
         if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
-            presenter.prepareFailView("User " + friendUsername + " does not exist");
+            presenter.prepareFailView("Incorrect info added");
             return;
         }
 
