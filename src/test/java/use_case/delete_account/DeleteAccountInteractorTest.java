@@ -1,5 +1,5 @@
 package use_case.delete_account;
-
+import data_access.SendBirdUserDataAccessObject;
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.User;
@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DeleteAccountInteractorTest {
 
-    private InMemoryUserDataAccessObject dataAccess;
+    private SendBirdUserDataAccessObject dataAccess;
     private UserFactory userFactory;
     private User user;
 
     @BeforeEach
     void setUp() {
-        dataAccess = new InMemoryUserDataAccessObject();
+        dataAccess = new SendBirdUserDataAccessObject();
         userFactory = new CommonUserFactory();
         user = userFactory.create("User", "Password1");
         dataAccess.save(user);

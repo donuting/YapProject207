@@ -139,6 +139,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
                 pandSController.logout();
             } else if (e.getSource() == deleteAccountButton) {
                 pandSController.deleteAccount();
+                pandSController.logout();
             }
         }
     }
