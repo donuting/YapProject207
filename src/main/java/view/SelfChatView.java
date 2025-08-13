@@ -1,9 +1,9 @@
 package view;
 
 import com.google.gson.JsonObject;
-import interface_adapter.self_chat.SelfChatController;
-import interface_adapter.self_chat.SelfChatState;
-import interface_adapter.self_chat.SelfChatViewModel;
+import interfaceadapter.self_chat.SelfChatController;
+import interfaceadapter.self_chat.SelfChatState;
+import interfaceadapter.self_chat.SelfChatViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -232,6 +232,15 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
     private void updateChatDisplay() {
         SelfChatState state = selfChatViewModel.getState();
         Map<Integer, JsonObject> messageData = state.getMessages();
+
+        if (messageData.isEmpty()) {
+            chatArea.removeAll();
+            messages.clear();
+            chatArea.revalidate();
+            chatArea.repaint();
+            titleLabel.setText("Self Chat (0 messages)");
+            return;
+        }
 
         // Clear existing messages from display but keep track of what we've shown
         java.util.Set<String> existingMessageIds = new java.util.HashSet<>();

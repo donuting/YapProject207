@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.view_group_chats.ViewGroupChatsController;
-import interface_adapter.view_group_chats.ViewGroupChatsState;
-import interface_adapter.view_group_chats.ViewGroupChatsViewModel;
+import interfaceadapter.view_group_chats.ViewGroupChatsController;
+import interfaceadapter.view_group_chats.ViewGroupChatsState;
+import interfaceadapter.view_group_chats.ViewGroupChatsViewModel;
 
 import javax.swing.*;
 import java.awt.*;

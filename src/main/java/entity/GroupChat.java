@@ -94,8 +94,11 @@ public class GroupChat implements Chat {
      * @return true if successful otherwise false
      */
     public boolean removeMember(User user) {
-        memberIds.remove(user.getID());
-        return true;
+        if (memberIds.contains(user.getID())){
+            memberIds.remove(user.getID());
+            return true;
+        }
+        return false;
     }
 
     /**

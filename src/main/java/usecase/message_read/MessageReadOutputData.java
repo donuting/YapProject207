@@ -1,0 +1,17 @@
+package usecase.message_read;
+
+public class MessageReadOutputData {
+    private final boolean success;
+
+    public MessageReadOutputData(boolean success) {
+        this.success = success;
+    }
+
+    /**
+     * Returns whether the use case succeeded.
+     * @return true if successful
+     */
+    public boolean isSuccess() {
+        return success;
+    }
+}

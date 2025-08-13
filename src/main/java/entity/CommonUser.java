@@ -179,7 +179,6 @@ public class CommonUser implements User {
 
     @Override
     public boolean EditDOB(String DOB) {
-        //TODO: need to verify that the provided DOB is in the correct format
         if (DOB.length() == 8) {
             this.dateOfBirth = DOB;
             return true;
@@ -247,10 +246,14 @@ public class CommonUser implements User {
      * @return true if successful otherwise false
      */
     public boolean blockUser(String userId) {
-        blockedIDs.add(userId);
-        // Remove them from friends list if they are friends
-        friendIDs.remove(userId);
-        return true;
+        if (friendIDs.contains(userId)) {
+            blockedIDs.add(userId);
+            // Remove them from friends list if they are friends
+            friendIDs.remove(userId);
+            return true;
+        }
+        return false;
+
     }
 
     @Override

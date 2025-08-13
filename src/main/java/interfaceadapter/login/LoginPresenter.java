@@ -1,0 +1,52 @@
+package interfaceadapter.login;
+
+import interfaceadapter.ViewManagerModel;
+import interfaceadapter.main_menu.MainMenuState;
+import interfaceadapter.main_menu.MainMenuViewModel;
+import usecase.login.LoginOutputBoundary;
+import usecase.login.LoginOutputData;
+
+/**
+ * The Presenter for the Login Use Case.
+ */
+public class LoginPresenter implements LoginOutputBoundary {
+
+    private final LoginViewModel loginViewModel;
+    private final MainMenuViewModel mainMenuViewModel;
+    private final ViewManagerModel viewManagerModel;
+
+    public LoginPresenter(ViewManagerModel viewManagerModel,
+                          MainMenuViewModel mainMenuViewModel,
+                          LoginViewModel loginViewModel) {
+        this.viewManagerModel = viewManagerModel;
+        this.mainMenuViewModel = mainMenuViewModel;
+        this.loginViewModel = loginViewModel;
+    }
+
+    @Override
+    public void prepareSuccessView(LoginOutputData response) {
+        // On success, switch to the main menu view
+        final MainMenuState mainMenuState = mainMenuViewModel.getState();
+        mainMenuState.setUsername(response.getUsername());
+        mainMenuState.setPassword(response.getPassword());
+        mainMenuState.setUserId(response.getUserId());
+        this.mainMenuViewModel.setState(mainMenuState);
+        this.mainMenuViewModel.firePropertyChanged();
+
+        this.viewManagerModel.setState("main menu");
+        this.viewManagerModel.firePropertyChanged();
+    }
+
+    @Override
+    public void prepareFailView(String error) {
+        final LoginState loginState = loginViewModel.getState();
+        loginState.setLoginError(error);
+        loginViewModel.firePropertyChanged();
+    }
+
+    @Override
+    public void switchToSignup() {
+        viewManagerModel.setState("sign up");
+        viewManagerModel.firePropertyChanged();
+    }
+}

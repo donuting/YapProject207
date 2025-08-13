@@ -1,0 +1,17 @@
+package usecase.update_chat;
+
+/**
+ * The input boundary for the Update Chat use case.
+ */
+public interface UpdateChatInputBoundary {
+    /**
+     * Execute the Update Chat use case.
+     * @param updateChatInputData the input data
+     */
+    void execute(UpdateChatInputData updateChatInputData);
+
+    /**
+     * Switches the view to return to the list of chats.
+     */
+    void leaveChatView();
+}
