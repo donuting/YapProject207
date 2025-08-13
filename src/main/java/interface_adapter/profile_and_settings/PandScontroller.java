@@ -8,6 +8,8 @@ import use_case.add_DOB.AddDOBInputBoundary;
 import use_case.add_DOB.AddDOBInputData;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInputData;
+import use_case.delete_account.DeleteAccountInputBoundary;
+import use_case.delete_account.DeleteAccountInputData;
 
 /**
  * The controller for the Profile and Settings View.
@@ -20,16 +22,19 @@ public class PandScontroller {
     private final ChangePasswordInputBoundary changePasswordInputBoundary;
     private final AddBioInputBoundary addBioInputBoundary;
     private final AddDOBInputBoundary addDobInputBoundary;
+    private final DeleteAccountInputBoundary deleteAccountInputBoundary;
 
     public PandScontroller(ViewManagerModel viewManagerModel, MainMenuViewModel mainMenuViewModel,
                            PandSviewModel pandsViewModel, ChangePasswordInputBoundary changePasswordInteractor,
-                           AddBioInputBoundary addBioInputBoundary, AddDOBInputBoundary addDobInputBoundary) {
+                           AddBioInputBoundary addBioInputBoundary, AddDOBInputBoundary addDobInputBoundary,
+                           DeleteAccountInputBoundary deleteAccountInputBoundary) {
         this.viewManagerModel = viewManagerModel;
         this.mainMenuViewModel = mainMenuViewModel;
         this.pandsViewModel = pandsViewModel;
         this.changePasswordInputBoundary = changePasswordInteractor;
         this.addBioInputBoundary = addBioInputBoundary;
         this.addDobInputBoundary = addDobInputBoundary;
+        this.deleteAccountInputBoundary = deleteAccountInputBoundary;
     }
 
     /**
@@ -85,4 +90,14 @@ public class PandScontroller {
         viewManagerModel.setState("sign up");
         viewManagerModel.firePropertyChanged();
     }
+
+    /**
+     * Executes the delete account use case.
+     */
+    public void deleteAccount() {
+        String username = pandsViewModel.getState().getUsername();
+        DeleteAccountInputData inputData = new DeleteAccountInputData(username);
+        deleteAccountInputBoundary.execute(inputData);
+    }
+
 }
