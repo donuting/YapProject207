@@ -25,10 +25,10 @@ Herman Piera: hpiera27
    
 2. Bob accidentally sent a message to the wrong person. He deletes the message before they see it. (Brady’s story)
 
-3. Bob is bad with words at times and cannot express his reaction with words. Instead, he adds a reaction, in the form of an emoji, to the text he receives. (Daniel’s Story)
+3. Bob had a huge argument with a friend. He decides to remove this person as a friend so they can no longer chat. Bob also has the option to block a friend so they cannot add them as a friend again. (Daniel’s Story)
 
-4. Peter wants to save his friends birthday, he goes to the self chat and uses the save birthday feature, only entering in a date and maybe ID to save it. 
+4. Peter wants to write down a few things for himself.  He goes to the self chat, where he can save birthday of others and write reminders for himself.
 
-5. RDH does not want to talk to a friend. RDH can block that friend. Note: a user can only block friends  (Karan’s story)
+5. RDH wants to make updates to his profile such as changing his date of birth and bio. He then wants to reread some of his old messages with a friend (update/load/profile use cases).  (Karan’s story)
 
-6. When Herman signs up, he gets a self chat with himself where he can save messages to himself and load messages he previously has sent.  (Herman's story)
+6. Herman wants to send many of his friends the same text. He decides to create a group chat with all those friends.  (Herman's story)
