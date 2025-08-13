@@ -44,7 +44,6 @@ public class BlockFriendInteractorTest {
         List<Message> messageHistory = new ArrayList<>();
         String channelUrl = "test-channel-url";
         GroupChat personalChat = new GroupChat(memberIds, chatName, messageHistory, channelUrl);
-
         dataAccess.addFriend(user.getName(), friend.getName(), personalChat);
         BlockFriendInputData inputData = new BlockFriendInputData(friend.getID());
         BlockFriendOutputBoundary successPresenter = new BlockFriendOutputBoundary() {

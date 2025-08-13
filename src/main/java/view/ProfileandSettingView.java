@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.profile_and_settings.PandScontroller;
-import interface_adapter.profile_and_settings.PandSstate;
-import interface_adapter.profile_and_settings.PandSviewModel;
+import interfaceadapter.profile_and_settings.PandScontroller;
+import interfaceadapter.profile_and_settings.PandSstate;
+import interfaceadapter.profile_and_settings.PandSviewModel;
 
 import javax.swing.*;
 import java.awt.*;

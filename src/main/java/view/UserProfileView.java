@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.profile.UserProfileController;
-import interface_adapter.profile.UserProfileState;
-import interface_adapter.profile.UserProfileViewModel;
+import interfaceadapter.profile.UserProfileController;
+import interfaceadapter.profile.UserProfileState;
+import interfaceadapter.profile.UserProfileViewModel;
 
 import javax.swing.*;
 import java.awt.*;

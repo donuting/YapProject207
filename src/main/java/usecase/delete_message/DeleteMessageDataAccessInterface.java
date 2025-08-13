@@ -1,0 +1,23 @@
+package usecase.delete_message;
+
+import entity.Chat;
+
+/**
+ * The interface of the DAO for the Delete Message Use Case.
+ */
+public interface DeleteMessageDataAccessInterface {
+
+    /**
+     * Updates the system to delete a message from a chat.
+     * @param messageId the ID of the message to be deleted.
+     * @param chat the chat in which the message was sent.
+     * @return true if successful
+     */
+    boolean deleteMessage(String messageId, Chat chat);
+
+    /**
+     * Gets the active group chat the user is viewing.
+     * @return the active group chat
+     */
+    Chat getActiveGroupChat();
+}
