@@ -1,13 +1,17 @@
 package usecase.block_friend;
 
-import dataaccess.InMemoryUserDataAccessObject;
 import dataaccess.SendBirdUserDataAccessObject;
 import entity.CommonUserFactory;
+import entity.GroupChat;
+import entity.Message;
 import entity.User;
 import entity.UserFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +36,15 @@ public class BlockFriendInteractorTest {
 
     @Test
     void blockFriendSuccessTest() {
-        dataAccess.addFriend(user.getName(), friend.getName());
+
+        List<String> memberIds = new ArrayList<>();
+        memberIds.add(user.getName());
+        memberIds.add(friend.getName());
+        String chatName = "TestChat";
+        List<Message> messageHistory = new ArrayList<>();
+        String channelUrl = "test-channel-url";
+        GroupChat personalChat = new GroupChat(memberIds, chatName, messageHistory, channelUrl);
+        dataAccess.addFriend(user.getName(), friend.getName(), personalChat);
         BlockFriendInputData inputData = new BlockFriendInputData(friend.getID());
         BlockFriendOutputBoundary successPresenter = new BlockFriendOutputBoundary() {
             @Override
