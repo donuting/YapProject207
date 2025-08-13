@@ -13,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The View for the self chat functionality.
@@ -24,7 +25,7 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
 
     private final JLabel titleLabel;
     private final JPanel chatArea;
-    private final Map<JTextArea, String> messages = new HashMap<>();
+    private final Map<String, JTextArea> displayedMessages = new HashMap<>();
     private final JScrollPane chatScrollPane;
     private final JTextField messageField;
     private final JButton sendButton;
@@ -89,8 +90,6 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
         this.add(topPanel, BorderLayout.NORTH);
         this.add(chatScrollPane, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
-
-        // Initialize with existing messages when controller is set
     }
 
     private JPanel createTopPanel() {
@@ -218,39 +217,46 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        final SelfChatState state = (SelfChatState) evt.getNewValue();
-        updateChatDisplay();
+        System.out.println("DEBUG: Property change event received in view");
+        SwingUtilities.invokeLater(() -> {
+            final SelfChatState state = (SelfChatState) evt.getNewValue();
+            updateChatDisplay();
 
-        // Handle any error messages
-        if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {
-            JOptionPane.showMessageDialog(this, state.getErrorMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            // Clear the error message after showing it
-            selfChatViewModel.setErrorMessage("");
-        }
+            // Handle any error messages
+            if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {
+                JOptionPane.showMessageDialog(this, state.getErrorMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                // Clear the error message after showing it
+                selfChatViewModel.setErrorMessage("");
+            }
+        });
     }
 
     private void updateChatDisplay() {
+        System.out.println("DEBUG: Updating chat display");
         SelfChatState state = selfChatViewModel.getState();
         Map<Integer, JsonObject> messageData = state.getMessages();
 
         if (messageData.isEmpty()) {
             chatArea.removeAll();
-            messages.clear();
+            displayedMessages.clear();
             chatArea.revalidate();
             chatArea.repaint();
             titleLabel.setText("Self Chat (0 messages)");
             return;
         }
 
-        // Clear existing messages from display but keep track of what we've shown
-        java.util.Set<String> existingMessageIds = new java.util.HashSet<>();
-        for (String messageId : messages.values()) {
-            existingMessageIds.add(messageId);
-        }
+        // Sort messages by their integer keys to maintain order
+        TreeMap<Integer, JsonObject> sortedMessages = new TreeMap<>(messageData);
 
-        for (JsonObject jsonObject : messageData.values()) {
-            String newMessageId = jsonObject.get("message_ID").getAsString();
-            if (!existingMessageIds.contains(newMessageId)) {
+        // Check for new messages
+        boolean hasNewMessages = false;
+        for (Map.Entry<Integer, JsonObject> entry : sortedMessages.entrySet()) {
+            JsonObject jsonObject = entry.getValue();
+            String messageId = jsonObject.get("message_ID").getAsString();
+
+            if (!displayedMessages.containsKey(messageId)) {
+                hasNewMessages = true;
+
                 // Create new text area for the message
                 JTextArea messageSpace = new JTextArea();
                 messageSpace.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -278,27 +284,33 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
                 messageSpace.setPreferredSize(null);
                 messageSpace.setMaximumSize(new Dimension(Integer.MAX_VALUE, messageSpace.getPreferredSize().height));
 
-                // Add the new message to the list of messages
-                messages.put(messageSpace, newMessageId);
+                // Add the new message to our tracking map
+                displayedMessages.put(messageId, messageSpace);
 
                 // Add the new message to the chat area
                 chatArea.add(messageSpace);
                 chatArea.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between messages
+
+                System.out.println("DEBUG: Added new message to display: " + messageId);
             }
         }
 
-        // Revalidate and repaint the chat area
-        chatArea.revalidate();
-        chatArea.repaint();
+        if (hasNewMessages) {
+            // Revalidate and repaint the chat area
+            chatArea.revalidate();
+            chatArea.repaint();
 
-        // Auto-scroll to bottom
-        SwingUtilities.invokeLater(() -> {
-            JScrollBar vertical = chatScrollPane.getVerticalScrollBar();
-            vertical.setValue(vertical.getMaximum());
-        });
+            // Auto-scroll to bottom
+            SwingUtilities.invokeLater(() -> {
+                JScrollBar vertical = chatScrollPane.getVerticalScrollBar();
+                vertical.setValue(vertical.getMaximum());
+            });
+
+            System.out.println("DEBUG: Chat display updated with new messages");
+        }
 
         // Update title with message count
-        int messageCount = messages.size();
+        int messageCount = displayedMessages.size();
         titleLabel.setText("Self Chat (" + messageCount + " message" + (messageCount != 1 ? "s" : "") + ")");
     }
 
@@ -308,9 +320,17 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
 
     public void setSelfChatController(SelfChatController selfChatController) {
         this.selfChatController = selfChatController;
-        // Load existing messages when controller is set
+        // Load existing messages when controller is set, but don't fail if no user is available
         if (selfChatController != null) {
-            selfChatController.loadMessages();
+            try {
+                selfChatController.loadMessages();
+            } catch (Exception e) {
+                System.out.println("DEBUG: Failed to load messages on controller set: " + e.getMessage());
+                // Show a user-friendly message if loading fails
+                SwingUtilities.invokeLater(() -> {
+                    titleLabel.setText("Self Chat (Please log in to continue)");
+                });
+            }
         }
     }
 }

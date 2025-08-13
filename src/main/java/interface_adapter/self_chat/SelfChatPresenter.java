@@ -69,6 +69,7 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
                     messageData.put(message.GetMID().toString().hashCode(), jsonObject);
                 }
             }
+            // This should trigger a property change event
             selfChatViewModel.addMessages(messageData);
         }
         else {
@@ -92,11 +93,7 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
         selfChatViewModel.setErrorMessage(errorMessage);
     }
 
-    /**
-     * Presents the result of saving birthday data.
-     * @param success successful or not
-     * @param message message
-     */
+    @Override
     public void presentBirthdaySaveResult(boolean success, String message) {
         if (success) {
             // Create a system message to show in chat
@@ -106,11 +103,12 @@ public class SelfChatPresenter implements SelfChatOutputBoundary {
             final String formattedDate = now.format(formatter);
 
             jsonObject.addProperty(TIMESTAMP, formattedDate);
-            jsonObject.addProperty(MESSAGE, "\u2713" + message);
-            jsonObject.addProperty("message_ID", "birthday_" + System.currentTimeMillis());
+            jsonObject.addProperty(MESSAGE, "✓ " + message);
+            jsonObject.addProperty(MESSAGE_ID, "birthday_" + System.currentTimeMillis());
 
             final Map<Integer, JsonObject> messageData = new HashMap<>();
             messageData.put((int) System.currentTimeMillis(), jsonObject);
+            // This should trigger a property change event
             selfChatViewModel.addMessages(messageData);
         }
         else {
