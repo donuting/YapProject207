@@ -71,7 +71,6 @@ import use_case.create_chat.CreateChatInteractor;
 import use_case.create_chat.CreateChatOutputBoundary;
 import use_case.delete_account.DeleteAccountInputBoundary;
 import use_case.delete_account.DeleteAccountInteractor;
-import use_case.delete_account.DeleteAccountOutputBoundary;
 import use_case.delete_message.DeleteMessageInputBoundary;
 import use_case.delete_message.DeleteMessageInteractor;
 import use_case.join_chat.JoinChatInputBoundary;
