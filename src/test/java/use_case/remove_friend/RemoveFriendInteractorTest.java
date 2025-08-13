@@ -44,7 +44,7 @@ public class RemoveFriendInteractorTest {
             }
 
             @Override
-            public void removeFriendPrepareFailView(String errorMessage, RemoveFriendOutputData outputData) {
+            public void removeFriendPrepareFailView(String errorMessage) {
                 fail("The interactor fails success case");
             }
         };

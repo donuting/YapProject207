@@ -15,5 +15,5 @@ public interface RemoveFriendOutputBoundary {
      * @param errorMessage Explanation of failure.
      * @param outputData Output data.
      */
-    void removeFriendPrepareFailView(String errorMessage);//, RemoveFriendOutputData outputData);
+    void removeFriendPrepareFailView(String errorMessage);
 }

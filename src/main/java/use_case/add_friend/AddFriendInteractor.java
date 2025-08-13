@@ -33,7 +33,6 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
         final String friendID = addFriendInputData.getFriendID();
         User friendUser = userDataAccessObject.get(friendUsername);
 
-
         // check that nothing is empty
         if (currentUsername == null || friendUsername == null || friendID == null) {
             presenter.prepareFailView("Please fill out all fields");
@@ -50,7 +49,6 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
             presenter.prepareFailView("User does not exist");
             return;
         }
-
 
         // check if friend's username and ID correspond to the same user
         if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
@@ -81,6 +79,7 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
         else {
             // updates current user in memory
             currentUser.addFriend(friendID);
+            friendUser.addFriend(currentUser.getID());
 
             // adds friendship in database
             userDataAccessObject.addFriend(currentUsername, friendUsername);
@@ -89,11 +88,12 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
             List<String> membersOfChat = new ArrayList<>();
             membersOfChat.add(currentUser.getID());
             membersOfChat.add(friendID);
-            GroupChat chat = userDataAccessObject.create(membersOfChat, currentUsername + ", " +
-                    friendUsername, new GroupChatFactory());
+            GroupChat chat = userDataAccessObject.create(membersOfChat, currentUsername + ", "
+                    + friendUsername, new GroupChatFactory());
 
             // add chat to current user for the in memory object
             currentUser.addPersonalChat(chat);
+            friendUser.addPersonalChat(chat);
 
             // add chat to both users in database
             userDataAccessObject.savePersonalChat(chat, currentUsername);
