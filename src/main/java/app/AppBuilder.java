@@ -69,6 +69,8 @@ import usecase.change_password.ChangePasswordOutputBoundary;
 import usecase.create_chat.CreateChatInputBoundary;
 import usecase.create_chat.CreateChatInteractor;
 import usecase.create_chat.CreateChatOutputBoundary;
+import usecase.delete_account.DeleteAccountInputBoundary;
+import usecase.delete_account.DeleteAccountInteractor;
 import usecase.delete_message.DeleteMessageInputBoundary;
 import usecase.delete_message.DeleteMessageInteractor;
 import usecase.join_chat.JoinChatInputBoundary;
@@ -466,12 +468,17 @@ public class AppBuilder {
         final AddDobInputBoundary addDateOfBirthInputBoundary =
                 new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory);
 
+        final DeleteAccountInputBoundary deleteAccountInputBoundary =
+                new DeleteAccountInteractor(userDataAccessObject, profileAndSettingsPresenter);
+
         final PandScontroller profileAndSettingsController = new PandScontroller(viewManagerModel,
                 mainMenuViewModel,
                 profileandSettingViewModel,
                 changePasswordInteractor,
                 addBioInputBoundary,
-                addDateOfBirthInputBoundary);
+                addDateOfBirthInputBoundary,
+                deleteAccountInputBoundary);
+
         profileandSettingView.setPandSController(profileAndSettingsController);
         return this;
     }

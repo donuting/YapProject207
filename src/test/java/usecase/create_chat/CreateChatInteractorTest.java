@@ -2,6 +2,7 @@ package usecase.create_chat;
 
 import dataaccess.GroupChatDataAccessObject;
 import dataaccess.InMemoryUserDataAccessObject;
+import dataaccess.SendBirdUserDataAccessObject;
 import entity.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CreateChatInteractorTest {
 
     private CommonUser user;
-    private InMemoryUserDataAccessObject dataAccess;
+    private SendBirdUserDataAccessObject dataAccess;
 
     @BeforeEach
     void setUp(){
@@ -28,14 +29,15 @@ public class CreateChatInteractorTest {
                 new ArrayList<String>(), new ArrayList<String>(),
                 new ArrayList<GroupChat>(), new ArrayList<GroupChat>(),
                 selfChat);
-        dataAccess = new InMemoryUserDataAccessObject();
-        dataAccess.setCurrentUser(user);
-        dataAccess.setCurrentUsername(user.getName());
+        dataAccess = new SendBirdUserDataAccessObject();
+
     }
 
     @Test
     void CreateChatInteractorSuccessTest(){
         dataAccess.save(user);
+        dataAccess.setCurrentUser(user);
+        dataAccess.setCurrentUsername(user.getName());
         CreateChatInputData inputData = new CreateChatInputData("New Chat");
         CreateChatOutputBoundary presenter = new CreateChatOutputBoundary() {
             @Override
@@ -45,7 +47,7 @@ public class CreateChatInteractorTest {
                 List<GroupChat> groupChats = user.getGroupChats();
                 assertEquals(1, groupChats.size());
                 GroupChat groupChat = groupChats.get(0);
-                assertEquals("User's self chat", groupChat.getChatName());
+                assertEquals("New Chat", groupChat.getChatName());
                 assert groupChat.getMemberIds().contains("100");
                 assertEquals(1, groupChat.getMemberIds().size());
             }
@@ -63,6 +65,8 @@ public class CreateChatInteractorTest {
     // input chat name is empty
     void CreateChatInteractorFailTest1(){
         dataAccess.save(user);
+        dataAccess.setCurrentUser(user);
+        dataAccess.setCurrentUsername(user.getName());
         CreateChatInputData inputData = new CreateChatInputData("");
         CreateChatOutputBoundary presenter = new CreateChatOutputBoundary() {
             @Override

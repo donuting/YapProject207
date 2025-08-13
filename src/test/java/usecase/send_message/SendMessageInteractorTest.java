@@ -59,7 +59,7 @@ public class SendMessageInteractorTest {
 
     @Test
     // empty message
-    void sendMessageInteractorFailTest() {
+    void sendMessageInteractorFailTest1() {
         SendMessageInputData inputData = new SendMessageInputData("");
         SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
             @Override
@@ -77,6 +77,36 @@ public class SendMessageInteractorTest {
         SendMessageInteractor interactor = new SendMessageInteractor(dataAccess, presenter, new CommonMessageFactory());
         interactor.execute(inputData);
     }
+
+    @Test
+        // empty message
+    void sendMessageInteractorFailTest2() {
+        CommonUser user2 = new CommonUser("User2", "Password1", "200",
+                "Bio", "20250823", new ArrayList<String>(),
+                new ArrayList<String>(), new ArrayList<GroupChat>(),
+                new ArrayList<GroupChat>());
+        dataAccess.save(user2);
+        dataAccess.addUser(user2.getID(), chat.getChannelUrl());
+        dataAccess.blockFriend(user, user2.getName(), user2.getID());
+        SendMessageInputData inputData = new SendMessageInputData("");
+        SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
+            @Override
+            public void prepareSuccessSendMessageView(SendMessageOutputData sendMessageOutputData) {
+                fail("Interactor does not check if the user in the chat are blocked");
+
+            }
+
+            @Override
+            public void prepareFailSendMessageView(String errorMessage, SendMessageOutputData sendMessageOutputData) {
+                assertTrue(sendMessageOutputData.isUseCaseFailed());
+                assertTrue(chat.getMessageHistory().isEmpty());
+            }
+        };
+        SendMessageInteractor interactor = new SendMessageInteractor(dataAccess, presenter, new CommonMessageFactory());
+        interactor.execute(inputData);
+    }
+
+
 
     @AfterEach
     void tearDown() {

@@ -69,21 +69,6 @@ public class GroupChatTest {
     }
 
     @Test
-    // tests if blocked members can be added to a chat
-    // TODO: business logic to be checked in interactor
-    void addMemberTest2(){
-        CommonUser newUser = new CommonUser("User2", "Password1", "200",
-                "Bio", "20250823", new ArrayList<String>(),
-                new ArrayList<String>(), new ArrayList<GroupChat>(),
-                new ArrayList<GroupChat>());
-        user.blockUser("200");
-        boolean result = group.addMember("200");
-        assertFalse(result);
-        List<String> memberIDs = group.getMemberIds();
-        assert !memberIDs.contains("200");
-    }
-
-    @Test
     // Tests if message is added to messageHistory
     void addMessageTest1(){
         CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
@@ -91,45 +76,6 @@ public class GroupChatTest {
         assertTrue(result);
         List<Message> messages = group.getMessageHistory();
         assert  messages.contains(message);
-    }
-
-    @Test
-    // tests if messages sent by members not in teh group are added into messageHistory
-    //TODO: business logic to be tested in teh interactor
-    void addMessageTest2(){
-       CommonMessage message = new CommonMessage("200", "Test Message", 10, "0000");
-       boolean result = group.addMessage(message);
-       assertFalse(result);
-    }
-
-    @Test
-    // If there is a blocked user in teh chat, then the sender cannot send the message in the chat
-    //TODO: business logic to be tested in teh interactor
-    void addMessageTest3(){
-        CommonUser newUser = new CommonUser("User2", "Password1", "200",
-                "Bio", "20250823", new ArrayList<String>(),
-                new ArrayList<String>(), new ArrayList<GroupChat>(),
-                new ArrayList<GroupChat>());
-        group.addMember("200");
-        user.blockUser("200");
-        CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
-        boolean result = group.addMessage(message);
-        assertFalse(result);
-    }
-
-    @Test
-    // tests if a member in the chat is blocked then the sender cannot senf the message in chat
-    // TODO: business logic to be tested in the interactor
-    void addMessageTest4(){
-        CommonUser newUser = new CommonUser("User2", "Password1", "200",
-                "Bio", "20250823", new ArrayList<String>(),
-                new ArrayList<String>(), new ArrayList<GroupChat>(),
-                new ArrayList<GroupChat>());
-        group.addMember("200");
-        newUser.blockUser("100");
-        CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
-        boolean result = group.addMessage(message);
-        assertFalse(result);
     }
 
     @Test

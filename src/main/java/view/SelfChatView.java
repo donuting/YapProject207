@@ -233,6 +233,15 @@ public class SelfChatView extends JPanel implements ActionListener, PropertyChan
         SelfChatState state = selfChatViewModel.getState();
         Map<Integer, JsonObject> messageData = state.getMessages();
 
+        if (messageData.isEmpty()) {
+            chatArea.removeAll();
+            messages.clear();
+            chatArea.revalidate();
+            chatArea.repaint();
+            titleLabel.setText("Self Chat (0 messages)");
+            return;
+        }
+
         // Clear existing messages from display but keep track of what we've shown
         java.util.Set<String> existingMessageIds = new java.util.HashSet<>();
         for (String messageId : messages.values()) {

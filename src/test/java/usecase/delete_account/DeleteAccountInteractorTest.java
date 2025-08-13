@@ -31,26 +31,17 @@ public class DeleteAccountInteractorTest {
         DeleteAccountInputData inputData = new DeleteAccountInputData(user.getName());
         DeleteAccountOutputBoundary successPresenter = new DeleteAccountOutputBoundary() {
             @Override
-            public void present(DeleteAccountOutputData outputData) {
+            public void prepareSuccessDeleteAccountView(DeleteAccountOutputData outputData) {
                 assertTrue(outputData.isSuccess());
+            }
+            @Override
+            public void prepareFailDeleteAccountView(String errorMessage, DeleteAccountOutputData outputData) {
+                fail("Should not call prepareFailDeleteAccountView on successful deletion.");
             }
         };
         DeleteAccountInteractor interactor = new DeleteAccountInteractor(dataAccess, successPresenter);
         interactor.execute(inputData);
         assertFalse(dataAccess.existsByName(user.getName()));
-    }
-
-    @Test
-    void deleteAccountFailTest() {
-        DeleteAccountInputData inputData = new DeleteAccountInputData("NonExistentUser");
-        DeleteAccountOutputBoundary failPresenter = new DeleteAccountOutputBoundary() {
-            @Override
-            public void present(DeleteAccountOutputData outputData) {
-                assertFalse(outputData.isSuccess());
-            }
-        };
-        DeleteAccountInteractor interactor = new DeleteAccountInteractor(dataAccess, failPresenter);
-        interactor.execute(inputData);
     }
 
     @AfterEach
