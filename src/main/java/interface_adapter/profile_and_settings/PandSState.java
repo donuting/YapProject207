@@ -72,16 +72,8 @@ public class PandSstate {
         this.username = username;
     }
 
-    public boolean isAccountDeleted() {
-        return accountDeleted;
-    }
-
     public void setAccountDeleted(boolean accountDeleted) {
         this.accountDeleted = accountDeleted;
-    }
-
-    public String getDeleteAccountErrorMessage() {
-        return deleteAccountErrorMessage;
     }
 
     public void setDeleteAccountErrorMessage(String deleteAccountErrorMessage) {

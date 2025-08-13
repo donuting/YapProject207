@@ -96,7 +96,6 @@ public class PandScontroller {
      */
     public void deleteAccount() {
         String username = pandsViewModel.getState().getUsername();
-        String password = pandsViewModel.getState().getChangePasswordText();
         DeleteAccountInputData inputData = new DeleteAccountInputData(username);
         deleteAccountInputBoundary.execute(inputData);
     }
