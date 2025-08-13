@@ -16,9 +16,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupState;
-import interface_adapter.signup.SignupViewModel;
+import interfaceadapter.signup.SignupController;
+import interfaceadapter.signup.SignupState;
+import interfaceadapter.signup.SignupViewModel;
 
 /**
  * The View for the Signup Use Case.

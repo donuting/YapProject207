@@ -1,9 +1,9 @@
 package view;
 
 import com.google.gson.JsonObject;
-import interface_adapter.self_chat.SelfChatController;
-import interface_adapter.self_chat.SelfChatState;
-import interface_adapter.self_chat.SelfChatViewModel;
+import interfaceadapter.self_chat.SelfChatController;
+import interfaceadapter.self_chat.SelfChatState;
+import interfaceadapter.self_chat.SelfChatViewModel;
 
 import javax.swing.*;
 import java.awt.*;
