@@ -15,19 +15,21 @@ public class DeleteAccountInteractor implements DeleteAccountInputBoundary {
         if (accountDeletionDataAccessObject.getCurrentUser() == null) {
             DeleteAccountOutputData outputData = new DeleteAccountOutputData(false);
             presenter.prepareFailDeleteAccountView("Failed to delete account.", outputData);
-            return;
         }
+        else {
 
-        String userId = accountDeletionDataAccessObject.getCurrentUser().getID();
-        String username = accountDeletionDataAccessObject.getCurrentUser().getName();
+            String userId = accountDeletionDataAccessObject.getCurrentUser().getID();
+            String username = accountDeletionDataAccessObject.getCurrentUser().getName();
 
-        boolean result = accountDeletionDataAccessObject.deleteUserById(userId, username);
-        DeleteAccountOutputData outputData = new DeleteAccountOutputData(result);
+            boolean result = accountDeletionDataAccessObject.deleteUserById(userId, username);
+            DeleteAccountOutputData outputData = new DeleteAccountOutputData(result);
 
-        if (result) {
-            presenter.prepareSuccessDeleteAccountView(outputData);
-        } else {
-            presenter.prepareFailDeleteAccountView("Failed to delete account.", outputData);
+            if (result) {
+                presenter.prepareSuccessDeleteAccountView(outputData);
+            }
+            else {
+                presenter.prepareFailDeleteAccountView("Failed to delete account.", outputData);
+            }
         }
     }
 }

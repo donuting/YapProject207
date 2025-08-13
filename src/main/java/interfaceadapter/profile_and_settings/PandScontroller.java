@@ -24,7 +24,6 @@ public class PandScontroller {
     private final AddDobInputBoundary addDobInputBoundary;
     private final DeleteAccountInputBoundary deleteAccountInputBoundary;
 
-
     public PandScontroller(ViewManagerModel viewManagerModel, MainMenuViewModel mainMenuViewModel,
                            PandSviewModel pandsViewModel, ChangePasswordInputBoundary changePasswordInteractor,
                            AddBioInputBoundary addBioInputBoundary, AddDobInputBoundary addDobInputBoundary,

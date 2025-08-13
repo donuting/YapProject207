@@ -6,8 +6,16 @@ package usecase.delete_account;
 public interface DeleteAccountOutputBoundary {
 
     /**
-     * Presents the output data from deleting a user.
-     * @param outputData the output data
+     * Prepares the success view for the delete account Use Case.
+     * @param deleteAccountOutputData the output data.
      */
-    void present(DeleteAccountOutputData outputData);
+    void prepareSuccessDeleteAccountView(DeleteAccountOutputData deleteAccountOutputData);
+
+    /**
+     * Prepares the fail view for the delete account Use Case.
+     * @param deleteAccountOutputData the output data.
+     * @param errorMessage The error message to be shown.
+     */
+    void prepareFailDeleteAccountView(String errorMessage, DeleteAccountOutputData deleteAccountOutputData);
+
 }
