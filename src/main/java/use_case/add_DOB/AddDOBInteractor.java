@@ -23,17 +23,30 @@ public class AddDOBInteractor implements AddDOBInputBoundary {
     public void execute(AddDOBInputData addDOBInputData) {
         String dob = addDOBInputData.getDOB();
         String username = addDOBInputData.getUsername();
-        boolean result = userDataAccessObject.addDOB(username, dob);
+        User user = userDataAccessObject.get(username);
+        AddDOBOutputData addDOBOutputData = new AddDOBOutputData(username, true, user.getDOB());
 
-        if (result) {
-            final AddDOBOutputData addDOBOutputData = new AddDOBOutputData(username, false, dob);
+        if (dob.length()!=8) {
+            userPresenter.prepareFailAddDOBView("The input should be in the format YYYYMMDD", addDOBOutputData);
+            return;
+        } else if(hasNonDigits(dob)){
+            userPresenter.prepareFailAddDOBView("The input should only contain numbers", addDOBOutputData);
+            return;
+        }
+        else{
+            userDataAccessObject.addDOB(username, dob);
+            addDOBOutputData = new AddDOBOutputData(username, false, dob);
             userPresenter.prepareSuccessAddDOBView(addDOBOutputData);
-        }
-        else {
-            final AddDOBOutputData addDOBOutputData = new AddDOBOutputData(username, true, dob);
-            userPresenter.prepareFailAddDOBView("Failed Adding DOB", addDOBOutputData);
+            }
         }
 
 
+    private boolean hasNonDigits(String dob) {
+        for (int i = 0; i < dob.length(); i++) {
+            if (!Character.isDigit(dob.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

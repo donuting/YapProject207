@@ -8,8 +8,8 @@ public class UserProfileState {
     private String userId = "";
     private String bio = "";
     private String dateOfBirth = "";
-    private String error = null;
-    private String successMessage = null;
+    private String error;
+    private String successMessage;
 
     public UserProfileState(UserProfileState copy) {
         username = copy.username;
@@ -21,7 +21,9 @@ public class UserProfileState {
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
-    public UserProfileState() {}
+    public UserProfileState() {
+
+    }
 
     public String getUsername() {
         return username;
@@ -73,11 +75,16 @@ public class UserProfileState {
 
     @Override
     public String toString() {
-        return "UserProfileState{" +
-                "username='" + username + '\'' +
-                ", userId='" + userId + '\'' +
-                ", bio='" + bio + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
+        return "UserProfileState{"
+                +
+                "username='" + username + '\''
+                +
+                ", userId='" + userId + '\''
+                +
+                ", bio='" + bio + '\''
+                +
+                ", dateOfBirth='" + dateOfBirth + '\''
+                +
                 '}';
     }
 }

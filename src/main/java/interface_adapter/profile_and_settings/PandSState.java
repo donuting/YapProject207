@@ -3,66 +3,65 @@ package interface_adapter.profile_and_settings;
 /**
  * The state for the Main Menu View Model.
  */
-public class PandSState {
-    private String UID = "";
-    private String ChangePasswordText = "";
-    private String AddBioText = "";
-    private String AddDOBText = "";
+public class PandSstate {
+    private String userId = "";
+    private String changePasswordText = "";
+    private String addBioText = "";
+    private String addDobText = "";
     private String username = "";
     private boolean accountDeleted = false;
     private String deleteAccountErrorMessage = "";
 
-    public PandSState(){
-        this.UID = "";
-        this.ChangePasswordText = "";
-        this.AddBioText = "";
-        this.AddDOBText = "";
+    public PandSstate() {
+        this.userId = "";
+        this.changePasswordText = "";
+        this.addBioText = "";
+        this.addDobText = "";
         this.username = "";
         this.accountDeleted = false;
         this.deleteAccountErrorMessage = "";
     }
 
-    public PandSState(PandSState pandSState){
-        UID = pandSState.UID;
-        ChangePasswordText = pandSState.ChangePasswordText;
-        AddBioText = pandSState.AddBioText;
-        AddDOBText = pandSState.AddDOBText;
-        username = pandSState.username;
-        accountDeleted = pandSState.accountDeleted;
-        deleteAccountErrorMessage = pandSState.deleteAccountErrorMessage;
+    public PandSstate(PandSstate pandSstate) {
+        userId = pandSstate.userId;
+        changePasswordText = pandSstate.changePasswordText;
+        addBioText = pandSstate.addBioText;
+        addDobText = pandSstate.addDobText;
+        username = pandSstate.username;
+        accountDeleted = pandSstate.accountDeleted;
+        deleteAccountErrorMessage = pandSstate.deleteAccountErrorMessage;
     }
 
-
-    public String getUID() {
-        return UID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUID(String UID) {
-        this.UID = UID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getChangePasswordText() {
-        return ChangePasswordText;
+        return changePasswordText;
     }
 
     public void setChangePasswordText(String changePasswordText) {
-        ChangePasswordText = changePasswordText;
+        this.changePasswordText = changePasswordText;
     }
 
     public String getAddBioText() {
-        return AddBioText;
+        return addBioText;
     }
 
     public void setAddBioText(String addBioText) {
-        AddBioText = addBioText;
+        this.addBioText = addBioText;
     }
 
-    public String getAddDOBText() {
-        return AddDOBText;
+    public String getAddDobText() {
+        return addDobText;
     }
 
-    public void setAddDOBText(String addDOBText) {
-        AddDOBText = addDOBText;
+    public void setAddDobText(String addDobText) {
+        this.addDobText = addDobText;
     }
 
     public String getUsername() {

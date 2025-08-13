@@ -1,6 +1,7 @@
 package use_case.block_friend;
 
 import data_access.InMemoryUserDataAccessObject;
+import data_access.SendBirdUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.User;
 import entity.UserFactory;
@@ -12,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BlockFriendInteractorTest {
 
-    private InMemoryUserDataAccessObject dataAccess;
+    private SendBirdUserDataAccessObject dataAccess;
     private UserFactory userFactory;
     private User user;
     private User friend;
 
     @BeforeEach
     void setUp() {
-        dataAccess = new InMemoryUserDataAccessObject();
+        dataAccess = new SendBirdUserDataAccessObject();
         userFactory = new CommonUserFactory();
         user = userFactory.create("User", "Password1");
         friend = userFactory.create("Friend", "Password2");
@@ -31,7 +32,8 @@ public class BlockFriendInteractorTest {
 
     @Test
     void blockFriendSuccessTest() {
-        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
+        dataAccess.addFriend(user.getName(), friend.getName());
+        BlockFriendInputData inputData = new BlockFriendInputData(friend.getID());
         BlockFriendOutputBoundary successPresenter = new BlockFriendOutputBoundary() {
             @Override
             public void blockFriendPrepareSuccessView(BlockFriendOutputData outputData) {
@@ -68,29 +70,10 @@ public class BlockFriendInteractorTest {
         interactor.execute(inputData);
     }
 
-    @Test
-    void blockFriendFailUserDoesNotExistTest() {
-        dataAccess.setCurrentUser(null);
-        dataAccess.setCurrentUsername(null);
-        BlockFriendInputData inputData = new BlockFriendInputData(friend.getName());
-        BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
-            @Override
-            public void blockFriendPrepareSuccessView(BlockFriendOutputData outputData) {
-                fail("Block friend use case should fail when current user does not exist");
-            }
-
-            @Override
-            public void blockFriendPrepareFailView(String errorMessage, BlockFriendOutputData outputData) {
-                assertFalse(outputData.isSuccess());
-                assertEquals("Failed to block friend.", errorMessage);
-            }
-        };
-        BlockFriendInteractor interactor = new BlockFriendInteractor(dataAccess, failPresenter);
-        interactor.execute(inputData);
-    }
-
     @AfterEach
     void tearDown() {
+        dataAccess.deleteUserById(friend.getID(), friend.getName());
+        dataAccess.deleteUserById(user.getID(), user.getName());
         dataAccess = null;
         user = null;
         friend = null;

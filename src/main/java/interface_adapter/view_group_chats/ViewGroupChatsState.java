@@ -11,8 +11,7 @@ public class ViewGroupChatsState {
     private String errorMessage = "";
 
     // Records whether the channel info needs to be updated
-    boolean needsGroupChatInfo = false;
-
+    private boolean needsGroupChatInfo;
 
     public ViewGroupChatsState(ViewGroupChatsState copy) {
         username = copy.username;

@@ -26,6 +26,7 @@ public class ChangePasswordInteractor implements ChangePasswordInputBoundary {
 
         if (password == null || password.length() < 8) {
             userPresenter.prepareFailChangePasswordView("Password is empty or has less than 8 characters.");
+            return;
         }
 
         boolean hasDigit = false;
@@ -52,12 +53,13 @@ public class ChangePasswordInteractor implements ChangePasswordInputBoundary {
         if (!hasDigit || !hasUpper || !hasLower) {
             userPresenter.prepareFailChangePasswordView("Password must contain at least one digit," +
                     " one uppercase letter, and one lowercase letter.");
+            return;
         }
-
         userDataAccessObject.changePassword(username, password);
 
         final ChangePasswordOutputData changePasswordOutputData = new ChangePasswordOutputData(username,
-                                                                                  false, password);
+                false, password);
         userPresenter.prepareSuccessChangePasswordView(changePasswordOutputData);
+
     }
 }

@@ -16,7 +16,11 @@ public class ViewChatsController {
     private final SelfChatViewModel selfChatViewModel;
     private final ViewGroupChatsViewModel viewGroupChatsViewModel;
 
-    public ViewChatsController(ViewManagerModel viewManagerModel, AddChatViewModel addChatViewModel, ViewChatsViewModel viewChatsViewModel, SelfChatViewModel selfChatViewModel, ViewGroupChatsViewModel viewGroupChatsViewModel) {
+    public ViewChatsController(ViewManagerModel viewManagerModel,
+                               AddChatViewModel addChatViewModel,
+                               ViewChatsViewModel viewChatsViewModel,
+                               SelfChatViewModel selfChatViewModel,
+                               ViewGroupChatsViewModel viewGroupChatsViewModel) {
         this.viewManagerModel = viewManagerModel;
         this.addChatViewModel = addChatViewModel;
         this.viewChatsViewModel = viewChatsViewModel;
@@ -41,8 +45,8 @@ public class ViewChatsController {
      */
     public void openAddChat() {
         // Pass current username to add chat view
-        final String ID = viewChatsViewModel.getState().getUsername();
-        addChatViewModel.getState().setID(ID);
+        final String iD = viewChatsViewModel.getState().getUsername();
+        addChatViewModel.getState().setID(iD);
         addChatViewModel.firePropertyChanged();
 
         // Navigate to add chat screen
@@ -59,9 +63,12 @@ public class ViewChatsController {
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Description.
+     */
     public void openGroupChats() {
         // Update the username
-        ViewGroupChatsState viewGroupChatsState = viewGroupChatsViewModel.getState();
+        final ViewGroupChatsState viewGroupChatsState = viewGroupChatsViewModel.getState();
         viewGroupChatsState.setUsername(viewChatsViewModel.getState().getUsername());
 
         // Updates the list of group chats

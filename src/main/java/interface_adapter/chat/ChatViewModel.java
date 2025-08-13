@@ -1,10 +1,10 @@
 package interface_adapter.chat;
 
-import interface_adapter.ViewModel;
-import entity.GroupChat;
-import entity.Message;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import entity.Message;
+import interface_adapter.ViewModel;
 
 /**
  * The ViewModel for the Chat View.
@@ -28,9 +28,9 @@ public class ChatViewModel extends ViewModel<ChatState> {
      * @param message the message to add
      */
     public void addMessage(Message message) {
-        ChatState currentState = getState();
-        List<Message> messages = currentState.getMessages();
-        List<Message> messagesSentByUser = currentState.getMessagesSentByUser();
+        final ChatState currentState = getState();
+        final List<Message> messages = currentState.getMessages();
+        final List<Message> messagesSentByUser = currentState.getMessagesSentByUser();
         messages.add(message);
         messagesSentByUser.add(message);
         currentState.setMessages(messages);
@@ -42,7 +42,7 @@ public class ChatViewModel extends ViewModel<ChatState> {
      * Clears the message input field.
      */
     public void clearMessageInput() {
-        ChatState currentState = getState();
+        final ChatState currentState = getState();
         currentState.setCurrentMessage("");
         firePropertyChanged();
     }
@@ -52,9 +52,9 @@ public class ChatViewModel extends ViewModel<ChatState> {
      * @param messageId the ID of the message to remove
      */
     public void deleteMessage(String messageId) {
-        ChatState currentState = getState();
-        List<Message> messages = currentState.getMessages();
-        List<Message> messagesSentByUser = currentState.getMessagesSentByUser();
+        final ChatState currentState = getState();
+        final List<Message> messages = currentState.getMessages();
+        final List<Message> messagesSentByUser = currentState.getMessagesSentByUser();
         for (Message message : messages) {
             if (message.GetMID().toString().equals(messageId)) {
                 messagesSentByUser.remove(message);
@@ -71,12 +71,18 @@ public class ChatViewModel extends ViewModel<ChatState> {
         firePropertyChanged();
     }
 
+    /**
+     * Description.
+     * @param currentUserId user id of current user
+     * @param messages list of messages
+     * @param usernames list of usernames
+     */
     public void setMessagesAndUsernames(String currentUserId, List<Message> messages, List<String> usernames) {
-        ChatState currentState = getState();
+        final ChatState currentState = getState();
         currentState.setMessages(messages);
         currentState.setUsernames(usernames);
         currentState.setNeedsUpdate(false);
-        List<Message> messagesSentByUser = new ArrayList<>();
+        final List<Message> messagesSentByUser = new ArrayList<>();
         for (Message message : messages) {
             if (message.GetSenderId().equals(currentUserId)) {
                 messagesSentByUser.add(message);

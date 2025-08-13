@@ -7,8 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import data_access.InMemorySelfChatUserDataAccessObject;
-import data_access.InMemoryUserDataAccessObject;
-import data_access.GroupChatDataAccessObject;
 import data_access.SendBirdUserDataAccessObject;
 import data_access.MessageDataAccessObject;
 import entity.CommonUserFactory;
@@ -32,9 +30,9 @@ import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuViewModel;
-import interface_adapter.profile_and_settings.PandSController;
-import interface_adapter.profile_and_settings.PandSPresenter;
-import interface_adapter.profile_and_settings.PandSViewModel;
+import interface_adapter.profile_and_settings.PandScontroller;
+import interface_adapter.profile_and_settings.PandSpresenter;
+import interface_adapter.profile_and_settings.PandSviewModel;
 import interface_adapter.self_chat.SelfChatController;
 import interface_adapter.self_chat.SelfChatPresenter;
 import interface_adapter.self_chat.SelfChatViewModel;
@@ -82,7 +80,6 @@ import use_case.leave_chat.LeaveChatInputBoundary;
 import use_case.leave_chat.LeaveChatInteractor;
 import use_case.load_friends.LoadFriendsInputBoundary;
 import use_case.load_friends.LoadFriendsInteractor;
-import use_case.load_friends.LoadFriendsOutputBoundary;
 import use_case.load_group_chats.LoadGroupChatsInputBoundary;
 import use_case.load_group_chats.LoadGroupChatsInteractor;
 import use_case.login.LoginInputBoundary;
@@ -101,7 +98,6 @@ import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
 import use_case.send_message.SendMessageInputBoundary;
 import use_case.send_message.SendMessageInteractor;
-import use_case.send_message.SendMessageOutputBoundary;
 import use_case.profile.UserProfileInputBoundary;
 import use_case.profile.UserProfileInteractor;
 import use_case.profile.UserProfileOutputBoundary;
@@ -158,7 +154,7 @@ public class AppBuilder {
     private UserProfileViewModel userProfileViewModel;
 
     private ProfileandSettingView profileandSettingView;
-    private PandSViewModel profileandSettingViewModel;
+    private PandSviewModel profileandSettingViewModel;
 
     private ViewGroupChatsView viewGroupChatsView;
     private ViewGroupChatsViewModel viewGroupChatsViewModel;
@@ -307,7 +303,7 @@ public class AppBuilder {
      * @return this builder
      */
     public AppBuilder addProfileandSettingsView() {
-        profileandSettingViewModel = new PandSViewModel();
+        profileandSettingViewModel = new PandSviewModel();
         profileandSettingView = new ProfileandSettingView(profileandSettingViewModel);
         cardPanel.add(profileandSettingView, profileandSettingView.getViewName());
         return this;
@@ -464,8 +460,8 @@ public class AppBuilder {
         final ChangePasswordInputBoundary changePasswordInteractor =
                 new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
 
-        final PandSPresenter profileAndSettingsPresenter =
-                new PandSPresenter(profileandSettingViewModel);
+        final PandSpresenter profileAndSettingsPresenter =
+                new PandSpresenter(profileandSettingViewModel);
 
         final AddBioInputBoundary addBioInputBoundary =
                 new AddBioInteractor(userDataAccessObject, profileAndSettingsPresenter);
@@ -476,7 +472,7 @@ public class AppBuilder {
         final DeleteAccountInputBoundary deleteAccountInputBoundary =
                 new DeleteAccountInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
-        final PandSController profileAndSettingsController = new PandSController(viewManagerModel,
+        final PandScontroller profileAndSettingsController = new PandScontroller(viewManagerModel,
                 mainMenuViewModel,
                 profileandSettingViewModel,
                 changePasswordInteractor,

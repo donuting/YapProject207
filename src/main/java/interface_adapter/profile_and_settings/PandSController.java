@@ -14,26 +14,26 @@ import use_case.delete_account.DeleteAccountInputData;
 /**
  * The controller for the Profile and Settings View.
  */
-public class PandSController {
+public class PandScontroller {
 
     private final ViewManagerModel viewManagerModel;
     private final MainMenuViewModel mainMenuViewModel;
-    private final PandSViewModel pandSViewModel;
+    private final PandSviewModel pandsViewModel;
     private final ChangePasswordInputBoundary changePasswordInputBoundary;
     private final AddBioInputBoundary addBioInputBoundary;
-    private final AddDOBInputBoundary addDOBInputBoundary;
+    private final AddDOBInputBoundary addDobInputBoundary;
     private final DeleteAccountInputBoundary deleteAccountInputBoundary;
 
-    public PandSController(ViewManagerModel viewManagerModel,MainMenuViewModel mainMenuViewModel,
-                           PandSViewModel pandSViewModel, ChangePasswordInputBoundary changePasswordInteractor,
-                           AddBioInputBoundary addBioInputBoundary, AddDOBInputBoundary addDOBInputBoundary,
+    public PandScontroller(ViewManagerModel viewManagerModel, MainMenuViewModel mainMenuViewModel,
+                           PandSviewModel pandsViewModel, ChangePasswordInputBoundary changePasswordInteractor,
+                           AddBioInputBoundary addBioInputBoundary, AddDOBInputBoundary addDobInputBoundary,
                            DeleteAccountInputBoundary deleteAccountInputBoundary) {
         this.viewManagerModel = viewManagerModel;
         this.mainMenuViewModel = mainMenuViewModel;
-        this.pandSViewModel = pandSViewModel;
+        this.pandsViewModel = pandsViewModel;
         this.changePasswordInputBoundary = changePasswordInteractor;
         this.addBioInputBoundary = addBioInputBoundary;
-        this.addDOBInputBoundary = addDOBInputBoundary;
+        this.addDobInputBoundary = addDobInputBoundary;
         this.deleteAccountInputBoundary = deleteAccountInputBoundary;
     }
 
@@ -42,8 +42,8 @@ public class PandSController {
      * @param password the new password to be changed.
      */
     public void changePassword(String password) {
-        String username = pandSViewModel.getState().getUsername();
-        ChangePasswordInputData changePasswordInputData = new ChangePasswordInputData(password,username);
+        final String username = pandsViewModel.getState().getUsername();
+        final ChangePasswordInputData changePasswordInputData = new ChangePasswordInputData(password, username);
         changePasswordInputBoundary.execute(changePasswordInputData);
     }
 
@@ -52,22 +52,22 @@ public class PandSController {
      * @param bio the new bio to be added.
      */
     public void addBio(String bio) {
-        String username = pandSViewModel.getState().getUsername();
-        String password = pandSViewModel.getState().getChangePasswordText();
-        AddBioInputData inputData = new AddBioInputData(username, bio, password);
+        final String username = pandsViewModel.getState().getUsername();
+        final String password = pandsViewModel.getState().getChangePasswordText();
+        final AddBioInputData inputData = new AddBioInputData(username, bio, password);
         addBioInputBoundary.execute(inputData);
 
     }
 
     /**
-     * Executes the add DOB use case.
-     * @param DOB the new DOB to be added.
+     * Executes the add doB use case.
+     * @param doB the new doB to be added.
      */
-    public void addDOB(String DOB) {
-        String username = pandSViewModel.getState().getUsername();
-        String password = pandSViewModel.getState().getChangePasswordText();
-        AddDOBInputData inputData = new AddDOBInputData(DOB, username, password);
-        addDOBInputBoundary.execute(inputData);
+    public void addDob(String doB) {
+        final String username = pandsViewModel.getState().getUsername();
+        final String password = pandsViewModel.getState().getChangePasswordText();
+        final AddDOBInputData inputData = new AddDOBInputData(doB, username, password);
+        addDobInputBoundary.execute(inputData);
 
     }
 
@@ -75,7 +75,7 @@ public class PandSController {
      * Executes the switch to main menu use case.
      */
     public void switchToMenu() {
-        final String currentUsername = pandSViewModel.getState().getUsername();
+        final String currentUsername = pandsViewModel.getState().getUsername();
         mainMenuViewModel.getState().setUsername(currentUsername);
         mainMenuViewModel.firePropertyChanged();
 
@@ -95,8 +95,8 @@ public class PandSController {
      * Executes the delete account use case.
      */
     public void deleteAccount() {
-        String username = pandSViewModel.getState().getUsername();
-        String password = pandSViewModel.getState().getChangePasswordText();
+        String username = pandsViewModel.getState().getUsername();
+        String password = pandsViewModel.getState().getChangePasswordText();
         DeleteAccountInputData inputData = new DeleteAccountInputData(username);
         deleteAccountInputBoundary.execute(inputData);
     }

@@ -33,4 +33,11 @@ public interface RemoveFriendDataAccessInterface {
      * @return the corresponding user.
      */
     String getUsernameFromId(String removedId);
+
+    /**
+     * Returns the user with the given username.
+     * @param username of person to fetch
+     * @return user with this username
+     */
+    User get(String username);
 }

@@ -15,89 +15,89 @@ import use_case.delete_account.DeleteAccountOutputData;
  * The Presenter for the Add DOB Use Case.
  * The Presenter for the Add Bio Use Case.
  */
-public class PandSPresenter implements ChangePasswordOutputBoundary,
+public class PandSpresenter implements ChangePasswordOutputBoundary,
         AddDOBOutputBoundary,
         AddBioOutputBoundary,
         DeleteAccountOutputBoundary {
-    private final PandSViewModel pandSViewModel;
+    private static final String PROFILE_AND_SETTINGS = "Profile And Settings";
+    private final PandSviewModel pandSviewModel;
 
-    public PandSPresenter(PandSViewModel pandSViewModel) {
-        this.pandSViewModel = pandSViewModel;
+    public PandSpresenter(PandSviewModel pandSviewModel) {
+        this.pandSviewModel = pandSviewModel;
     }
 
     @Override
     public void prepareSuccessAddBioView(AddBioOutputData addBioOutputData) {
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
-        pandSState.setAddBioText(addBioOutputData.getBio());
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
+        pandSstate.setAddBioText(addBioOutputData.getBio());
+        pandSviewModel.setState(pandSstate);
+        pandSviewModel.firePropertyChanged(PROFILE_AND_SETTINGS);
 
     }
 
     @Override
-    public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
-        pandSState.setAddDOBText(addDOBOutputData.getDob());
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+    public void prepareSuccessAddDOBView(AddDOBOutputData addDobOutputData) {
+        final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
+        pandSstate.setAddDobText(addDobOutputData.getDob());
+        pandSviewModel.setState(pandSstate);
+        pandSviewModel.firePropertyChanged(PROFILE_AND_SETTINGS);
     }
 
     @Override
     public void prepareSuccessChangePasswordView(ChangePasswordOutputData outputData) {
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
-        pandSState.setChangePasswordText(outputData.getPassword());
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
+        pandSstate.setChangePasswordText(outputData.getPassword());
+        pandSviewModel.setState(pandSstate);
+        pandSviewModel.firePropertyChanged(PROFILE_AND_SETTINGS);
     }
 
     @Override
     public void prepareFailAddBioView(String errorMessage, AddBioOutputData addBioOutputData) {
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
-        pandSState.setAddBioText(addBioOutputData.getBio());
+        final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
+        pandSstate.setAddBioText(addBioOutputData.getBio());
         System.out.println(errorMessage);
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        pandSviewModel.setState(pandSstate);
+        pandSviewModel.firePropertyChanged(PROFILE_AND_SETTINGS);
 
     }
 
     @Override
-    public void prepareFailAddDOBView(String errorMessage, AddDOBOutputData addDOBOutputData) {
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
-        pandSState.setAddDOBText(addDOBOutputData.getDob());
+    public void prepareFailAddDOBView(String errorMessage, AddDOBOutputData addDobOutputData) {
+        final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
+        pandSstate.setAddDobText(addDobOutputData.getDob());
         System.out.println(errorMessage);
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        pandSviewModel.setState(pandSstate);
+        pandSviewModel.firePropertyChanged(PROFILE_AND_SETTINGS);
 
     }
 
     @Override
     public void prepareFailChangePasswordView(String errorMessage) {
-        //TODO: to be discussed
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
-        //pandSState.setChangePasswordText(outputData.getPassword());
+        final PandSstate pandSstate = new PandSstate(pandSviewModel.getState());
+        // pandSstate.setChangePasswordText(outputData.getPassword());
         System.out.println(errorMessage);
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        pandSviewModel.setState(pandSstate);
+        pandSviewModel.firePropertyChanged(PROFILE_AND_SETTINGS);
 
     }
 
     @Override
     public void prepareSuccessDeleteAccountView(DeleteAccountOutputData deleteAccountOutputData) {
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
+        PandSstate pandSState = new PandSstate(pandSviewModel.getState());
         pandSState.setAccountDeleted(true);
         pandSState.setDeleteAccountErrorMessage("");
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        pandSviewModel.setState(pandSState);
+        pandSviewModel.firePropertyChanged("Profile And Settings");
     }
 
     @Override
     public void prepareFailDeleteAccountView(String errorMessage, DeleteAccountOutputData deleteAccountOutputData) {
-        PandSState pandSState = new PandSState(pandSViewModel.getState());
-        pandSState.setAccountDeleted(false);
-        pandSState.setDeleteAccountErrorMessage(errorMessage);
+        PandSstate PandSState = new PandSstate(pandSviewModel.getState());
+        PandSState.setAccountDeleted(false);
+        PandSState.setDeleteAccountErrorMessage(errorMessage);
         System.out.println(errorMessage);
-        pandSViewModel.setState(pandSState);
-        pandSViewModel.firePropertyChanged("Profile And Settings");
+        pandSviewModel.setState(PandSState);
+        pandSviewModel.firePropertyChanged("Profile And Settings");
     }
 
 }

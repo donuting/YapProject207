@@ -55,7 +55,6 @@ public class InMemoryUserDataAccessObject implements
         return users.containsKey(identifier);
     }
 
-    @Override
     public boolean alreadyFriend(String currentUsername, String friendUsername) {
         User user = users.get(currentUsername);
         User friend = users.get(friendUsername);
