@@ -8,6 +8,8 @@ import use_case.add_DOB.AddDOBInputBoundary;
 import use_case.add_DOB.AddDOBInputData;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInputData;
+import use_case.delete_account.DeleteAccountInputBoundary;
+import use_case.delete_account.DeleteAccountInputData;
 
 /**
  * The controller for the Profile and Settings View.
@@ -20,16 +22,19 @@ public class PandSController {
     private final ChangePasswordInputBoundary changePasswordInputBoundary;
     private final AddBioInputBoundary addBioInputBoundary;
     private final AddDOBInputBoundary addDOBInputBoundary;
+    private final DeleteAccountInputBoundary deleteAccountInputBoundary;
 
     public PandSController(ViewManagerModel viewManagerModel,MainMenuViewModel mainMenuViewModel,
                            PandSViewModel pandSViewModel, ChangePasswordInputBoundary changePasswordInteractor,
-                           AddBioInputBoundary addBioInputBoundary, AddDOBInputBoundary addDOBInputBoundary) {
+                           AddBioInputBoundary addBioInputBoundary, AddDOBInputBoundary addDOBInputBoundary,
+                           DeleteAccountInputBoundary deleteAccountInputBoundary) {
         this.viewManagerModel = viewManagerModel;
         this.mainMenuViewModel = mainMenuViewModel;
         this.pandSViewModel = pandSViewModel;
         this.changePasswordInputBoundary = changePasswordInteractor;
         this.addBioInputBoundary = addBioInputBoundary;
         this.addDOBInputBoundary = addDOBInputBoundary;
+        this.deleteAccountInputBoundary = deleteAccountInputBoundary;
     }
 
     /**
@@ -84,5 +89,15 @@ public class PandSController {
     public void logout() {
         viewManagerModel.setState("sign up");
         viewManagerModel.firePropertyChanged();
+    }
+
+    /**
+     * Executes the delete account use case.
+     */
+    public void deleteAccount() {
+        String username = pandSViewModel.getState().getUsername();
+        String password = pandSViewModel.getState().getChangePasswordText();
+        DeleteAccountInputData inputData = new DeleteAccountInputData(username);
+        deleteAccountInputBoundary.execute(inputData);
     }
 }

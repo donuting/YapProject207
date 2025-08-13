@@ -9,6 +9,8 @@ public class PandSState {
     private String AddBioText = "";
     private String AddDOBText = "";
     private String username = "";
+    private boolean accountDeleted = false;
+    private String deleteAccountErrorMessage = "";
 
     public PandSState(){
         this.UID = "";
@@ -16,6 +18,8 @@ public class PandSState {
         this.AddBioText = "";
         this.AddDOBText = "";
         this.username = "";
+        this.accountDeleted = false;
+        this.deleteAccountErrorMessage = "";
     }
 
     public PandSState(PandSState pandSState){
@@ -24,6 +28,8 @@ public class PandSState {
         AddBioText = pandSState.AddBioText;
         AddDOBText = pandSState.AddDOBText;
         username = pandSState.username;
+        accountDeleted = pandSState.accountDeleted;
+        deleteAccountErrorMessage = pandSState.deleteAccountErrorMessage;
     }
 
 
@@ -65,5 +71,21 @@ public class PandSState {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isAccountDeleted() {
+        return accountDeleted;
+    }
+
+    public void setAccountDeleted(boolean accountDeleted) {
+        this.accountDeleted = accountDeleted;
+    }
+
+    public String getDeleteAccountErrorMessage() {
+        return deleteAccountErrorMessage;
+    }
+
+    public void setDeleteAccountErrorMessage(String deleteAccountErrorMessage) {
+        this.deleteAccountErrorMessage = deleteAccountErrorMessage;
     }
 }

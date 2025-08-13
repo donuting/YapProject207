@@ -6,6 +6,8 @@ import use_case.add_DOB.AddDOBOutputBoundary;
 import use_case.add_DOB.AddDOBOutputData;
 import use_case.change_password.ChangePasswordOutputBoundary;
 import use_case.change_password.ChangePasswordOutputData;
+import use_case.delete_account.DeleteAccountOutputBoundary;
+import use_case.delete_account.DeleteAccountOutputData;
 
 /**
  * The Presenter presents the Profile and settings view.
@@ -15,7 +17,8 @@ import use_case.change_password.ChangePasswordOutputData;
  */
 public class PandSPresenter implements ChangePasswordOutputBoundary,
         AddDOBOutputBoundary,
-        AddBioOutputBoundary {
+        AddBioOutputBoundary,
+        DeleteAccountOutputBoundary {
     private final PandSViewModel pandSViewModel;
 
     public PandSPresenter(PandSViewModel pandSViewModel) {
@@ -76,6 +79,25 @@ public class PandSPresenter implements ChangePasswordOutputBoundary,
         pandSViewModel.setState(pandSState);
         pandSViewModel.firePropertyChanged("Profile And Settings");
 
+    }
+
+    @Override
+    public void prepareSuccessDeleteAccountView(DeleteAccountOutputData deleteAccountOutputData) {
+        PandSState pandSState = new PandSState(pandSViewModel.getState());
+        pandSState.setAccountDeleted(true);
+        pandSState.setDeleteAccountErrorMessage("");
+        pandSViewModel.setState(pandSState);
+        pandSViewModel.firePropertyChanged("Profile And Settings");
+    }
+
+    @Override
+    public void prepareFailDeleteAccountView(String errorMessage, DeleteAccountOutputData deleteAccountOutputData) {
+        PandSState pandSState = new PandSState(pandSViewModel.getState());
+        pandSState.setAccountDeleted(false);
+        pandSState.setDeleteAccountErrorMessage(errorMessage);
+        System.out.println(errorMessage);
+        pandSViewModel.setState(pandSState);
+        pandSViewModel.firePropertyChanged("Profile And Settings");
     }
 
 }
