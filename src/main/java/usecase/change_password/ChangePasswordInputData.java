@@ -18,7 +18,7 @@ public class ChangePasswordInputData {
      *
      * @return the inputted password.
      */
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -27,7 +27,7 @@ public class ChangePasswordInputData {
      *
      * @return the inputted username.
      */
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 

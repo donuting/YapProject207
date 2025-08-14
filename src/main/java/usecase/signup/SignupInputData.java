@@ -20,7 +20,7 @@ public class SignupInputData {
      *
      * @return the inputted username
      */
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
@@ -29,7 +29,7 @@ public class SignupInputData {
      *
      * @return the inputted password
      */
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
