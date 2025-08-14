@@ -17,9 +17,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import interface_adapter.add_chat.AddChatController;
-import interface_adapter.add_chat.AddChatState;
-import interface_adapter.add_chat.AddChatViewModel;
+import interfaceadapter.add_chat.AddChatController;
+import interfaceadapter.add_chat.AddChatState;
+import interfaceadapter.add_chat.AddChatViewModel;
 
 /**
  * The View for adding new chats.

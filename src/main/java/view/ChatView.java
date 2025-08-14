@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.chat.ChatController;
-import interface_adapter.chat.ChatState;
-import interface_adapter.chat.ChatViewModel;
+import interfaceadapter.chat.ChatController;
+import interfaceadapter.chat.ChatState;
+import interfaceadapter.chat.ChatViewModel;
 import entity.Message;
 
 import javax.swing.*;

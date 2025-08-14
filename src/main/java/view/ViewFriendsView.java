@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.view_friends.ViewFriendsController;
-import interface_adapter.view_friends.ViewFriendsState;
-import interface_adapter.view_friends.ViewFriendsViewModel;
+import interfaceadapter.view_friends.ViewFriendsController;
+import interfaceadapter.view_friends.ViewFriendsState;
+import interfaceadapter.view_friends.ViewFriendsViewModel;
 
 import javax.swing.*;
 import java.awt.*;
