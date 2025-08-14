@@ -52,9 +52,13 @@ public class MainMenuController {
         final String currentUsername = mainMenuViewModel.getState().getUsername();
         final String password = mainMenuViewModel.getState().getPassword();
         final String uiD = mainMenuViewModel.getState().getUiD();
+        final String Bio = mainMenuViewModel.getState().getBio();
+        final String DOB = mainMenuViewModel.getState().getDOB();
         pandsViewModel.getState().setUsername(currentUsername);
         pandsViewModel.getState().setChangePasswordText(password);
         pandsViewModel.getState().setUserId(uiD);
+        pandsViewModel.getState().setAddBioText(Bio);
+        pandsViewModel.getState().setAddDobText(DOB);
         pandsViewModel.firePropertyChanged("Profile And Settings");
         // Navigate to profile settings screen
 

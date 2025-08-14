@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SendMessageInteractorTest {
 
@@ -23,19 +27,24 @@ public class SendMessageInteractorTest {
 
         List<String> memberIds = new ArrayList<String>();
         memberIds.add("100");
-        dataAccess = new SendBirdUserDataAccessObject();
+        dataAccess = mock(SendBirdUserDataAccessObject.class);
         user = new CommonUser("User", "Password1", "100",
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
-        dataAccess.save(user);
         message = new CommonMessage("100", "Message");
-        chat = dataAccess.create(memberIds, "Group chat", new GroupChatFactory());
-        dataAccess.addUser(user.getID(), chat.getChannelUrl());
+        chat = new GroupChat(memberIds, "Group chat", new ArrayList<>(), "chat.com");
+        user.addGroupChat(chat);
+        chat.addMember(user.getID());
+        when(dataAccess.get(user.getName())).thenReturn(user);
+        when(dataAccess.getCurrentUsername()).thenReturn(user.getName());
+        when(dataAccess.getCurrentUser()).thenReturn(user);
     }
 
     @Test
     void sendMessageInteractorSuccessTest() {
+        when(dataAccess.getActiveGroupChat()).thenReturn(chat);
+        when(dataAccess.sendMessage(any(), eq(chat))).thenReturn(message);
         SendMessageInputData inputData = new SendMessageInputData(message.GetText());
         SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
             @Override
@@ -60,6 +69,7 @@ public class SendMessageInteractorTest {
     @Test
     // empty message
     void sendMessageInteractorFailTest1() {
+        when(dataAccess.sendMessage(any(), eq(chat))).thenReturn(null);
         SendMessageInputData inputData = new SendMessageInputData("");
         SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
             @Override
@@ -81,18 +91,36 @@ public class SendMessageInteractorTest {
     @Test
         // empty message
     void sendMessageInteractorFailTest2() {
-        CommonUser user2 = new CommonUser("User2", "Password1", "200",
-                "Bio", "20250823", new ArrayList<String>(),
-                new ArrayList<String>(), new ArrayList<GroupChat>(),
-                new ArrayList<GroupChat>());
-        dataAccess.save(user2);
-        dataAccess.addUser(user2.getID(), chat.getChannelUrl());
-        dataAccess.blockFriend(user, user2.getName(), user2.getID());
-        SendMessageInputData inputData = new SendMessageInputData("");
+        when(dataAccess.getActiveGroupChat()).thenReturn(null);
+        when(dataAccess.sendMessage(any(), eq(chat))).thenReturn(message);
+        SendMessageInputData inputData = new SendMessageInputData(message.GetText());
         SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
             @Override
             public void prepareSuccessSendMessageView(SendMessageOutputData sendMessageOutputData) {
-                fail("Interactor does not check if the user in the chat are blocked");
+                fail("Interactor does not check if the message is empty");
+
+            }
+
+            @Override
+            public void prepareFailSendMessageView(String errorMessage, SendMessageOutputData sendMessageOutputData) {
+                assertTrue(sendMessageOutputData.isUseCaseFailed());
+                assertTrue(chat.getMessageHistory().isEmpty());
+            }
+        };
+        SendMessageInteractor interactor = new SendMessageInteractor(dataAccess, presenter, new CommonMessageFactory());
+        interactor.execute(inputData);
+    }
+
+    @Test
+        // empty message
+    void sendMessageInteractorFailTest3() {
+        when(dataAccess.getActiveGroupChat()).thenReturn(chat);
+        when(dataAccess.sendMessage(any(), eq(chat))).thenReturn(null);
+        SendMessageInputData inputData = new SendMessageInputData(message.GetText());
+        SendMessageOutputBoundary presenter = new SendMessageOutputBoundary() {
+            @Override
+            public void prepareSuccessSendMessageView(SendMessageOutputData sendMessageOutputData) {
+                fail("Interactor does not check if the message is empty");
 
             }
 

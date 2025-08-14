@@ -44,7 +44,7 @@ class PandScontrollerTest {
             new AddBioInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
     final AddDobInputBoundary addDateOfBirthInputBoundary =
-            new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory);
+            new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
     final DeleteAccountInputBoundary deleteAccountInputBoundary =
             new DeleteAccountInteractor(userDataAccessObject, profileAndSettingsPresenter);
@@ -154,7 +154,7 @@ class PandScontrollerTest {
                     public void execute(AddBioInputData addBioInputData) {
                         Assertions.assertEquals("password", addBioInputData.getPassword());
                         Assertions.assertEquals("username", addBioInputData.getUsername());
-                        Assertions.assertEquals("bio", addBioInputData.getBio());
+                        Assertions.assertEquals("bio", addBioInputData.getOldBio());
                     }
                 };
         final PandSviewModel profileAndSettingViewModelTest = new PandSviewModel();
@@ -169,18 +169,18 @@ class PandScontrollerTest {
                 addBioInputBoundaryTest,
                 addDateOfBirthInputBoundary,
                 deleteAccountInputBoundary);
-        profileAndSettingsController.addBio("bio");
+        profileAndSettingsController.addBio("bio", "bio");
     }
 
     @Test
     void addDobTest() {
         final AddDobInputBoundary addDateOfBirthInputBoundaryTest =
-                new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory) {
+                new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter) {
                     @Override
                     public void execute(AddDobInputData addDobInputData) {
                         Assertions.assertEquals("password", addDobInputData.getPassword());
                         Assertions.assertEquals("username", addDobInputData.getUsername());
-                        Assertions.assertEquals("dob", addDobInputData.getDateOfBirth());
+                        Assertions.assertEquals("dob", addDobInputData.getOldDOB());
                     }
                 };
         final PandSviewModel profileAndSettingViewModelTest = new PandSviewModel();
@@ -195,6 +195,6 @@ class PandScontrollerTest {
                 addBioInputBoundary,
                 addDateOfBirthInputBoundaryTest,
                 deleteAccountInputBoundary);
-        profileAndSettingsController.addDob("dob");
+        profileAndSettingsController.addDob("dob", "dob");
     }
 }

@@ -1,7 +1,6 @@
 package usecase.self_chat;
 
 import dataaccess.InMemorySelfChatUserDataAccessObject;
-import dataaccess.SendBirdUserDataAccessObject;
 import entity.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SelfChatInteractorTest {
 
@@ -18,7 +20,6 @@ public class SelfChatInteractorTest {
     private CommonMessage message;
     private GroupChat selfChat;
     private InMemorySelfChatUserDataAccessObject dataAccess;
-    private SendBirdUserDataAccessObject sendBirdUserDataAccessObject;
 
     @BeforeEach
     void setUp() {
@@ -27,19 +28,18 @@ public class SelfChatInteractorTest {
                 "Bio", "20250823", new ArrayList<String>(),
                 new ArrayList<String>(), new ArrayList<GroupChat>(),
                 new ArrayList<GroupChat>());
-        dataAccess = new InMemorySelfChatUserDataAccessObject();
-        sendBirdUserDataAccessObject = new SendBirdUserDataAccessObject();
+        dataAccess = mock(InMemorySelfChatUserDataAccessObject.class);
         List<String> membersID = new ArrayList<String>();
         membersID.add("100");
-        selfChat = sendBirdUserDataAccessObject.createSelfChat(membersID, "user's self chat") ;
+        selfChat = new GroupChat(membersID, "user's self chat", new ArrayList<>(), "chat.com");
         message = new CommonMessage("100", "text", 1, "0000");
-        sendBirdUserDataAccessObject.save(user);
-        sendBirdUserDataAccessObject.setCurrentUser(user);
-        sendBirdUserDataAccessObject.setCurrentUsername(user.getName());
+        when(dataAccess.getCurrentUser()).thenReturn(user);
+
     }
 
     @Test
     void SelfChatInteractorExecuteSuccessTest() {
+        when(dataAccess.sendMessage(any())).thenReturn(message);
         SelfChatInputData inputData = new SelfChatInputData("text");
         SelfChatOutputBoundary presenter = new SelfChatOutputBoundary() {
             @Override
@@ -67,6 +67,7 @@ public class SelfChatInteractorTest {
 
     @Test
     void SelfChatInteractorExecuteFailTest() {
+        when(dataAccess.sendMessage(message)).thenReturn(null);
         SelfChatInputData inputData = new SelfChatInputData("");
         SelfChatOutputBoundary presenter = new SelfChatOutputBoundary() {
             @Override
@@ -90,7 +91,7 @@ public class SelfChatInteractorTest {
 
     @Test
     void SelfChatInteractorClearMessagesSuccessTest() {
-        dataAccess.sendMessage(message);
+        selfChat.addMessage(message);
         SelfChatOutputBoundary presenter = new SelfChatOutputBoundary() {
             @Override
             public void presentMessage(SelfChatOutputData outputData) {
@@ -113,7 +114,8 @@ public class SelfChatInteractorTest {
 
     @Test
     void SelfChatInteractorLoadMessagesSuccessTest() {
-        dataAccess.sendMessage(message);
+        selfChat.addMessage(message);
+        when(dataAccess.loadMessages()).thenReturn(selfChat.getMessageHistory());
         SelfChatOutputBoundary presenter = new SelfChatOutputBoundary() {
             @Override
             public void presentMessage(SelfChatOutputData outputData) {
@@ -134,14 +136,34 @@ public class SelfChatInteractorTest {
             }
         };
         SelfChatInteractor interactor = new SelfChatInteractor(dataAccess, presenter);
-        interactor.clearMessages();
+        interactor.loadMessages();
+    }
+
+    @Test
+    void selfChatSaveBirthdaySuccessTest(){
+        SelfChatOutputBoundary presenter = new SelfChatOutputBoundary() {
+
+            @Override
+            public void presentMessage(SelfChatOutputData outputData) {
+
+            }
+
+            @Override
+            public void presentClearResult(boolean success, String errorMessage) {
+
+            }
+
+            @Override
+            public void presentError(String errorMessage) {
+
+            }
+        };
+        SelfChatInteractor interactor = new SelfChatInteractor(dataAccess, presenter);
+        interactor.saveBirthday(user.getName(), "20250813");
     }
 
     @AfterEach
     void tearDown() {
-        sendBirdUserDataAccessObject.deleteUserById(user.getID(), user.getName());
-        sendBirdUserDataAccessObject.deleteMessage("1", selfChat);
-        sendBirdUserDataAccessObject.deleteGroupChat(selfChat);
         user = null;
         message = null;
         selfChat = null;

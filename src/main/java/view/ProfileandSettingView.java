@@ -130,9 +130,11 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
              if (e.getSource() == changePasswordButton) {
                 pandSController.changePassword(changePassword.getText());
             } else if (e.getSource() == addBioButton) {
-                pandSController.addBio(addBio.getText());
+                pandSController.addBio(pandSViewModel.getState().getAddBioText(),
+                        addBio.getText());
             } else if (e.getSource() == addDOBButton) {
-                pandSController.addDob(addDOB.getText());
+                pandSController.addDob(pandSViewModel.getState().getAddDobText(),
+                        addDOB.getText());
             } else if (e.getSource() == backButton) {
                 pandSController.switchToMenu();
             } else if (e.getSource() == logoutButton) {

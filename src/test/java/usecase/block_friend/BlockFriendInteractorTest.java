@@ -2,49 +2,39 @@ package usecase.block_friend;
 
 import dataaccess.SendBirdUserDataAccessObject;
 import entity.CommonUserFactory;
-import entity.GroupChat;
-import entity.Message;
 import entity.User;
 import entity.UserFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BlockFriendInteractorTest {
 
-    private SendBirdUserDataAccessObject dataAccess;
+    private SendBirdUserDataAccessObject dataAccess = mock(SendBirdUserDataAccessObject.class);
     private UserFactory userFactory;
     private User user;
     private User friend;
 
     @BeforeEach
     void setUp() {
-        dataAccess = new SendBirdUserDataAccessObject();
         userFactory = new CommonUserFactory();
         user = userFactory.create("User", "Password1");
         friend = userFactory.create("Friend", "Password2");
-        dataAccess.save(user);
-        dataAccess.save(friend);
-        dataAccess.setCurrentUser(user);
-        dataAccess.setCurrentUsername(user.getName());
+        when(dataAccess.getCurrentUser()).thenReturn(user);
+        when(dataAccess.getCurrentUsername()).thenReturn(user.getName());
     }
 
     @Test
     void blockFriendSuccessTest() {
-
-        List<String> memberIds = new ArrayList<>();
-        memberIds.add(user.getName());
-        memberIds.add(friend.getName());
-        String chatName = "TestChat";
-        List<Message> messageHistory = new ArrayList<>();
-        String channelUrl = "test-channel-url";
-        GroupChat personalChat = new GroupChat(memberIds, chatName, messageHistory, channelUrl);
-        dataAccess.addFriend(user.getName(), friend.getName(), personalChat);
+        user.addFriend(friend.getName());
+        friend.addFriend(user.getName());
+        when(dataAccess.existsByName(user.getName())).thenReturn(true);
+        when(dataAccess.existsByName(friend.getName())).thenReturn(true);
+        when(dataAccess.blockFriend(user, friend.getName(), friend.getID())).thenReturn(true);
         BlockFriendInputData inputData = new BlockFriendInputData(friend.getID());
         BlockFriendOutputBoundary successPresenter = new BlockFriendOutputBoundary() {
             @Override
@@ -65,6 +55,8 @@ public class BlockFriendInteractorTest {
 
     @Test
     void blockFriendFailFriendDoesNotExistTest() {
+        when(dataAccess.existsByName(user.getName())).thenReturn(true);
+        when(dataAccess.existsByName("NonExistentUser")).thenReturn(false);
         BlockFriendInputData inputData = new BlockFriendInputData("NonExistentUser");
         BlockFriendOutputBoundary failPresenter = new BlockFriendOutputBoundary() {
             @Override

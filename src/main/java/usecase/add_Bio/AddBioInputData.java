@@ -5,13 +5,15 @@ package usecase.add_Bio;
  */
 public class AddBioInputData {
     private final String username;
-    private final String bio;
+    private final String oldBio;
+    private final String newBio;
     private final String password;
 
-    public AddBioInputData(String username, String bio, String password) {
+    public AddBioInputData(String username, String oldBio,  String newBio, String password) {
         this.username = username;
-        this.bio = bio;
+        this.newBio = newBio;
         this.password = password;
+        this.oldBio = oldBio;
     }
 
     /**
@@ -28,8 +30,8 @@ public class AddBioInputData {
      *
      * @return the inputted bio.
      */
-    public String getBio() {
-        return bio;
+    public String getNewBio() {
+        return newBio;
     }
 
     /**
@@ -40,4 +42,6 @@ public class AddBioInputData {
     public String getPassword() {
         return password;
     }
+
+    public String getOldBio() {return oldBio;}
 }

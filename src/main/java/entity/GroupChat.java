@@ -26,15 +26,6 @@ public class GroupChat implements Chat {
     // Todo: move this logic into an interactor so that we can call a DAO. Also avoid creating user objects if we don't need to.
     @Override
     public boolean addMember(String userID) {
-        for (String memberID : memberIds) {
-            User member = getUserByID(memberID);
-            if (member != null) {
-                List<String> blockedIds = member.getBlockedUserIDs();
-                if (blockedIds != null && blockedIds.contains(userID)) {
-                    return false;
-                }
-            }
-        }
         if (!memberIds.contains(userID)) {
             memberIds.add(userID);
             return true;
@@ -45,28 +36,6 @@ public class GroupChat implements Chat {
     // Todo: rewrite this method
     @Override
     public boolean addMessage(Message message) {
-        if (message == null) {
-            return false;
-        }
-        String senderID = message.GetSenderId();
-        if (senderID == null) {
-            return false;
-        }
-
-        for (String memberID : memberIds) {
-            if (memberID.equals(senderID)) {
-                continue;
-            }
-            // Todo: getUserByID doesn't work!
-            User member = getUserByID(memberID);
-            if (member != null) {
-                List<String> blockedIds = member.getBlockedUserIDs();
-                if (blockedIds != null && blockedIds.contains(senderID)) {
-                    System.out.println("Sender is blocked.");
-                    return false;
-                }
-            }
-        }
         messageHistory.add(message);
         return true;
     }
@@ -110,11 +79,6 @@ public class GroupChat implements Chat {
     public boolean setChatName(String name) {
         this.chatName = name;
         return true;
-    }
-
-    // TODO: implement method (Note from Herman, it is impossible to implement this without a DAO)
-    private User getUserByID(String userId) {
-        return null;
     }
 
     @Override

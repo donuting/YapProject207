@@ -68,6 +68,7 @@ public class GroupChatTest {
         assertFalse(result);
     }
 
+
     @Test
     // Tests if message is added to messageHistory
     void addMessageTest1(){
@@ -79,13 +80,16 @@ public class GroupChatTest {
     }
 
     @Test
-    // tests if deleteMessage() deleted message from message History
-    void deleteMessageTest(){
-        CommonMessage message = new CommonMessage("100", "Test Message", 10, "0000");
-        group.addMessage(message);
-        boolean result = group.deleteMessage(message.GetMID().toString());
+    void deleteMessageTest1(){
+        CommonMessage message1 = new CommonMessage("100", "Test Message", 10, "0000");
+        CommonMessage message2 = new CommonMessage("100", "Test Message", 20, "0000");
+        group.addMessage(message1);
+        group.addMessage(message2);
+        boolean result = group.deleteMessage(message1.GetMID().toString());
         assertTrue(result);
     }
+
+
 
     @Test
     // checks hasMember method
@@ -136,6 +140,15 @@ public class GroupChatTest {
     void setChannelUrlTest(){
         group.setChannelUrl("channel.com");
         assert "channel.com".equals(group.getChannelUrl());
+    }
+
+    @Test
+    void setMemberIdTest(){
+        List<String> memberIDs = new ArrayList<>();
+        memberIDs.add("100");
+        memberIDs.add("200");
+        group.setMemberIds(memberIDs);
+        assertEquals(memberIDs, group.getMemberIds());
     }
 
 

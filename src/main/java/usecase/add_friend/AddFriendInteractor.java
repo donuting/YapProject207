@@ -7,6 +7,9 @@ import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The AddFriend Interactor.
  */

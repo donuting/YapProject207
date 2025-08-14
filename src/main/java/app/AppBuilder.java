@@ -466,7 +466,7 @@ public class AppBuilder {
                 new AddBioInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
         final AddDobInputBoundary addDateOfBirthInputBoundary =
-                new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory);
+                new AddDobInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
         final DeleteAccountInputBoundary deleteAccountInputBoundary =
                 new DeleteAccountInteractor(userDataAccessObject, profileAndSettingsPresenter);

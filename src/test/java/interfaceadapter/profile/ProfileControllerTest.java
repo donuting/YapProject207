@@ -4,7 +4,7 @@ import dataaccess.SendBirdUserDataAccessObject;
 import interfaceadapter.ViewManagerModel;
 
 import org.junit.jupiter.api.Assertions;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import usecase.profile.UserProfileInputBoundary;
 import usecase.profile.UserProfileInputData;
 import usecase.profile.UserProfileInteractor;

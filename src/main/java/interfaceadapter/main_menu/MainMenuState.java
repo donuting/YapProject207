@@ -8,6 +8,8 @@ public class MainMenuState {
     private String error = "";
     private String password = "";
     private String uiD = "";
+    private String DOB = "";
+    private String Bio = "";
 
     public MainMenuState(MainMenuState copy) {
         username = copy.username;
@@ -54,5 +56,21 @@ public class MainMenuState {
      */
     public void setUserId(String userID) {
         this.uiD = userID;
+    }
+
+    public String getDOB() {
+        return DOB;
+    }
+
+    public void setDOB(String DOB) {
+        this.DOB = DOB;
+    }
+
+    public String getBio() {
+        return Bio;
+    }
+
+    public void setBio(String bio) {
+        Bio = bio;
     }
 }
