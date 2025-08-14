@@ -7,7 +7,7 @@ public interface AddDobInputBoundary {
 
     /**
      * Execute the Add DOB Use Case.
-     * @param addDOBInputData the input data for this use case
+     * @param addDobInputData the input data for this use case
      */
-    void execute(AddDobInputData addDOBInputData);
+    void execute(AddDobInputData addDobInputData);
 }

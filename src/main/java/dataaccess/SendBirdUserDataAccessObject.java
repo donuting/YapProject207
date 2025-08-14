@@ -176,11 +176,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      *
      * @param currentUsername the current user.
      * @param friendUsername the username of the friend to be added.
+     * @param personalChat the new chat between the two users.
      * @return true if friendship was successful
      */
     @Override
-    public boolean addFriend(String currentUsername, String friendUsername) {
-        return pantryUserDataAccessObject.addFriend(currentUsername, friendUsername);
+    public boolean addFriend(String currentUsername, String friendUsername, GroupChat personalChat) {
+        return pantryUserDataAccessObject.addFriend(currentUsername, friendUsername, personalChat.getChannelUrl());
     }
 
     /**
@@ -358,12 +359,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
     /**
      * Updates the system to delete a message from a chat.
      *
-     * @param MID  the ID of the message to be deleted.
+     * @param messageId  the ID of the message to be deleted.
      * @param chat the chat in which the message was sent.
      */
     @Override
-    public boolean deleteMessage(String MID, Chat chat) {
-        return messageDataAccessObject.deleteMessage(MID, chat);
+    public boolean deleteMessage(String messageId, Chat chat) {
+        return messageDataAccessObject.deleteMessage(messageId, chat);
     }
 
     @Override
@@ -425,7 +426,6 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      * @param newPersonalChat the personal chat
      * @param username the user's name
      */
-    @Override
     public void savePersonalChat(GroupChat newPersonalChat, String username) {
         pantryUserDataAccessObject.savePersonalChat(username, newPersonalChat.getChannelUrl());
     }
@@ -580,12 +580,12 @@ public class SendBirdUserDataAccessObject implements SignupUserDataAccessInterfa
      * Updates the system to record this user's DOB.
      *
      * @param username the name of the user whose DOB is to be updated\
-     * @param dob the date of birth
+     * @param dateOfBirth the date of birth
      */
     @Override
-    public boolean addDOB(String username, String dob) {
+    public boolean addDob(String username, String dateOfBirth) {
         if (existsByName(username)) {
-            return pantryUserDataAccessObject.updateDateOfBirth(username, dob);
+            return pantryUserDataAccessObject.updateDateOfBirth(username, dateOfBirth);
         }
         return false;
     }

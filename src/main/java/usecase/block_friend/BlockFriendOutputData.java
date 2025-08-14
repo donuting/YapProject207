@@ -16,18 +16,34 @@ public class BlockFriendOutputData {
         this.success = success;
     }
 
+    /**
+     * Gets the current username outputted by the interactor.
+     * @return the current username.
+     */
     public String getCurrentUsername() {
         return currentUsername;
     }
 
+    /**
+     * Gets the blocked username outputted by the interactor.
+     * @return the blocked username.
+     */
     public String getBlockedUsername() {
         return blockedUsername;
     }
 
+    /**
+     * Gets the blocked ID outputted by the interactor.
+     * @return the blocked ID.
+     */
     public String getBlockedId() {
         return blockedId;
     }
 
+    /**
+     * Returns whether the use case succeeded.
+     * @return true if successful
+     */
     public boolean isSuccess() {
         return success;
     }

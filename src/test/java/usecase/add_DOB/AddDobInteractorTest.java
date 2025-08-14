@@ -38,7 +38,7 @@ public class AddDobInteractorTest {
         AddDobInputData inputData = new AddDobInputData(user.getDOB(),"20061007", user.getName(), user.getPassword());
         AddDobOutputBoundary presneter = new AddDobOutputBoundary() {
             @Override
-            public void prepareSuccessAddDOBView(AddDobOutputData addDOBOutputData) {
+            public void prepareSuccessAddDobView(AddDobOutputData addDOBOutputData) {
                 assertEquals(user.getName(), addDOBOutputData.getUsername());
                 assertFalse(addDOBOutputData.getUseCaseFailed());
                 assertEquals("20061007", addDOBOutputData.getDob());
@@ -46,7 +46,7 @@ public class AddDobInteractorTest {
             }
 
             @Override
-            public void prepareFailAddDOBView(String errorMessage, AddDobOutputData addDOBOutputData) {
+            public void prepareFailAddDobView(String errorMessage, AddDobOutputData addDOBOutputData) {
                 fail("Interactor does not work on success case");
             }
         };
@@ -62,12 +62,12 @@ public class AddDobInteractorTest {
         AddDobInputData inputData = new AddDobInputData(user.getDOB(), "1", user.getName(), user.getPassword());
         AddDobOutputBoundary presneter = new AddDobOutputBoundary() {
             @Override
-            public void prepareSuccessAddDOBView(AddDobOutputData addDOBOutputData) {
+            public void prepareSuccessAddDobView(AddDobOutputData addDOBOutputData) {
                fail("Interactor does not check input format");
             }
 
             @Override
-            public void prepareFailAddDOBView(String errorMessage, AddDobOutputData addDOBOutputData) {
+            public void prepareFailAddDobView(String errorMessage, AddDobOutputData addDOBOutputData) {
                 assertEquals("The input should be in the format YYYYMMDD", errorMessage);
                 assertEquals(user.getName(), addDOBOutputData.getUsername());
                 assertTrue(addDOBOutputData.getUseCaseFailed());
@@ -87,12 +87,12 @@ public class AddDobInteractorTest {
         AddDobInputData inputData = new AddDobInputData(user.getDOB(),"abcdefgh", user.getName(), user.getPassword());
         AddDobOutputBoundary presneter = new AddDobOutputBoundary() {
             @Override
-            public void prepareSuccessAddDOBView(AddDobOutputData addDOBOutputData) {
+            public void prepareSuccessAddDobView(AddDobOutputData addDOBOutputData) {
                 fail("Interactor does not check input format");
             }
 
             @Override
-            public void prepareFailAddDOBView(String errorMessage, AddDobOutputData addDOBOutputData) {
+            public void prepareFailAddDobView(String errorMessage, AddDobOutputData addDOBOutputData) {
                 assertEquals("The input should only contain numbers", errorMessage);
                 assertEquals(user.getName(), addDOBOutputData.getUsername());
                 assertTrue(addDOBOutputData.getUseCaseFailed());

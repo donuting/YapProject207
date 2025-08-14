@@ -29,7 +29,7 @@ public class LoginPresenter implements LoginOutputBoundary {
         final MainMenuState mainMenuState = mainMenuViewModel.getState();
         mainMenuState.setUsername(response.getUsername());
         mainMenuState.setPassword(response.getPassword());
-        mainMenuState.setUserId(response.getUID());
+        mainMenuState.setUserId(response.getUserId());
         mainMenuState.setBio(response.getBio());
         mainMenuState.setDOB(response.getDOB());
         this.mainMenuViewModel.setState(mainMenuState);

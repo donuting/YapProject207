@@ -12,7 +12,18 @@ public class DeleteMessageOutputData {
         this.useCaseFailed = useCaseFailed;
     }
 
-    public String getMessageId() {return messageId;}
+    /**
+     * Gets the deleted message ID outputted by the interactor.
+     * @return the deleted message ID
+     */
+    public String getMessageId() {
+        return messageId;
+    }
+
+    /**
+     * Returns whether the use case failed.
+     * @return true if unsuccessful
+     */
     public boolean isUseCaseFailed() {
         return useCaseFailed;
     }

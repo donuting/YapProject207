@@ -34,7 +34,8 @@ public interface BlockFriendUserDataAccessInterface {
     /**
      * Gets a username given an ID.
      *
-     * @return the corresponding user.
+     * @param blockedId the ID to be blocked.
+     * @return the corresponding username.
      */
     String getUsernameFromId(String blockedId);
 }

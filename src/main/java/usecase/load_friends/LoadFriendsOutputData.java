@@ -12,6 +12,11 @@ public class LoadFriendsOutputData {
         this.channelToUserIdData = channelToUserIdData;
     }
 
+    /**
+     * Gets the channel to user ID data outputted by the interactor.
+     * This is a map from personal channel URLs to the ID of the other user in the personal chat.
+     * @return the channel to user ID data
+     */
     public Map<String, String> getChannelToUserIdData() {
         return channelToUserIdData;
     }

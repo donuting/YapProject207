@@ -1,19 +1,20 @@
 package usecase.load_group_chats;
 
-import entity.GroupChat;
-import entity.User;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import entity.GroupChat;
+import entity.User;
 
 /**
  * The interactor for the Load Group Chats use case.
  */
-public class LoadGroupChatsInteractor implements LoadGroupChatsInputBoundary{
+public class LoadGroupChatsInteractor implements LoadGroupChatsInputBoundary {
     private final LoadGroupChatsDataAccessInterface loadGroupChatsDataAccessInterface;
     private final LoadGroupChatsOutputBoundary viewGroupChatsPresenter;
 
-    public LoadGroupChatsInteractor(LoadGroupChatsDataAccessInterface loadGroupChatsDataAccessInterface, LoadGroupChatsOutputBoundary viewGroupChatsPresenter) {
+    public LoadGroupChatsInteractor(LoadGroupChatsDataAccessInterface loadGroupChatsDataAccessInterface,
+                                    LoadGroupChatsOutputBoundary viewGroupChatsPresenter) {
         this.loadGroupChatsDataAccessInterface = loadGroupChatsDataAccessInterface;
         this.viewGroupChatsPresenter = viewGroupChatsPresenter;
     }
@@ -31,7 +32,8 @@ public class LoadGroupChatsInteractor implements LoadGroupChatsInputBoundary{
         }
         if (updatedCurrentUser == null) {
             viewGroupChatsPresenter.loadGroupChatsPrepareFailView("this user doesn't exist");
-        } else {
+        }
+        else {
             Map<String, String> channelInfo = new HashMap<>();
             for (GroupChat groupChat : updatedCurrentUser.getGroupChats()) {
                 channelInfo.put(groupChat.getChannelUrl(), groupChat.getChatName());

@@ -12,6 +12,11 @@ public class LoadGroupChatsOutputData {
         this.channelInfo = channelInfo;
     }
 
+    /**
+     * Gets the channel info outputted by the interactor.
+     * This is a map where the keys are channel URLs and the values are the corresponding channel name.
+     * @return the channel info
+     */
     public Map<String, String> getChannelInfo() {
         return channelInfo;
     }

@@ -10,9 +10,10 @@ import entity.User;
 public interface SendMessageDataAccessInterface {
 
     /**
-     * sends a message in a chat.
+     * Sends a message in a chat.
      * @param message the message to be sent
      * @param chat the chat in which the message will be sent
+     * @return the updated message
      */
     Message sendMessage(Message message, Chat chat);
 

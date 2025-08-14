@@ -21,26 +21,50 @@ public class UserProfileOutputData {
         this.message = message;
     }
 
+    /**
+     * Gets the username outputted by the interactor.
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Gets the user ID outputted by the interactor.
+     * @return the user ID
+     */
     public String getUserId() {
         return userId;
     }
 
+    /**
+     * Gets the bio outputted by the interactor.
+     * @return the bio
+     */
     public String getBio() {
         return bio;
     }
 
+    /**
+     * Gets the date of birth outputted by the interactor.
+     * @return the date of birth
+     */
     public String getDateOfBirth() {
         return dateOfBirth;
     }
 
+    /**
+     * Returns whether the use case succeeded.
+     * @return true if successful
+     */
     public boolean isSuccess() {
         return success;
     }
 
+    /**
+     * Gets the message outputted by the interactor.
+     * @return the message
+     */
     public String getMessage() {
         return message;
     }

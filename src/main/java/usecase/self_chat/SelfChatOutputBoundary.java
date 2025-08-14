@@ -26,4 +26,11 @@ public interface SelfChatOutputBoundary {
      * @param errorMessage the explanation of the failure
      */
     void presentError(String errorMessage);
+
+    /**
+     * Presents the result of saving birthday data.
+     * @param success successful or not
+     * @param message message
+     */
+    void presentBirthdaySaveResult(boolean success, String message);
 }

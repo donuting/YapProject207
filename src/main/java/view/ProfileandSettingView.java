@@ -23,6 +23,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
     private final JButton addDOBButton;
     private final JButton backButton;
     private final JButton logoutButton;
+    private final JButton deleteAccountButton;
     private  final JTextField changePassword = new JTextField();
     private final JTextField addBio = new JTextField();
     private final JTextField addDOB = new JTextField();
@@ -49,6 +50,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         addDOBButton = new JButton("Add DOB");
         backButton = new JButton("Back to Main Menu");
         logoutButton = new JButton("Logout");
+        deleteAccountButton = new JButton("Delete Account");
 
         //Create Other components
         UID = new JLabel("UID = " + pandSViewModel.getState().getUserId());
@@ -60,6 +62,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         addDOBButton.addActionListener(this);
         backButton.addActionListener(this);
         logoutButton.addActionListener(this);
+        deleteAccountButton.addActionListener(this);
 
         //Set component properties
         setProperties();
@@ -70,7 +73,7 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
         CreateAndAddRow(List.of(addBioButton, addBio));
         CreateAndAddRow(List.of(addDOBButton, addDOB));
         CreateAndAddRow(List.of(backButton, logoutButton));
-
+        CreateAndAddRow(List.of(deleteAccountButton));
     }
 
     /**
@@ -135,6 +138,9 @@ public class ProfileandSettingView extends JPanel implements PropertyChangeListe
             } else if (e.getSource() == backButton) {
                 pandSController.switchToMenu();
             } else if (e.getSource() == logoutButton) {
+                pandSController.logout();
+            } else if (e.getSource() == deleteAccountButton) {
+                pandSController.deleteAccount();
                 pandSController.logout();
             }
         }

@@ -1,20 +1,20 @@
 package usecase.load_friends;
 
-import entity.GroupChat;
-import entity.User;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoadFriendsInteractor implements LoadFriendsInputBoundary{
+import entity.GroupChat;
+import entity.User;
+
+public class LoadFriendsInteractor implements LoadFriendsInputBoundary {
     private final LoadFriendsDataAccessInterface loadFriendsDataAccessInterface;
     private final LoadFriendsOutputBoundary loadFriendsPresenter;
 
-    public LoadFriendsInteractor(LoadFriendsDataAccessInterface loadFriendsDataAccessInterface, LoadFriendsOutputBoundary loadFriendsPresenter) {
+    public LoadFriendsInteractor(LoadFriendsDataAccessInterface loadFriendsDataAccessInterface,
+                                 LoadFriendsOutputBoundary loadFriendsPresenter) {
         this.loadFriendsDataAccessInterface = loadFriendsDataAccessInterface;
         this.loadFriendsPresenter = loadFriendsPresenter;
     }
-
 
     /**
      * Executes the Load Friends Use Case.
@@ -29,7 +29,8 @@ public class LoadFriendsInteractor implements LoadFriendsInputBoundary{
         }
         if (updatedCurrentUser == null) {
             loadFriendsPresenter.loadFriendsPrepareFailView("this user doesn't exist");
-        } else {
+        }
+        else {
             Map<String, String> channelInfo = new HashMap<>();
             for (GroupChat personalChat : updatedCurrentUser.getPersonalChats()) {
                 String friendId = null;

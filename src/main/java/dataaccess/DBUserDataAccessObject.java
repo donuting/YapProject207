@@ -210,10 +210,10 @@ public class DBUserDataAccessObject implements SignupUserDataAccessInterface,
      * Updates the system to record this user's DOB.
      *
      * @param username the name of the user whose DOB is to be updated
-     * @param dob      the user's date of birth
+     * @param dateOfBirth      the user's date of birth
      */
     @Override
-    public boolean addDOB(String username, String dob) {
+    public boolean addDob(String username, String dateOfBirth) {
         return false;
     }
 }

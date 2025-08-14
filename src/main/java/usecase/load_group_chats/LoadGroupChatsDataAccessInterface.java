@@ -13,7 +13,7 @@ public interface LoadGroupChatsDataAccessInterface {
     User getCurrentUser();
 
     /**
-     * Gets the user using their username
+     * Gets the user using their username.
      * @param username the user's username
      * @return the requested user.
      */

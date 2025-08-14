@@ -16,18 +16,41 @@ public class AddDobInputData {
         this.password = password;
     }
 
-   public String getOldDOB() {return oldDOB;}
+    /**
+     * Gets the original date of birth.
+     *
+     * @return the original dob.
+     */
+    public String getOldDOB() {
+        return oldDOB;
+    }
 
+    /**
+     * Gets the inputted date of birth.
+     *
+     * @return the inputted dob.
+     */
     public String getNewDOB() {
         return newDOB;
     }
 
+    /**
+     * Gets the inputted username.
+     *
+     * @return the inputted username.
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Gets the inputted password.
+     *
+     * @return the inputted password.
+     */
     public String getPassword() {
         return password;
     }
 }
+
 

@@ -7,14 +7,14 @@ public interface AddDobOutputBoundary {
 
     /**
      * Prepares the success view for the Add DOB Use Case.
-     * @param addDOBOutputData the output data.
+     * @param addDobOutputData the output data.
      */
-    void prepareSuccessAddDOBView(AddDobOutputData addDOBOutputData);
+    void prepareSuccessAddDobView(AddDobOutputData addDobOutputData);
 
     /**
      * Prepares the fail view for the add DOB Use Case.
-     * @param addDOBOutputData the output data.
+     * @param addDobOutputData the output data.
      * @param errorMessage The error message to be shown.
      */
-    void prepareFailAddDOBView(String errorMessage, AddDobOutputData addDOBOutputData);
+    void prepareFailAddDobView(String errorMessage, AddDobOutputData addDobOutputData);
 }

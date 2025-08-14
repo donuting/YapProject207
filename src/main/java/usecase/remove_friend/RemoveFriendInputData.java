@@ -10,6 +10,11 @@ public class RemoveFriendInputData {
         this.removedId = removedUsername;
     }
 
+    /**
+     * Gets the inputted ID of the user being removed.
+     *
+     * @return the inputted ID of the user being removed.
+     */
     public String getRemovedId() {
         return removedId;
     }

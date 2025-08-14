@@ -29,6 +29,8 @@ public class SelfChatViewModel extends ViewModel<SelfChatState> {
         final SelfChatState newState = new SelfChatState(currentState);
         newState.addMessageData(messageData);
         setState(newState);
+        // Explicitly fire property change to ensure view updates
+        firePropertyChanged();
     }
 
     /**
@@ -38,7 +40,10 @@ public class SelfChatViewModel extends ViewModel<SelfChatState> {
         final SelfChatState currentState = getState();
         final SelfChatState newState = new SelfChatState(currentState);
         newState.clearMessages();
+        newState.setErrorMessage(""); // Clear any error messages too
         setState(newState);
+        // Explicitly fire property change to ensure view updates
+        firePropertyChanged();
     }
 
     /**
@@ -50,6 +55,8 @@ public class SelfChatViewModel extends ViewModel<SelfChatState> {
         final SelfChatState newState = new SelfChatState(currentState);
         newState.setErrorMessage(errorMessage);
         setState(newState);
+        // Explicitly fire property change to ensure view updates
+        firePropertyChanged();
     }
 
     /**
@@ -61,5 +68,7 @@ public class SelfChatViewModel extends ViewModel<SelfChatState> {
         final SelfChatState newState = new SelfChatState(currentState);
         newState.setUsername(username);
         setState(newState);
+        // Explicitly fire property change to ensure view updates
+        firePropertyChanged();
     }
 }

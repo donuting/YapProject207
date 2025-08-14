@@ -13,11 +13,21 @@ public class ChangePasswordInputData {
         this.username = username;
     }
 
-    String getPassword() {
+    /**
+     * Gets the inputted password.
+     *
+     * @return the inputted password.
+     */
+    public String getPassword() {
         return password;
     }
 
-    String getUsername() {
+    /**
+     * Gets the inputted username.
+     *
+     * @return the inputted username.
+     */
+    public String getUsername() {
         return username;
     }
 

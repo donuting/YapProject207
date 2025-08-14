@@ -2,11 +2,12 @@ package usecase.remove_friend;
 
 import entity.User;
 
-public class RemoveFriendInteractor implements RemoveFriendInputBoundary{
+public class RemoveFriendInteractor implements RemoveFriendInputBoundary {
     private final RemoveFriendDataAccessInterface removeFriendDataAccessInterface;
     private final RemoveFriendOutputBoundary presenter;
 
-    public RemoveFriendInteractor(RemoveFriendDataAccessInterface removeFriendDataAccessInterface, RemoveFriendOutputBoundary presenter) {
+    public RemoveFriendInteractor(RemoveFriendDataAccessInterface removeFriendDataAccessInterface,
+                                  RemoveFriendOutputBoundary presenter) {
         this.removeFriendDataAccessInterface = removeFriendDataAccessInterface;
         this.presenter = presenter;
     }

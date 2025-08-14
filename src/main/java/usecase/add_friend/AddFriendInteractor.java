@@ -1,5 +1,8 @@
 package usecase.add_friend;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import entity.GroupChat;
 import entity.GroupChatFactory;
 import entity.User;
@@ -13,7 +16,6 @@ import java.util.List;
 public class AddFriendInteractor implements AddFriendInputBoundary {
     private final AddFriendUserDataAccessInterface userDataAccessObject;
     private final AddFriendOutputBoundary presenter;
-
 
     public AddFriendInteractor(AddFriendUserDataAccessInterface userDataAccessInterface,
                                AddFriendOutputBoundary addFriendOutputBoundary) {
@@ -31,46 +33,43 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
         final String friendID = addFriendInputData.getFriendID();
         User friendUser = userDataAccessObject.get(friendUsername);
 
-
         // check that nothing is empty
-        if (currentUsername == null || friendUsername == null || friendID == null) {
+        if (friendUsername == null || friendID == null) {
             presenter.prepareFailView("Please fill out all fields");
             return;
         }
-
-        if (currentUsername.trim().isEmpty() || friendUsername.trim().isEmpty() || friendID.trim().isEmpty()) {
+        else if (friendUsername.trim().isEmpty() || friendID.trim().isEmpty()) {
             presenter.prepareFailView("Please fill out all fields");
             return;
         }
 
         // check that the friend exists
-        if (friendUser == null) {
+        else if (friendUser == null) {
             presenter.prepareFailView("User does not exist");
             return;
         }
 
-
         // check if friend's username and ID correspond to the same user
-        if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
-            presenter.prepareFailView("Incorrect info added");
+        else if (!userDataAccessObject.existsByName(friendUsername) || !(friendUser.getID().equals(friendID))) {
+            presenter.prepareFailView("User " + friendUsername + " does not exist");
             return;
         }
 
         // check if blocked
-        if (currentUser.getBlockedUserIDs().contains(friendID)
+        else if (currentUser.getBlockedUserIDs().contains(friendID)
                 || friendUser.getBlockedUserIDs().contains(currentUser.getID())) {
             presenter.prepareFailView(friendUsername + " is blocked");
             return;
         }
 
         // check if already friends
-        if (currentUser.getFriendIDs().contains(friendID)) {
+        else if (currentUser.getFriendIDs().contains(friendID)) {
             presenter.prepareFailView("You are already friends with " + friendUsername);
             return;
         }
 
         // checking that user is not adding self using IDS, leave for near the end
-        if (friendID.equals(currentUser.getID())) {
+        else if (friendID.equals(currentUser.getID())) {
             presenter.prepareFailView("You cannot add yourself as a friend (friend ID must be different from yours)");
 
         }
@@ -79,9 +78,7 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
         else {
             // updates current user in memory
             currentUser.addFriend(friendID);
-
-            // adds friendship in database
-            userDataAccessObject.addFriend(currentUsername, friendUsername);
+            friendUser.addFriend(currentUser.getID());
 
             // create the chat between both friends
             List<String> membersOfChat = new ArrayList<>();
@@ -92,10 +89,10 @@ public class AddFriendInteractor implements AddFriendInputBoundary {
 
             // add chat to current user for the in memory object
             currentUser.addPersonalChat(chat);
+            friendUser.addPersonalChat(chat);
 
-            // add chat to both users in database
-            userDataAccessObject.savePersonalChat(chat, currentUsername);
-            userDataAccessObject.savePersonalChat(chat, friendUsername);
+            // adds friendship in database, which adds chat to both users as well
+            userDataAccessObject.addFriend(currentUsername, friendUsername, chat);
 
             AddFriendOutputData outputData = new AddFriendOutputData(friendUsername,
                     true, friendUsername + " has been added!");

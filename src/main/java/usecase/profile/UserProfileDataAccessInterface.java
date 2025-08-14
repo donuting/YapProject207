@@ -9,6 +9,7 @@ public interface UserProfileDataAccessInterface {
     /**
      * Updates the username, bio and date of birth for the given user ID.
      * @param username the new username.
+     * @param oldUsername the old user's username.
      * @param bio the new bio.
      * @param dateOfBirth the new date of birth.
      * @return the saved user's ID, or null if the user doesn't exist

@@ -6,10 +6,15 @@ package usecase.block_friend;
 public class BlockFriendInputData {
     private final String blockedId;
 
-    public BlockFriendInputData(String blockedUsername) {;
+    public BlockFriendInputData(String blockedUsername) {
         this.blockedId = blockedUsername;
     }
 
+    /**
+     * Gets the inputted user ID.
+     *
+     * @return the inputted user ID.
+     */
     public String getBlockedId() {
         return blockedId;
     }

@@ -10,6 +10,11 @@ public class SendMessageInputData {
         this.text = text;
     }
 
+    /**
+     * Gets the message body.
+     *
+     * @return the message body.
+     */
     public String getText() {
         return text;
     }

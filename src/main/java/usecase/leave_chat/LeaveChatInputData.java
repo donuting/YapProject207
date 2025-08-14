@@ -10,6 +10,11 @@ public class LeaveChatInputData {
         this.channelUrl = channelUrl;
     }
 
+    /**
+     * Gets the inputted channel URL.
+     *
+     * @return the inputted channel URL.
+     */
     public String getChannelUrl() {
         return channelUrl;
     }

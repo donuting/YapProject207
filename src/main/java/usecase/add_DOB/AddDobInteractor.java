@@ -6,15 +6,15 @@ import entity.User;
  * The Add DOB Interactor.
  */
 public class AddDobInteractor implements AddDobInputBoundary {
+    public static final int MINIMUM_DOB_LENGTH = 8;
     private final AddDobUserDataAccessInterface userDataAccessObject;
     private final AddDobOutputBoundary userPresenter;
 
-    public AddDobInteractor(AddDobUserDataAccessInterface userDataAccessObject, AddDobOutputBoundary userPresenter
-    ) {
+    public AddDobInteractor(AddDobUserDataAccessInterface userDataAccessObject,
+                            AddDobOutputBoundary userPresenter) {
         this.userDataAccessObject = userDataAccessObject;
         this.userPresenter = userPresenter;
     }
-
 
     @Override
     public void execute(AddDobInputData addDOBInputData) {
@@ -24,16 +24,16 @@ public class AddDobInteractor implements AddDobInputBoundary {
         AddDobOutputData addDOBOutputData = new AddDobOutputData(username, true, user.getDOB());
 
         if (dob.length()!=8) {
-            userPresenter.prepareFailAddDOBView("The input should be in the format YYYYMMDD", addDOBOutputData);
+            userPresenter.prepareFailAddDobView("The input should be in the format YYYYMMDD", addDOBOutputData);
             return;
         } else if(hasNonDigits(dob)){
-            userPresenter.prepareFailAddDOBView("The input should only contain numbers", addDOBOutputData);
+            userPresenter.prepareFailAddDobView("The input should only contain numbers", addDOBOutputData);
             return;
         }
         else{
-            userDataAccessObject.addDOB(username, dob);
+            userDataAccessObject.addDob(username, dob);
             addDOBOutputData = new AddDobOutputData(username, false, dob);
-            userPresenter.prepareSuccessAddDOBView(addDOBOutputData);
+            userPresenter.prepareSuccessAddDobView(addDOBOutputData);
             }
         }
 
