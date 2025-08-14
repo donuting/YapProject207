@@ -24,19 +24,18 @@ public class SendMessageInteractor implements SendMessageInputBoundary {
     public void execute(SendMessageInputData sendMessageInputData) {
         User sender = userDataAccessObject.getCurrentUser();
 
-        // Verify the current user exists
-        if (sender == null) {
-            final SendMessageOutputData sendMessageOutputData = new SendMessageOutputData(true, null);
-            messagePresenter.prepareFailSendMessageView("This user doesn't exist", sendMessageOutputData);
-            return;
-        }
-
         final Chat chat = userDataAccessObject.getActiveGroupChat();
 
         // verify the current chat exists
         if (chat == null) {
             final SendMessageOutputData sendMessageOutputData = new SendMessageOutputData(true, null);
             messagePresenter.prepareFailSendMessageView("This chat doesn't exist", sendMessageOutputData);
+            return;
+        }
+
+        if(sendMessageInputData.getText() == null || sendMessageInputData.getText().isEmpty()) {
+            final SendMessageOutputData sendMessageOutputData = new SendMessageOutputData(true, null);
+            messagePresenter.prepareFailSendMessageView("Message can't eb empty", sendMessageOutputData);
             return;
         }
 

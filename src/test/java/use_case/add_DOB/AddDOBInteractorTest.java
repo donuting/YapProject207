@@ -36,7 +36,7 @@ public class AddDOBInteractorTest {
     // success case for Add DOB
     void addDOBInteractorSuccessTest(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("20061007", user.getName(), user.getPassword());
+        AddDOBInputData inputData = new AddDOBInputData(user.getDOB(),"20061007", user.getName(), user.getPassword());
         AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
             @Override
             public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
@@ -52,7 +52,7 @@ public class AddDOBInteractorTest {
             }
         };
 
-        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter, new CommonUserFactory());
+        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter);
         interactor.execute(inputData);
     }
 
@@ -60,7 +60,7 @@ public class AddDOBInteractorTest {
     // DOB is not of appropriate length
     void addDOBInteractorFailTest1(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("1", user.getName(), user.getPassword());
+        AddDOBInputData inputData = new AddDOBInputData(user.getDOB(), "1", user.getName(), user.getPassword());
         AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
             @Override
             public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
@@ -77,7 +77,7 @@ public class AddDOBInteractorTest {
             }
         };
 
-        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter, new CommonUserFactory());
+        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter);
         interactor.execute(inputData);
     }
 
@@ -85,7 +85,7 @@ public class AddDOBInteractorTest {
     // DOB is contains non-digit characters
     void addDOBInteractorFailTest2(){
         dataAccess.save(user);
-        AddDOBInputData inputData = new AddDOBInputData("abcdefgh", user.getName(), user.getPassword());
+        AddDOBInputData inputData = new AddDOBInputData(user.getDOB(),"abcdefgh", user.getName(), user.getPassword());
         AddDOBOutputBoundary presneter = new AddDOBOutputBoundary() {
             @Override
             public void prepareSuccessAddDOBView(AddDOBOutputData addDOBOutputData) {
@@ -102,7 +102,7 @@ public class AddDOBInteractorTest {
             }
         };
 
-        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter, new CommonUserFactory());
+        AddDOBInteractor interactor = new AddDOBInteractor(dataAccess, presneter);
         interactor.execute(inputData);
     }
 

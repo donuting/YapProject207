@@ -9,19 +9,17 @@ import entity.UserFactory;
 public class AddDOBInteractor implements AddDOBInputBoundary {
     private final AddDOBUserDataAccessInterface userDataAccessObject;
     private final AddDOBOutputBoundary userPresenter;
-    private final UserFactory userFactory;
 
     public AddDOBInteractor(AddDOBUserDataAccessInterface userDataAccessObject, AddDOBOutputBoundary userPresenter
-                            , UserFactory userFactory) {
+    ) {
         this.userDataAccessObject = userDataAccessObject;
         this.userPresenter = userPresenter;
-        this.userFactory = userFactory;
     }
 
 
     @Override
     public void execute(AddDOBInputData addDOBInputData) {
-        String dob = addDOBInputData.getDOB();
+        String dob = addDOBInputData.getNewDOB();
         String username = addDOBInputData.getUsername();
         User user = userDataAccessObject.get(username);
         AddDOBOutputData addDOBOutputData = new AddDOBOutputData(username, true, user.getDOB());

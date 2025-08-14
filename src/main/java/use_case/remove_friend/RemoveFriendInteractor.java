@@ -23,11 +23,6 @@ public class RemoveFriendInteractor implements RemoveFriendInputBoundary{
         String currentUsername = currentUser.getName();
 
         // checks both users exist
-        // should never happen
-        if (!removeFriendDataAccessInterface.existsByName(currentUsername)) {
-            presenter.removeFriendPrepareFailView("Current user does not exist in database");
-            return;
-        }
         // check that friend user exists
         if (!removeFriendDataAccessInterface.existsByName(removedUsername)) {
             presenter.removeFriendPrepareFailView("User does not exist");

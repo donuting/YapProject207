@@ -4,18 +4,22 @@ package use_case.add_DOB;
  * The input data for the Add DOB Use Case.
  */
 public class AddDOBInputData {
-    private final String DOB;
+    private final String newDOB;
+    private final String oldDOB;
     private final String username;
     private final String password;
 
-    public AddDOBInputData(String DOB, String username, String password) {
-        this.DOB = DOB;
+    public AddDOBInputData(String oldDOB,String newDOB, String username, String password) {
+        this.oldDOB = oldDOB;
+        this.newDOB = newDOB;
         this.username = username;
         this.password = password;
     }
 
-    public String getDOB() {
-        return DOB;
+   public String getOldDOB() {return oldDOB;}
+
+    public String getNewDOB() {
+        return newDOB;
     }
 
     public String getUsername() {

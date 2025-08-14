@@ -44,24 +44,24 @@ public class PandScontroller {
 
     /**
      * Executes the add bio use case.
-     * @param bio the new bio to be added.
+     * @param newBio the new bio to be added.
      */
-    public void addBio(String bio) {
+    public void addBio(String oldBio,String newBio) {
         final String username = pandsViewModel.getState().getUsername();
         final String password = pandsViewModel.getState().getChangePasswordText();
-        final AddBioInputData inputData = new AddBioInputData(username, bio, password);
+        final AddBioInputData inputData = new AddBioInputData(username, oldBio, newBio, password);
         addBioInputBoundary.execute(inputData);
 
     }
 
     /**
      * Executes the add doB use case.
-     * @param doB the new doB to be added.
+     * @param newDOB the new doB to be added.
      */
-    public void addDob(String doB) {
+    public void addDob(String oldDOB,String newDOB) {
         final String username = pandsViewModel.getState().getUsername();
         final String password = pandsViewModel.getState().getChangePasswordText();
-        final AddDOBInputData inputData = new AddDOBInputData(doB, username, password);
+        final AddDOBInputData inputData = new AddDOBInputData(oldDOB, newDOB, username, password);
         addDobInputBoundary.execute(inputData);
 
     }

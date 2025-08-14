@@ -33,7 +33,7 @@ public class AddBioInteractorTest {
     // Success case for AddBio
     void AddBioInteractorSuccessTest(){
         dataAccess.save(user);
-        AddBioInputData inputData = new AddBioInputData(user.getName(), "New Bio", user.getPassword());
+        AddBioInputData inputData = new AddBioInputData(user.getName(), user.getBio(), "New Bio", user.getPassword());
         AddBioOutputBoundary presenter = new AddBioOutputBoundary() {
             @Override
             public void prepareSuccessAddBioView(AddBioOutputData addBioOutputData) {
@@ -56,7 +56,7 @@ public class AddBioInteractorTest {
     // input bio is empty
     void AddBioInteractorFailTest1(){
         dataAccess.save(user);
-        AddBioInputData inputData = new AddBioInputData(user.getName(), "", user.getPassword());
+        AddBioInputData inputData = new AddBioInputData(user.getName(), user.getBio(), "", user.getPassword());
         AddBioOutputBoundary presenter = new AddBioOutputBoundary() {
             @Override
             public void prepareSuccessAddBioView(AddBioOutputData addBioOutputData) {
@@ -66,6 +66,7 @@ public class AddBioInteractorTest {
             @Override
             public void prepareFailAddBioView(String errorMessage, AddBioOutputData addBioOutputData) {
                 assertEquals("Add Bio Failed", errorMessage);
+                assertEquals(user.getBio(), addBioOutputData.getBio());
             }
         };
         AddBioInteractor interactor = new AddBioInteractor(dataAccess, presenter);
@@ -76,7 +77,7 @@ public class AddBioInteractorTest {
     // input bio matches password
     void AddBioInteractorFailTest2(){
         dataAccess.save(user);
-        AddBioInputData inputData = new AddBioInputData(user.getName(), user.getPassword(), user.getPassword());
+        AddBioInputData inputData = new AddBioInputData(user.getName(),user.getBio(), user.getPassword(), user.getPassword());
         AddBioOutputBoundary presenter = new AddBioOutputBoundary() {
             @Override
             public void prepareSuccessAddBioView(AddBioOutputData addBioOutputData) {

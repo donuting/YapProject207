@@ -464,7 +464,7 @@ public class AppBuilder {
                 new AddBioInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
         final AddDOBInputBoundary addDateOfBirthInputBoundary =
-                new AddDOBInteractor(userDataAccessObject, profileAndSettingsPresenter, userFactory);
+                new AddDOBInteractor(userDataAccessObject, profileAndSettingsPresenter);
 
         final PandScontroller profileAndSettingsController = new PandScontroller(viewManagerModel,
                 mainMenuViewModel,

@@ -36,12 +36,6 @@ public class UpdateChatInteractor implements UpdateChatInputBoundary {
                 updateChatDataAccessObject.setActiveGroupChat(groupChat);
             }
         }
-        for (GroupChat personalChat : currentUser.getPersonalChats()) {
-            if (personalChat.getChannelUrl().equals(channelUrl)) {
-                updateChatDataAccessObject.setActiveGroupChat(personalChat);
-            }
-        }
-
         ScheduledExecutorService updateChatExecutor = Executors.newSingleThreadScheduledExecutor();
         ScheduledExecutorService checkIfViewingChatExecutor = Executors.newSingleThreadScheduledExecutor();
 

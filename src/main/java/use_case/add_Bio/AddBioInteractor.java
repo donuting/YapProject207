@@ -14,7 +14,7 @@ public class AddBioInteractor implements AddBioInputBoundary {
 
     @Override
     public void execute(AddBioInputData addBioInputData) {
-        String bio = addBioInputData.getBio();
+        String bio = addBioInputData.getNewBio();
         String username = addBioInputData.getUsername();
         boolean result = false;
         if (!bio.isEmpty() && !bio.equals(addBioInputData.getPassword())) {
@@ -27,7 +27,7 @@ public class AddBioInteractor implements AddBioInputBoundary {
             userPresenter.prepareSuccessAddBioView(changeBioOutputData);
         }
         else {
-            final AddBioOutputData changeBioOutputData = new AddBioOutputData(username, true, bio);
+            final AddBioOutputData changeBioOutputData = new AddBioOutputData(username, true, addBioInputData.getOldBio());
             userPresenter.prepareFailAddBioView("Add Bio Failed", changeBioOutputData);
         }
     }
